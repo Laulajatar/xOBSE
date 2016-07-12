@@ -676,6 +676,7 @@ LPTOP_LEVEL_EXCEPTION_FILTER g_OriginalTopLevelExceptionFilter = NULL;
 
 bool CreateExceptionMiniDump( _EXCEPTION_POINTERS *ExceptionInfo )
 {
+#ifdef OBSE_CORE
 	HANDLE DumpFile = CreateFile("OBSECrashDump.dmp",
 								GENERIC_READ|GENERIC_WRITE,
 								0,
@@ -712,11 +713,13 @@ bool CreateExceptionMiniDump( _EXCEPTION_POINTERS *ExceptionInfo )
 		return false;
 
 	CloseHandle(DumpFile);
+#endif
 	return true;
 }
 
 LONG WINAPI OBSEUnhandledExceptionFilter( __in struct _EXCEPTION_POINTERS *ExceptionInfo )
 {
+#ifdef OBSE_CORE
 	CreateExceptionMiniDump(ExceptionInfo);
 
 #ifdef OBLIVION
@@ -726,7 +729,7 @@ LONG WINAPI OBSEUnhandledExceptionFilter( __in struct _EXCEPTION_POINTERS *Excep
 #else
 	MessageBox(NULL, "The Construction Set has crashed! A minidump has been created in the game directory.", "OBSE", MB_TASKMODAL|MB_SETFOREGROUND|MB_ICONERROR|MB_OK);
 #endif
-
+#endif
 	if (g_OriginalTopLevelExceptionFilter)
 		return g_OriginalTopLevelExceptionFilter(ExceptionInfo);
 	else
