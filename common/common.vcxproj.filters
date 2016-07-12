@@ -2,28 +2,28 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="streams">
-      <UniqueIdentifier>{3116e955-2cbf-4759-a5ae-1fd8a64cf82f}</UniqueIdentifier>
+      <UniqueIdentifier>{7a28742d-8065-4dd0-9b8b-89b781eda82d}</UniqueIdentifier>
     </Filter>
     <Filter Include="debug">
-      <UniqueIdentifier>{2763d79e-c908-489f-98d7-e9033c13ee81}</UniqueIdentifier>
+      <UniqueIdentifier>{34fd11a2-2b19-4256-a01a-b97b9a15f0cd}</UniqueIdentifier>
     </Filter>
     <Filter Include="threads">
-      <UniqueIdentifier>{0189b4d3-578c-4b8e-9e73-ef2a5658a139}</UniqueIdentifier>
+      <UniqueIdentifier>{fe988394-f27b-409b-9899-8b4ad799fbff}</UniqueIdentifier>
     </Filter>
     <Filter Include="datatypes">
-      <UniqueIdentifier>{d245593e-d1c3-4f87-b989-1841f48a2837}</UniqueIdentifier>
+      <UniqueIdentifier>{f946d7a6-9b3f-4be9-ac95-db8cae1900e8}</UniqueIdentifier>
     </Filter>
     <Filter Include="utilities">
-      <UniqueIdentifier>{454cfcb6-5332-4789-8092-3e68723f9eb2}</UniqueIdentifier>
+      <UniqueIdentifier>{2f8b0d5f-e876-491a-942f-253b8953c79b}</UniqueIdentifier>
     </Filter>
     <Filter Include="memory">
-      <UniqueIdentifier>{324323c6-8765-4754-bc66-3d8cf12d3ad0}</UniqueIdentifier>
+      <UniqueIdentifier>{329719d3-4563-4a9c-8001-6ee5c561f0fc}</UniqueIdentifier>
     </Filter>
     <Filter Include="pipe">
-      <UniqueIdentifier>{1c594a4b-a331-4eeb-826c-87f764586bbd}</UniqueIdentifier>
+      <UniqueIdentifier>{a729cf34-a8ce-4df9-9af9-7ad5d1d1b13c}</UniqueIdentifier>
     </Filter>
     <Filter Include="files">
-      <UniqueIdentifier>{22a19b00-a69e-48b2-a637-78e10e06217b}</UniqueIdentifier>
+      <UniqueIdentifier>{4fc68cca-58a0-4270-a446-cd008fa3d1d4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
