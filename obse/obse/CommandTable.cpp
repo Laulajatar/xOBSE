@@ -152,13 +152,16 @@ bool Cmd_TestExtractArgs_Execute(COMMAND_ARGS)
 bool Cmd_GetOBSEVersion_Execute(COMMAND_ARGS)
 {
 	*result = OBSE_VERSION_INTEGER;
-
+	if (IsConsoleMode())
+		Console_Print("Obse Version >> %.0f", *result);
 	return true;
 }
 
 bool Cmd_GetOBSERevision_Execute(COMMAND_ARGS)
 {
 	*result = OBSE_VERSION_INTEGER_MINOR;
+	if (IsConsoleMode())
+		Console_Print("Obse Revision >> %.0f", *result);
 	return true;
 }
 
@@ -3188,8 +3191,9 @@ void CommandTable::Init(void)
 	ADD_CMD (SetActorMaxSwimBreath);
 	ADD_CMD (OverrideActorSwimBreath);
 	ADD_CMD (SetFlyCameraSpeedMult);
-	//OBSE v22
+	//OBSE v0022
 	g_scriptCommands.RecordReleaseVersion();
+
 	g_scriptCommands.Add(&kCommandInfo_IsDiseased);
 	g_scriptCommands.Add(&kCommandInfo_IsInvertFastTravel);
 	g_scriptCommands.Add(&kCommandInfo_SetInvertFastTravel);
@@ -3215,6 +3219,7 @@ void CommandTable::Init(void)
 	g_scriptCommands.Add(&kCommandInfo_SetBookSkillTaughtC);
 	g_scriptCommands.Add(&kCommandInfo_RemoveAllSpells); // had some crashing problems
 	g_scriptCommands.Add(&kCommandInfo_SetScriptedEffectItem);
+	g_scriptCommands.Add(&kCommandInfo_SetCombatStyleAttackChoiceChances);
 	*/
 
 #ifdef _DEBUG
