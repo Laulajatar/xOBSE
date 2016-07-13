@@ -1284,13 +1284,13 @@ ActorSwimmingBreathMapT s_ActorSwimmingBreathMap;
 
 bool SetActorSwimBreathOverride(Actor* actor, UInt32 state)
 {
-	if (state >= 0 && state < 4)
-	{
+	if (state >= 0 && state < 4){
 		ActorSwimmingBreathMapT::iterator it = s_ActorSwimmingBreathMap.find(actor);
-		if (it != s_ActorSwimmingBreathMap.end())
-		{
+		if (it != s_ActorSwimmingBreathMap.end()){
 			it->second = ((it->second & kActorSwimBreath_IsUnderWater) | (state << 1));
+			return true;
 		}
+		s_ActorSwimmingBreathMap.insert(std::map<Actor*, UInt32>::value_type(actor, state << 1));
 		return true;
 	}
 	return false;
