@@ -21,7 +21,7 @@ static bool Cmd_HasSpell_Execute(COMMAND_ARGS)
 
 	if (!thisObj) return true;
 
-	TESNPC* npc = (TESNPC *)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESNPC, 0);
+	TESActorBase* npc = (TESActorBase*)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESActorBase, 0);
 	if (!npc) return true;
 
 	TESForm	* form = NULL;
@@ -32,7 +32,7 @@ static bool Cmd_HasSpell_Execute(COMMAND_ARGS)
 	{
 		SpellItem* spell = (SpellItem*)Oblivion_DynamicCast(form, 0, RTTI_TESForm, RTTI_SpellItem, 0);
 
-#if 1
+#if 0
 
 		EffectItemList* spellEffectList = (EffectItemList*)Oblivion_DynamicCast(spell, 0, RTTI_SpellItem, RTTI_EffectItemList, 0);
 		if (spellEffectList) {
