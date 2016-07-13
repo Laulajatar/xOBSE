@@ -3188,7 +3188,14 @@ void CommandTable::Init(void)
 	ADD_CMD (SetActorMaxSwimBreath);
 	ADD_CMD (OverrideActorSwimBreath);
 	ADD_CMD (SetFlyCameraSpeedMult);
-
+	//OBSE v22
+	g_scriptCommands.RecordReleaseVersion();
+	g_scriptCommands.Add(&kCommandInfo_IsDiseased);
+	g_scriptCommands.Add(&kCommandInfo_IsInvertFastTravel);
+	g_scriptCommands.Add(&kCommandInfo_SetInvertFastTravel);
+	g_scriptCommands.Add(&kCommandInfo_IsCantWait);
+	g_scriptCommands.Add(&kCommandInfo_SetCantWait);
+	g_scriptCommands.Add(&kCommandInfo_GetEnemies);
 
 	/* to add later if problems can be solved
 	g_scriptCommands.Add(&kCommandInfo_SetCurrentClimate); // too many problems
