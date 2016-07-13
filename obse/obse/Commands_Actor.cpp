@@ -1103,6 +1103,7 @@ CombatController* GetCombatController(TESObjectREFR* thisObj)
 enum {
 	kCombatController_Allies,
 	kCombatController_Targets,
+	kCombatController_Enemies,
 	kCombatController_SelectedSpells,
 	kCombatController_AvailableSpells,
 };
@@ -1129,7 +1130,15 @@ static bool GetCombatControllerData_Execute(COMMAND_ARGS, UInt32 type)
 					idx += 1;
 				}
 				break;
-			case kCombatController_SelectedSpells:
+			case kCombatController_Enemies:
+				for (CombatController::TargetList* cur = controller->targets; cur && cur->info && cur->info->target; cur = cur->next) {
+					if(cur->info->target->refID == thisObj->refID){ 
+						g_ArrayMap.SetElementFormID(arr, idx, cur->info->target->refID);
+						idx += 1;
+					}
+				}
+				break;
+			case kCombatController_SelectedSpells:   //CTD. Fix.
 				{
 					CombatController::SelectedSpellInfo* spells[] =	{
 						controller->selectedBoundArmorSpell,
@@ -1174,6 +1183,11 @@ static bool Cmd_GetAllies_Execute(COMMAND_ARGS)
 static bool Cmd_GetTargets_Execute(COMMAND_ARGS)
 {
 	return GetCombatControllerData_Execute(PASS_COMMAND_ARGS, kCombatController_Targets);
+}
+
+static bool Cmd_GetEnemies_Execute(COMMAND_ARGS)
+{
+	return GetCombatControllerData_Execute(PASS_COMMAND_ARGS, kCombatController_Enemies);
 }
 
 static bool Cmd_GetSelectedSpells_Execute(COMMAND_ARGS)
@@ -2115,6 +2129,7 @@ CommandInfo kCommandInfo_RemoveAllSpells =
 
 DEFINE_COMMAND(GetAllies, returns an actors allies in combat, 1, 0, NULL);
 DEFINE_COMMAND(GetTargets, returns an actors targets in combat, 1, 0, NULL);
+DEFINE_COMMAND(GetEnemies, returns an actors enemies in combat BETA!!, 1, 0, NULL);
 DEFINE_COMMAND(GetSelectedSpells, returns an actors selected spells in combat, 1, 0, NULL);
 DEFINE_COMMAND(GetCombatSpells, returns an actors spell list in combat, 1, 0, NULL);
 
