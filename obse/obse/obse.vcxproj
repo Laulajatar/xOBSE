@@ -312,7 +312,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Installing DLL...</Message>
-      <Command>copy "$(TargetPath)" "$(OblivionPath)\obse_1_2_416.dll"</Command>
+      <Command>copy "$(TargetPath)" "obse_release\obse_1_2_416.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

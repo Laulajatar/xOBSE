@@ -62,18 +62,15 @@ static bool Cmd_HasSpell_Execute(COMMAND_ARGS)
 	return true;
 }
 
-bool Cmd_IsDiseased_Execute(COMMAND_ARGS){
-	*result = 0;
+bool IsDiseased(TESObjectREFR* thisObj){
 	 TESForm* form = (thisObj)->GetBaseForm();
 	 if(!form){
-	 		*result = 0;
-			return true;
+			return false;
 	 }
 	 TESActorBase* actor = (TESActorBase*)Oblivion_DynamicCast(form, 0, RTTI_TESForm, RTTI_TESActorBase,0);
 	 //Controlli
 	 if(!actor){
-		 	*result = 0;
-			return true;
+			return false;
 	 }
 	 //Which is the best method for getting the SpellList of an Actor?
 //	 TESSpellList* list1 = (TESSpellList*)Oblivion_DynamicCast(form, 0, RTTI_TESForm, RTTI_TESSpellList,0);
@@ -82,12 +79,22 @@ bool Cmd_IsDiseased_Execute(COMMAND_ARGS){
 	 for (TESSpellList::Entry* entry = &list->spellList; entry && entry->type; entry = entry->next){
 		 SpellItem* spell = (SpellItem*) Oblivion_DynamicCast(entry->type,0,RTTI_TESForm, RTTI_SpellItem, 0);
 		if(spell->spellType  == SpellItem::kType_Disease) { 
-			*result = 1;
 			return true;
 		}
 	 }
-	 return true;
+	 return false;
 
+}
+
+
+static bool Cmd_IsDiseased_Execute(COMMAND_ARGS){
+	*result = IsDiseased(thisObj) == true ? 1 : 0; 
+	return true;
+}
+
+static bool Cmd_IsDiseased_Eval(COMMAND_ARGS_EVAL){
+	*result = IsDiseased(thisObj) == true ? 1 : 0; 
+	return true;
 }
 
 static bool Cmd_GetSpellCount_Execute(COMMAND_ARGS)
@@ -1441,6 +1448,7 @@ CommandInfo kCommandInfo_IsDiseased = {
 	NULL,
 	HANDLER(Cmd_IsDiseased_Execute),
 	Cmd_Default_Parse,
+	HANDLER_EVAL(Cmd_IsDiseased_Eval),
 	0
 };
 
