@@ -440,6 +440,19 @@ ExtraTeleport::Data* TESObjectREFR::GetExtraTeleportData()
 #endif
 }
 
+//this is the container reference
+//baseform is the object to drop
+//extralist toBeDefined.
+//removeOwner Remove owenrship
+//removeRefPointer boh? RefStuff set this to true;
+//lvlItem is the Item assigned as part of a livelledList?
+//destcontainer the destination container for the dropped object
+//pos,rot modification of position of the dropped object. Valid only if destCont is NULL?
+//free maybe freethe object? RefStuff set this always to false.
+TESObjectREFR* TESObjectREFR::Drop(UInt32 count, TESForm* baseform, BaseExtraList* extralist ,bool removeOwner, bool removeRefPointer, bool lvlItem, TESObjectREFR* destCont,float* pos, float* rot, bool free){
+	return (TESObjectREFR*)ThisStdCall(0x004D8760, this, baseForm, extralist, count, removeOwner, removeRefPointer, destCont, pos, rot, free, lvlItem);
+}
+
 TESPackage* Actor::GetCurrentPackage()
 {
 	TESPackage* pkg = NULL;

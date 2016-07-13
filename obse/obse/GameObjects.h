@@ -629,7 +629,7 @@ public:
 	float GetDistance(TESObjectREFR* other, bool bIncludeDisabled);
 
 	ExtraTeleport::Data* GetExtraTeleportData();
-
+	TESObjectREFR* Drop(UInt32 count, TESForm* baseform, BaseExtraList* extralist ,bool removeOwner, bool removeRefPointer, bool lvlItem, TESObjectREFR* destCont = NULL,float* pos = NULL, float* rot= NULL , bool free = false);
 	static TESObjectREFR* Create(bool bTemp = false);
 };
 
