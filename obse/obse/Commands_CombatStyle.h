@@ -2,7 +2,7 @@
 
 #include "CommandTable.h"
 
-#if DEBUG
+#ifdef DEBUG
 extern CommandInfo kCommandInfo_DumpCombatStyle;
 #endif
 
