@@ -134,6 +134,7 @@ static bool Cmd_RemoveAllSpells_Execute(COMMAND_ARGS)
 		TESSpellList* spellList = (TESSpellList *)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESSpellList, 0);
 		if (spellList) {
 			spellList->RemoveAllSpells();
+			*result = 1;
 		}
 	}
 	return true;
@@ -1152,13 +1153,10 @@ static bool GetCombatControllerData_Execute(COMMAND_ARGS, UInt32 type)
 				{
 					UInt32 i = 0;
 					CombatController::AvailableSpellList** cur = &controller->rangedSpells;
-					while (i < 4) {
-						for (CombatController::AvailableSpellList* list = *cur; list && list->info && list->info->item; list = list->next) {
-							TESForm* magicForm = OBLIVION_CAST(list->info->item, MagicItem, TESForm);
-							g_ArrayMap.SetElementFormID(arr, idx, magicForm->refID);
-							idx += 1;
-						}
-						i++;
+					for (CombatController::AvailableSpellList* list = *cur; list && list->info && list->info->item; list = list->next) {
+						TESForm* magicForm = OBLIVION_CAST(list->info->item, MagicItem, TESForm);
+						g_ArrayMap.SetElementFormID(arr, idx, magicForm->refID);
+						idx += 1;
 					}
 				}
 				break;
