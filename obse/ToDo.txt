@@ -1,0 +1,7 @@
+Fix PostLoadGame handler on steam (Need a steam executable)
+Fix OnMurder handler
+Fix GetSelectedSpell
+OffLimits Cell
+Refactoring
+Expose DeferredDelete 
+Implement getMapMArker the right way
