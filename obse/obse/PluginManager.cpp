@@ -806,6 +806,8 @@ bool Cmd_IsPluginInstalled_Execute(COMMAND_ARGS)
 	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &pluginName)) return true;
 
 	*result = (g_pluginManager.GetInfoByName(pluginName) != NULL) ? 1 : 0;
+	if (IsConsoleMode())
+		Console_Print("OBSE VERSION >> %.0f", *result);
 
 	return true;
 }
@@ -821,6 +823,8 @@ bool Cmd_GetPluginVersion_Execute(COMMAND_ARGS)
 	PluginInfo	* info = g_pluginManager.GetInfoByName(pluginName);
 	
 	if(info) *result = info->version;
+	if (IsConsoleMode())
+		Console_Print("Plugin Version >> %.0f", *result);
 
 	return true;
 }

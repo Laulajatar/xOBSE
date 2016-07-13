@@ -4,7 +4,7 @@
 #include "GameAPI.h"
 #include "Script.h"
 #include "GameOSDepend.h"
-
+#include <algorithm>
 void PrintItemType(TESForm * form)
 {
 	Console_Print("%s (%s)", GetFullName(form), GetObjectClassName(form));
