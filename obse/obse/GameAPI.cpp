@@ -1056,6 +1056,7 @@ bool ExtractFormattedString(FormatStringArgs& args, char* buffer)
 				fmtString.insert(strIdx, valStr);
 			}
 			break;
+		//TODO: Allow localization of pronuns.
 		case 'p':
 		case 'P':											//pronouns
 			{
