@@ -1875,6 +1875,22 @@ void TESObjectCELL::SetHasWater(bool bHas)
 	}
 }
 
+void TESObjectCELL::SetInvertFastTravelBeheviour(bool bSet){
+	if (bSet) {
+		flags0 |= kFlags0_InvFastTravelBehviour;
+	}
+	else {
+		flags0 &= ~kFlags0_InvFastTravelBehviour;
+	}
+}
+
+void TESObjectCELL::SetCantWait(bool bSet){
+	if(bSet)
+		flags |= kFormFlags_CantWait;
+	else
+		flags &= ~kFormFlags_CantWait;
+}
+
 TESLeveledList::ListData*	TESLeveledList::CreateData(TESForm* form, UInt16 level, UInt16 count)
 {
 	ListData*	newData = (ListData*)FormHeap_Allocate(sizeof(ListData));
