@@ -1478,8 +1478,10 @@ static bool Cmd_RemoveBaseSpell_Execute(COMMAND_ARGS)
 		*result = 0;	\
 		SpellItem* spell = NULL; \
 		if (ExtractArgs(PASS_EXTRACT_ARGS, &spell)) { \
-			if ((spell->spellFlags & flag) == flag) { \
-				*result = 1; \
+			if(spell){ \
+				if ((spell->spellFlags & flag) == flag) { \
+					*result = 1; \
+				} \
 			} \
 		} \
 		return true; \
@@ -1490,11 +1492,13 @@ static bool Cmd_RemoveBaseSpell_Execute(COMMAND_ARGS)
 		SpellItem* spell = NULL; \
 		UInt32 bSet = 0; \
 		if (ExtractArgs(PASS_EXTRACT_ARGS, &bSet, &spell)) { \
-			if (bSet) { \
-				spell->spellFlags |= flag; \
-			} \
-			else { \
-				spell->spellFlags &= ~flag; \
+			if(spell){ \
+				if (bSet) { \
+					spell->spellFlags |= flag; \
+				} \
+				else { \
+					spell->spellFlags &= ~flag; \
+				} \
 			} \
 		} \
 		return true; \
