@@ -1,2 +1,5 @@
 Debug
 Release
+/obse/*.sdf
+/obse/obse_vs10.v11.suo
+/obse/*.suo

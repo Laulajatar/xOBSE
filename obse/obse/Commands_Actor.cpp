@@ -14,6 +14,29 @@
 #include "Utilities.h"
 #include "Hooks_Gameplay.h"
 #include "EventManager.h"
+//Trust the caller.
+bool HasSpell(TESForm* spell, TESActorBase* actor){
+	TESSpellList& spellList = actor->spellList;
+	TESSpellList::Entry* curEntry = &spellList.spellList;
+	while (curEntry && curEntry->type != NULL) {
+		TESForm* spellForm = curEntry->type;
+		if (spell == spellForm) {
+			return true;
+		}
+		curEntry = curEntry->next;
+	}
+	return false;
+}
+
+static bool Cmd_HasSpell_Eval(COMMAND_ARGS_EVAL){
+	*result=0;
+	if(!thisObj) return true;
+	TESActorBase* actor = (TESActorBase*)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESActorBase, 0);
+	if(!actor) return true;
+	TESForm* spell = (TESForm*)arg1;
+	*result = HasSpell(spell, actor) ? 1:0;
+	return true;
+}
 
 static bool Cmd_HasSpell_Execute(COMMAND_ARGS)
 {
@@ -22,7 +45,7 @@ static bool Cmd_HasSpell_Execute(COMMAND_ARGS)
 	if (!thisObj) return true;
 
 	TESActorBase* npc = (TESActorBase*)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESActorBase, 0);
-	if (!npc) return true;
+	if(!npc) return true;
 
 	TESForm	* form = NULL;
 
@@ -31,34 +54,10 @@ static bool Cmd_HasSpell_Execute(COMMAND_ARGS)
 	if(form)
 	{
 		SpellItem* spell = (SpellItem*)Oblivion_DynamicCast(form, 0, RTTI_TESForm, RTTI_SpellItem, 0);
-
-#if 0
-
-		EffectItemList* spellEffectList = (EffectItemList*)Oblivion_DynamicCast(spell, 0, RTTI_SpellItem, RTTI_EffectItemList, 0);
-		if (spellEffectList) {
-			EffectItemList::Entry* entry = &(spellEffectList->effectList);
-			while (entry) {
-				EffectItem* effect = entry->effectItem;
-				entry = entry->next;
-			}
-		}
-
-//		MagicItem* magicItem = (MagicItem*)Oblivion_DynamicCast(spell, 0, RTTI_SpellItem, RTTI_MagicItem, 0);
-//		DumpClass(magicItem);
-#endif
-
-		TESSpellList& spellList = npc->spellList;
-		TESSpellList::Entry* curEntry = &spellList.spellList;
-		while (curEntry && curEntry->type != NULL) {
-			TESForm* spellForm = curEntry->type;
-			if (form == spellForm) {
-				*result = 1;
-				return true;
-			}
-			curEntry = curEntry->next;
+		if(spell){
+			*result = HasSpell(form,npc) ? 1 : 0;
 		}
 	}
-
 	return true;
 }
 
@@ -245,21 +244,27 @@ static bool Cmd_SetRefEssential_Execute(COMMAND_ARGS)
 	return true;
 }
 
-static bool Cmd_GetActorLightAmount_Execute(COMMAND_ARGS)
-{
-	*result = 100.0f;
+float GetActorLightAmount(Actor* act){
+	return act->process->GetLightAmount(act, 0);
+}
 
+static bool Cmd_GetActorLightAmount_Eval(COMMAND_ARGS_EVAL){
+	*result = 100.0f;
 	if(!thisObj) return true;
 	if(!thisObj->IsActor()) return true;
-
-	Actor	* actor = (Actor *)thisObj;
-
+	Actor* actor = (Actor*)thisObj;
 	if(!actor->process) return true;
+	*result = GetActorLightAmount(actor);
+	return true;
+}
 
-	*result = actor->process->GetLightAmount(actor, 0);
-
-	//Console_Print("light amount = %f", (float)*result);
-
+static bool Cmd_GetActorLightAmount_Execute(COMMAND_ARGS){
+	*result = 100.0f;
+	if(!thisObj) return true;
+	if(!thisObj->IsActor()) return true;
+	Actor	* actor = (Actor*)thisObj;
+	if(!actor->process) return true;
+	*result = GetActorLightAmount(actor);
 	return true;
 }
 
@@ -1433,11 +1438,11 @@ CommandInfo kCommandInfo_HasSpell =
 	"returns 1 if the actor has the spell",
 	1,
 	1,
-	kParams_OneSpellItem,
+	kParams_OneMagicItem,
 	HANDLER(Cmd_HasSpell_Execute),
 	Cmd_Default_Parse,
-	NULL,
-	0
+	HANDLER_EVAL(Cmd_HasSpell_Eval),
+	1,
 };
 
 CommandInfo kCommandInfo_IsDiseased = {
@@ -1594,7 +1599,7 @@ CommandInfo kCommandInfo_GetActorLightAmount =
 	NULL,
 	HANDLER(Cmd_GetActorLightAmount_Execute),
 	Cmd_Default_Parse,
-	NULL,
+	HANDLER_EVAL(Cmd_GetActorLightAmount_Eval),
 	0
 };
 

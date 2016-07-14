@@ -12,6 +12,25 @@
 #include "GameProcess.h"
 #include "ArrayVar.h"
 
+static bool Cmd_IsMajor_Eval(COMMAND_ARGS_EVAL){
+	//DO also a version that take directly the thisObj Reference
+	*result = 0;
+	UInt32 skill = *((UInt32*)arg1);
+	TESClass* theClass = (TESClass*)arg2;
+	if (!IsSkill(skill)) return true;
+	if (!theClass) {
+		if (!thisObj) return true;
+		TESNPC* npc = (TESNPC *)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESNPC, 0);
+		if (!npc || !npc->npcClass) return true;
+		theClass = npc->npcClass;
+	}
+
+	if (theClass->IsMajorSkill(skill)) {
+		*result = 1;
+	}
+	return true;
+}
+
 static bool Cmd_IsMajor_Execute(COMMAND_ARGS)
 {
 	*result = 0;
@@ -366,8 +385,8 @@ CommandInfo kCommandInfo_IsClassSkill =
 	kParams_IsMajor,
 	HANDLER(Cmd_IsMajor_Execute),
 	Cmd_Default_Parse,
-	NULL,
-	0
+	HANDLER_EVAL(Cmd_IsMajor_Eval),
+	2
 };
 
 CommandInfo kCommandInfo_IsClassAttribute =

@@ -701,3 +701,4 @@ DEFINE_COMMAND(IsInvertFastTravel, returns true if the cell has InvertFastTravel
 
 DEFINE_COMMAND(SetCantWait, sets the CantWait flag, 0, 2, kParams_OneCellOneInt);
 DEFINE_COMMAND(IsCantWait, returns true if the cell has CantWait flag, 0, 1, kParams_OneCell);
+
