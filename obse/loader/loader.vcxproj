@@ -102,7 +102,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Installing...</Message>
-      <Command>copy "$(TargetPath)" "$(OblivionPath)\obse_loader.exe"</Command>
+      <Command>copy "$(TargetPath)" "..\obse_release\obse_loader.exe"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -195,7 +195,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Installing DLL...</Message>
-      <Command>copy "$(TargetPath)" "$(OblivionPath)\obse_editor_1_2.dll"</Command>
+      <Command>copy "$(TargetPath)" "..\obse_release\obse_editor_1_2.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

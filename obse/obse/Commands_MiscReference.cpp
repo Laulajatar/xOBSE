@@ -1068,7 +1068,6 @@ static bool Cmd_SetPersistent_Execute(COMMAND_ARGS)
 		else
 			thisObj->flags &= ~thisObj->kFlags_Persistent;
 	}
-
 	return true;
 }
 

@@ -143,7 +143,6 @@ static bool Cmd_IsReference_Execute(COMMAND_ARGS)
 	*result = 0;
 	if (ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &refr))
 		*result = 1;
-
 	return true;
 }
 

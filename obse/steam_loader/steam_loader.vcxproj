@@ -101,7 +101,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Installing...</Message>
-      <Command>copy "$(TargetPath)" "$(OblivionPath)\obse_steam_loader.dll"</Command>
+      <Command>copy "$(TargetPath)" "..\obse_release\obse_steam_loader.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
