@@ -88,6 +88,7 @@ bool IsDiseased(TESObjectREFR* thisObj){
 
 static bool Cmd_IsDiseased_Execute(COMMAND_ARGS){
 	*result = IsDiseased(thisObj) == true ? 1 : 0; 
+	if(IsConsoleMode) Console_Print("IsDiseased  %08X", *result);
 	return true;
 }
 
