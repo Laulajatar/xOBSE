@@ -3200,11 +3200,11 @@ void CommandTable::Init(void)
 	g_scriptCommands.Add(&kCommandInfo_IsCantWait);
 	g_scriptCommands.Add(&kCommandInfo_SetCantWait);
 	g_scriptCommands.Add(&kCommandInfo_GetEnemies);
-	/*UInt32 opcodeGetDisease =  g_scriptCommands.GetByName("GetDisease")->opcode;
+	UInt32 opcodeGetDisease =  g_scriptCommands.GetByName("GetDisease")->opcode;
 	CommandInfo newgetDisease = kCommandInfo_IsDiseased;
 	newgetDisease.shortName = "GetDisease";
 	newgetDisease.longName = "GetDisease";
-	g_scriptCommands.Replace(opcodeGetDisease, &newgetDisease); */  //Ready for the mapping
+	g_scriptCommands.Replace(opcodeGetDisease, &newgetDisease);   //Ready for the mapping
 	/* to add later if problems can be solved
 	g_scriptCommands.Add(&kCommandInfo_SetCurrentClimate); // too many problems
 	g_scriptCommands.Add(&kCommandInfo_SetWorldspaceClimate);
