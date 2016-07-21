@@ -2314,6 +2314,31 @@ static bool Cmd_SetTimeLeft_Execute(COMMAND_ARGS)
 	return true;
 }
 
+
+//not actually sure if I'm doing right
+static bool Cmd_AtEditorLocation_Execute(COMMAND_ARGS){
+	TESForm* from = NULL;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &from)) return true;
+	if(from){
+		TESObjectREFR* refr = OBLIVION_CAST(from, TESForm, TESObjectREFR);
+		if(refr){
+			float pos[3] = {0,0,0};
+			refr->GetStartingPos(pos);
+			float angle[3] = {0,0,0};
+			refr->GetStartingAngle(angle);
+			TESObjectCELL* cell = refr->parentCell;
+			refr->ChangeCell(cell);
+			refr->posY = pos[1];
+			refr->posX = pos[0];
+			refr->posZ = pos[2];
+			refr->rotY = angle[1];
+			refr->rotX = angle[0];
+			refr->rotZ = angle[2];
+			refr->Update3D();
+		}
+	}
+	return true;
+}
 #endif
 
 CommandInfo kCommandInfo_GetTravelHorse =

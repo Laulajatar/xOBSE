@@ -6,10 +6,8 @@ HasSpell cycle in the effect listof the spell unnecessariy- Fixed
 Ar_customsort doesn't sort arrays of arrays -Fixed
 getDistance were calling another functions -Fixed (Tiawar)
 getSelectedSpell crash when in combat.
-IsReference: return 1 for objects which can't have references (Spells, Cells, Quests, Weathers, ...).
+IsReference: return 1 for all objects with compiler override -Fixed
 PostLoadGame handler misfire on Steam. doesnt' fire the first time, generally fire after reload.
 I suppose this happen also for PostLoad callbacks
 
 OnMurder doesn't fire
-
-Control Actor::GetEquippedItems();

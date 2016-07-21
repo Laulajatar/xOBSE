@@ -11,8 +11,9 @@
 		Added:
 			-SetInvertFastTravel/IsInvertFastTravel (BETA)
 			-(Set/Is)CantWait (BETA).
-			-IsDiseased  (BETA)
-			-GetEnemies (ALPHA);
+			-IsDiseased
+			-GetEnemies (ALPHA)
+			-IsDiseased, HasSpell, GetActorLightAmount,IsMajor usable as conditional functions. for dialogues and quests.
 
 		Fixed:
 			-Fixed GetDistance --According to Tiawar
@@ -23,6 +24,8 @@
 			-Fixed GetCombatSpell (need testing)
 			-Added console print for GetOBSEVersion/Revision e for Plugins detection functions
 			-Hopefully fixed OverrideActorSwimBreath
+			-IsReference no more return 1 for all objects with Compiler Override active.
+			-HasSpell now take a MagicItem as argument and no more a spell. 
 
 
 0021:
