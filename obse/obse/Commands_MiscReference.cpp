@@ -2316,7 +2316,7 @@ static bool Cmd_SetTimeLeft_Execute(COMMAND_ARGS)
 
 
 //not actually sure if I'm doing right
-static bool Cmd_AtEditorLocation_Execute(COMMAND_ARGS){
+static bool Cmd_SetAtEditorLocation_Execute(COMMAND_ARGS){
 	TESForm* from = NULL;
 	if(!ExtractArgs(PASS_EXTRACT_ARGS, &from)) return true;
 	if(from){
@@ -2326,15 +2326,16 @@ static bool Cmd_AtEditorLocation_Execute(COMMAND_ARGS){
 			refr->GetStartingPos(pos);
 			float angle[3] = {0,0,0};
 			refr->GetStartingAngle(angle);
-			TESObjectCELL* cell = refr->parentCell;
-			refr->ChangeCell(cell);
+			//kExtraData_StartingWorldOrCell doesn't have a defined struct
+			refr->baseExtraList.GetByType(kExtraData_StartingWorldOrCell);
+			//refr->ChangeCell(cell);
 			refr->posY = pos[1];
 			refr->posX = pos[0];
 			refr->posZ = pos[2];
 			refr->rotY = angle[1];
 			refr->rotX = angle[0];
 			refr->rotZ = angle[2];
-			refr->Update3D();
+			//Need SetPos() and SetRot functions-	
 		}
 	}
 	return true;

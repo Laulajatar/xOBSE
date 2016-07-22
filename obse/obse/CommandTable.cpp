@@ -3200,6 +3200,7 @@ void CommandTable::Init(void)
 	g_scriptCommands.Add(&kCommandInfo_IsCantWait);
 	g_scriptCommands.Add(&kCommandInfo_SetCantWait);
 	g_scriptCommands.Add(&kCommandInfo_GetEnemies);
+	g_scriptCommands.Add(&kCommandInfo_IsMajorRef);
 	UInt32 opcodeGetDisease =  g_scriptCommands.GetByName("GetDisease")->opcode;
 	CommandInfo newgetDisease = kCommandInfo_IsDiseased;
 	newgetDisease.shortName = "GetDisease";

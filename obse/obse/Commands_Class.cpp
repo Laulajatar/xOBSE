@@ -12,8 +12,35 @@
 #include "GameProcess.h"
 #include "ArrayVar.h"
 
+
+static bool Cmd_IsMajorRef_Execute(COMMAND_ARGS){
+	*result = 0;
+	UInt32 skill = 0; 
+	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &skill)) return true;
+	if(!IsSkill(skill)) return true;
+	if(!thisObj->IsActor()) return true;
+	TESForm* base = thisObj->baseForm;
+	TESNPC* npc = OBLIVION_CAST(base, TESForm, TESNPC);
+	if(!npc) return true;
+	TESClass* clas = npc->npcClass;
+	if(!clas) return true;
+	*result = clas->IsMajorSkill(skill);
+	return true;
+}
+
+
+static bool Cmd_IsMajorRef_Eval(COMMAND_ARGS_EVAL){
+	*result = 0;
+	TESNPC* npc = OBLIVION_CAST(thisObj->baseForm, TESForm, TESNPC);
+	if(!npc) return true;
+	UInt32 skill = *((UInt32*)arg1);
+	if(!IsSkill(skill)) return true;
+	*result = npc->npcClass->IsMajorSkill(skill);
+	return true;
+}
+
+
 static bool Cmd_IsMajor_Eval(COMMAND_ARGS_EVAL){
-	//DO also a version that take directly the thisObj Reference
 	*result = 0;
 	UInt32 skill = *((UInt32*)arg1);
 	TESClass* theClass = (TESClass*)arg2;
@@ -362,6 +389,10 @@ CommandInfo kCommandInfo_GetClass =
 	0
 };
 
+static ParamInfo kParams_IsMajorRef[1] = {
+	{    "skill" , kParamType_ActorValue, 0},
+};
+
 static ParamInfo kParams_IsMajor[2] =
 {
 	{	"skill", kParamType_ActorValue, 0 },
@@ -387,6 +418,20 @@ CommandInfo kCommandInfo_IsClassSkill =
 	Cmd_Default_Parse,
 	HANDLER_EVAL(Cmd_IsMajor_Eval),
 	2
+};
+
+CommandInfo kCommandInfo_IsMajorRef = {
+	"IsMajorRef",
+	"",
+	0,
+	"returns 1 if the skill is a major skill of the class the reference as",
+	0,
+	1,
+	kParams_IsMajorRef,
+	HANDLER(Cmd_IsMajorRef_Execute),
+	Cmd_Default_Parse,
+	HANDLER_EVAL(Cmd_IsMajorRef_Eval),
+	1
 };
 
 CommandInfo kCommandInfo_IsClassAttribute =
