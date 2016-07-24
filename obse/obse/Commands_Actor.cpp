@@ -886,8 +886,10 @@ static bool Cmd_GetEquippedItems_Execute(COMMAND_ARGS)
 
 //TO be continued
 //Return true if actor has no LowerBody armour or clothing equipped and optionally for UpperBody. 
-static bool IsNaked(Actor* npc){
+static bool IsNaked(Actor* npc, bool requiredUpperBody){
 	EquippedItemsList list = npc->GetEquippedItems();
+	bool foundLower = false;
+	bool foundUpper = false;
 	for(int i = 0; i < list.size(); i++){
 		TESForm* eq = list.at(i);
 		//Not interested in Weapons
@@ -896,7 +898,8 @@ static bool IsNaked(Actor* npc){
 		if(!armor){
 			TESObjectCLOT* cloth = OBLIVION_CAST(eq, TESForm, TESObjectCLOT);
 			if(!cloth) continue;
-			cloth->bipedModel.partMask;
+			bool lower  = (cloth->bipedModel.partMask & TESBipedModelForm::kPart_LowerBody )== TESBipedModelForm::kPart_LowerBody;
+
 		}
 	}
 	return true;

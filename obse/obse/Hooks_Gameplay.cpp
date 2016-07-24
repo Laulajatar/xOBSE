@@ -454,13 +454,26 @@ private:
 
 void TESSaveLoadGame::LoadCreatedObjectsHook(UInt32 unk0)
 {
+
+
 	// run the original code
 	ThisStdCall(kOriginalLoadCreatedObjectsAddr, this, unk0);
 
 	// iterate the linked list, call DoPostFixup
 	CreatedObjectVisitor	visitor(&createdObjectList);
-
+	//TODO Expose TESSaveLoadGame flags to avoid using asm.
+	_asm
+	{
+		mov	ecx, this
+		or	dword ptr [ecx+18h],20000h
+	}
 	visitor.Visit(CallPostFixup());
+
+	_asm
+	{
+		mov	ecx, this
+		and	dword ptr [ecx+18h],0FFFDFFFFh
+	}
 }
 
 bool TESSaveLoadGame::LoadGame(const char* filename)
