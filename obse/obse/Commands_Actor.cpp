@@ -889,7 +889,7 @@ static bool Cmd_GetEquippedItems_Execute(COMMAND_ARGS)
 static bool IsNaked(Actor* npc, bool requiredUpperBody){
 	EquippedItemsList list = npc->GetEquippedItems();
 	bool foundLower = false;
-	bool foundUpper = false;
+	bool foundUpper = requiredUpperBody ?  false : true;
 	for(int i = 0; i < list.size(); i++){
 		TESForm* eq = list.at(i);
 		//Not interested in Weapons
@@ -898,10 +898,41 @@ static bool IsNaked(Actor* npc, bool requiredUpperBody){
 		if(!armor){
 			TESObjectCLOT* cloth = OBLIVION_CAST(eq, TESForm, TESObjectCLOT);
 			if(!cloth) continue;
-			bool lower  = (cloth->bipedModel.partMask & TESBipedModelForm::kPart_LowerBody )== TESBipedModelForm::kPart_LowerBody;
-
+			if(foundLower == false)
+			foundLower = (cloth->bipedModel.partMask & TESBipedModelForm::kPart_LowerBody )== TESBipedModelForm::kPart_LowerBody;
+			if(foundUpper == false)
+			foundUpper = (cloth->bipedModel.partMask & TESBipedModelForm::kPart_UpperBody )== TESBipedModelForm::kPart_UpperBody;
+		}
+		else{
+			if(foundLower == false)
+			foundLower = (armor->bipedModel.partMask & TESBipedModelForm::kPart_LowerBody )== TESBipedModelForm::kPart_LowerBody;
+			if(foundUpper == false)
+			foundUpper = (armor->bipedModel.partMask & TESBipedModelForm::kPart_UpperBody )== TESBipedModelForm::kPart_UpperBody;
+		}
+		if(foundLower == true  && foundUpper == true){
+			return false;
 		}
 	}
+	return true;
+}
+
+static bool Cmd_IsNaked_Eval(COMMAND_ARGS_EVAL){
+	*result = 0;
+	Actor* act = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
+	if(!act) return true;
+	UInt32 requireUpperBody = *((UInt32*)arg1);
+	*result = IsNaked(act,requireUpperBody == 0 ? false : true);
+	return true;
+}
+
+static bool Cmd_IsNaked_Execute(COMMAND_ARGS){
+	*result = 0;
+	Actor* act = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
+	UInt32 requireUpper = 0;
+	if(!act) return true;
+	ExtractArgs(PASS_EXTRACT_ARGS, &requireUpper);
+	*result = IsNaked(act, requireUpper == 0 ? false : true);
+	if(IsConsoleMode()) Console_Print("IsNaked:  %08X", *result);
 	return true;
 }
 
@@ -1480,6 +1511,23 @@ CommandInfo kCommandInfo_IsDiseased = {
 	HANDLER_EVAL(Cmd_IsDiseased_Eval),
 	0
 };
+
+
+CommandInfo kCommandInfo_IsNaked =
+{
+	"IsNaked",
+	"inak",
+	0,
+	"returns 1 if the actor is naked. So if it hasn't any LowerBody armour or clothing and optionally if it hasn't an UpperBody",
+	1,
+	1,
+	kParams_OneOptionalInt,
+	HANDLER(Cmd_IsNaked_Execute),
+	Cmd_Default_Parse,
+	HANDLER_EVAL(Cmd_IsNaked_Eval),
+	1,
+};
+
 
 CommandInfo kCommandInfo_GetMerchantContainer =
 {

@@ -5,7 +5,7 @@
 extern CommandInfo kCommandInfo_HasSpell;
 extern CommandInfo kCommandInfo_GetPlayerSpellCount;
 extern CommandInfo kCommandInfo_GetNthPlayerSpell;
-
+extern CommandInfo kCommandInfo_IsNaked;
 extern CommandInfo kCommandInfo_ModActorValue2;
 extern CommandInfo kCommandInfo_GetActorValueC;
 extern CommandInfo kCommandInfo_GetBaseActorValueC;
