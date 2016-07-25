@@ -884,7 +884,7 @@ static bool Cmd_GetEquippedItems_Execute(COMMAND_ARGS)
 	return true;
 }
 
-//TO be continued
+//doesn't seem to work. Need fixing
 //Return true if actor has no LowerBody armour or clothing equipped and optionally for UpperBody. 
 static bool IsNaked(Actor* npc, bool requiredUpperBody){
 	EquippedItemsList list = npc->GetEquippedItems();
@@ -904,6 +904,7 @@ static bool IsNaked(Actor* npc, bool requiredUpperBody){
 			foundUpper = (cloth->bipedModel.partMask & TESBipedModelForm::kPart_UpperBody )== TESBipedModelForm::kPart_UpperBody;
 		}
 		else{
+			_MESSAGE("%08X,    %08X",armor->bipedModel.partMask, TESBipedModelForm::kPart_LowerBody);
 			if(foundLower == false)
 			foundLower = (armor->bipedModel.partMask & TESBipedModelForm::kPart_LowerBody )== TESBipedModelForm::kPart_LowerBody;
 			if(foundUpper == false)
@@ -921,7 +922,7 @@ static bool Cmd_IsNaked_Eval(COMMAND_ARGS_EVAL){
 	Actor* act = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
 	if(!act) return true;
 	UInt32 requireUpperBody = *((UInt32*)arg1);
-	*result = IsNaked(act,requireUpperBody == 0 ? false : true);
+	*result = IsNaked(act,requireUpperBody == 0 ? false : true) ? 1 : 0;
 	return true;
 }
 
@@ -931,7 +932,7 @@ static bool Cmd_IsNaked_Execute(COMMAND_ARGS){
 	UInt32 requireUpper = 0;
 	if(!act) return true;
 	ExtractArgs(PASS_EXTRACT_ARGS, &requireUpper);
-	*result = IsNaked(act, requireUpper == 0 ? false : true);
+	*result = IsNaked(act, requireUpper == 0 ? false : true) ? 1 : 0;
 	if(IsConsoleMode()) Console_Print("IsNaked:  %08X", *result);
 	return true;
 }
