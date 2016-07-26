@@ -15,7 +15,7 @@
 			-GetEnemies (ALPHA)
 			-IsDiseased, HasSpell, GetActorLightAmount,IsMajor usable as conditional functions. for dialogues and quests.
 
-		Fixed:
+		Fixed/Changed:
 			-Fixed GetDistance --According to Tiawar
 			-Allow DeleteReference to destroy Actors
 			-Fixed HasSpell to work on all Actors, and not only NPCs.
@@ -26,7 +26,9 @@
 			-Hopefully fixed OverrideActorSwimBreath
 			-IsReference no more return 1 for all objects with Compiler Override active.
 			-HasSpell now take a MagicItem as argument and no more a spell. 
-
+			-GetSelectedSpells CTD fixed.
+			-GetFirstRef(and similia) take an optional parameter to include deleted references.
+			-GetFirstRef(and similia) take filter type 90 for Deleted References.
 
 0021:
 -Fixed swimming event registrations

@@ -725,6 +725,16 @@ public:
 	}
 };
 
+
+class RefMatcherDeletedRef
+{
+public:
+	bool Accept(const TESObjectREFR* refr) {
+		return refr->IsDeleted();
+	}
+};
+
+
 class RefMatcherItem
 {
 	bool m_includeTaken;
@@ -765,6 +775,8 @@ public:
 		return false;
 	}
 };
+
+
 
 class ProjectileFinder
 {
@@ -871,6 +883,9 @@ static const TESObjectCELL::ObjectListEntry* GetCellRefEntry(CellListVisitor vis
 	case 72:	// map marker
 		entry = visitor.Find(RefMatcherMapMarker(includeDeleted), prev);
 		break;
+	case 90: //deleted references
+		entry = visitor.Find(RefMatcherDeletedRef(), prev);
+		break;
 	default:
 		entry = visitor.Find(RefMatcherFormType(formType, includeTaken,includeDeleted), prev);
 	}
@@ -897,7 +912,7 @@ static TESObjectREFR* CellScan(Script* scriptObj, TESObjectCELL* cellToScan = NU
 	bool bContinue = true;
 	while (bContinue)
 	{
-		info->prev = GetCellRefEntry(CellListVisitor(&info->curCell->objectList), info->formType, info->prev, info->includeTakenRefs, info->includeDeletedRefs,projFinder);
+		info->prev = GetCellRefEntry(CellListVisitor(&info->curCell->objectList), info->formType, info->prev, info->includeTakenRefs, info->includeDeletedRefs, projFinder);
 		if (!info->prev || !info->prev->refr)				//no ref found
 		{
 			if (!info->NextCell())			//check next cell if possible
@@ -1033,6 +1048,9 @@ static bool GetNumRefs_Execute(COMMAND_ARGS, bool bUsePlayerCell = true)
 			break;
 		case 72:
 			*result += visitor.CountIf(RefMatcherMapMarker(bincludeDeletedRefs));
+			break;
+		case 90:
+			*result += visitor.CountIf(RefMatcherDeletedRef());
 			break;
 		default:
 			*result += visitor.CountIf(RefMatcherFormType(formType, bIncludeTakenRefs, bincludeDeletedRefs));
