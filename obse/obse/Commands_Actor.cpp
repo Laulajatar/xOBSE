@@ -1204,7 +1204,7 @@ static bool GetCombatControllerData_Execute(COMMAND_ARGS, UInt32 type)
 					}
 				}
 				break;
-			case kCombatController_SelectedSpells:   //CTD. Fix.
+			case kCombatController_SelectedSpells: 
 				{
 					CombatController::SelectedSpellInfo* spells[] =	{
 						controller->selectedBoundArmorSpell,
