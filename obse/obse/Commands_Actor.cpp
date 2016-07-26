@@ -1223,7 +1223,6 @@ static bool GetCombatControllerData_Execute(COMMAND_ARGS, UInt32 type)
 							}
 						}
 					}
-					_MESSAGE("END");
 				}
 				break;
 			case kCombatController_AvailableSpells:
