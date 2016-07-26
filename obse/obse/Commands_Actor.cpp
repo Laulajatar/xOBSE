@@ -1213,10 +1213,9 @@ static bool GetCombatControllerData_Execute(COMMAND_ARGS, UInt32 type)
 						controller->selectedMeleeSpell,
 						controller->selectedRangedSpell,
 						controller->selectedRestoreSpell,
-						controller->selectedSummonSpell
+						controller->selectedSummonSpell,
 					};
-
-					for (UInt32 i = 0; i < sizeof(spells); i++) {
+					for (UInt32 i = 0; i < sizeof(spells) / sizeof(CombatController::SelectedSpellInfo*); i++) {
 						if (spells[i]){
 							if(spells[i]->item) {
 								g_ArrayMap.SetElementFormID(arr, idx, (OBLIVION_CAST(spells[i]->item, MagicItem, TESForm))->refID);
@@ -1224,6 +1223,7 @@ static bool GetCombatControllerData_Execute(COMMAND_ARGS, UInt32 type)
 							}
 						}
 					}
+					_MESSAGE("END");
 				}
 				break;
 			case kCombatController_AvailableSpells:
