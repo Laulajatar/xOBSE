@@ -3201,6 +3201,7 @@ void CommandTable::Init(void)
 	g_scriptCommands.Add(&kCommandInfo_SetCantWait);
 	g_scriptCommands.Add(&kCommandInfo_GetEnemies);
 	g_scriptCommands.Add(&kCommandInfo_IsMajorRef);
+	g_scriptCommands.Add(&kCommandInfo_DeleteClonedForm);
 	//g_scriptCommands.Add(&kCommandInfo_IsNaked);
 	UInt32 opcodeGetDisease =  g_scriptCommands.GetByName("GetDisease")->opcode;
 	CommandInfo newgetDisease = kCommandInfo_IsDiseased;

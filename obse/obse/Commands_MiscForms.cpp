@@ -551,7 +551,23 @@ static bool Cmd_SetIsHiddenDoor_Execute(COMMAND_ARGS)
 	return SetDoorFlag_Execute(PASS_COMMAND_ARGS, TESObjectDOOR::kDoorFlag_Hidden);
 }
 
+
+
+static bool Cmd_DeleteClonedForm_Execute(COMMAND_ARGS){
+	*result = 0;
+	TESForm *form = NULL;
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &form))	return true;
+	if(!form) return true;
+	if(!form->IsCloned()) return true;
+	form->Destroy(false);
+//Probably need to do other things also.Check 0x0045C7A0 (Refstuff)
+	//Also prevent cloned forms with references to be deleted?
+	*result = 1;
+	return true;
+}
+
 #endif
+
 
 static ParamInfo kParams_GetIngredient[1] =
 {
@@ -693,6 +709,10 @@ static ParamInfo kParams_OneInt_OneOptionalObject[2] =
 	{ "object",	kParamType_TESObject,	1	}
 };
 
+
+static ParamInfo kParams_OneForm[1] = {
+	{ "form" , kParamType_TESObject , 0},
+};
 DEFINE_COMMAND(IsOblivionGate, returns 1 if the door is an oblivion gate, 0, 1, kParams_OneOptionalObject);
 DEFINE_COMMAND(IsAutomaticDoor, returns 1 if the door is automatic, 0, 1, kParams_OneOptionalObject);
 DEFINE_COMMAND(IsHiddenDoor, returns 1 if the door is hidden, 0, 1, kParams_OneOptionalObject);
@@ -702,3 +722,5 @@ DEFINE_COMMAND(SetIsOblivionGate, sets the oblivion gate flag, 0, 2, kParams_One
 DEFINE_COMMAND(SetIsAutomaticDoor, sets the automatic flag, 0, 2, kParams_OneInt_OneOptionalObject);
 DEFINE_COMMAND(SetIsHiddenDoor, sets the hidden flag, 0, 2, kParams_OneInt_OneOptionalObject);
 DEFINE_COMMAND(SetIsMinimalUseDoor, sets the minimal use flag, 0, 2, kParams_OneInt_OneOptionalObject);
+
+DEFINE_COMMAND(DeleteClonedForm, delete a cloned form. EXPERIMENTAL, 0 , 1 , kParams_OneForm);

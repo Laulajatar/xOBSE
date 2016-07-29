@@ -35,3 +35,5 @@ extern CommandInfo kCommandInfo_SetIsOblivionGate;
 extern CommandInfo kCommandInfo_SetIsHiddenDoor;
 extern CommandInfo kCommandInfo_SetIsAutomaticDoor;
 extern CommandInfo kCommandInfo_SetIsMinimalUseDoor;
+
+extern CommandInfo kCommandInfo_DeleteClonedForm;
