@@ -58,6 +58,7 @@ static bool Cmd_HasSpell_Execute(COMMAND_ARGS)
 			*result = HasSpell(form,npc) ? 1 : 0;
 		}
 	}
+	if(IsConsoleMode()) Console_Print("HasSpell %f", *result);
 	return true;
 }
 
@@ -88,7 +89,7 @@ bool IsDiseased(TESObjectREFR* thisObj){
 
 static bool Cmd_IsDiseased_Execute(COMMAND_ARGS){
 	*result = IsDiseased(thisObj) == true ? 1 : 0; 
-	if(IsConsoleMode()) Console_Print("IsDiseased  %08X", *result);
+	if(IsConsoleMode()) Console_Print("IsDiseased  %f", *result);
 	return true;
 }
 
@@ -936,14 +937,14 @@ static bool Cmd_IsNaked_Execute(COMMAND_ARGS){
 	if(!act) return true;
 	ExtractArgs(PASS_EXTRACT_ARGS, &requireUpper);
 	bool requireUpperBody = requireUpper != 0 ? true : false;
-	*resultUI = IsNaked(act, requireUpperBody); 
+	*result = IsNaked(act, requireUpperBody); 
 	if(IsNaked(act, requireUpperBody) == 1){ 
 		if(IsConsoleMode()) Console_Print("Is Naked True");
 	}
 	else{
 		if(IsConsoleMode()) Console_Print("Is Naked False");
 	}
-	if(IsConsoleMode()) Console_Print("IsNaked:  %08X", *resultUI);
+	if(IsConsoleMode()) Console_Print("IsNaked:  %f" , *result);
 	return true;
 }
 
