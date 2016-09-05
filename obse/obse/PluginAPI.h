@@ -392,10 +392,12 @@ public:
 *	the specified command, i.e. the release in which it first appeared.
 *	For non-OBSE commands, returns 0. For plugin commands, returns -1.
 *
+*  OBSE v22 Added possibility to replace commands in the commandtable. It is legit in some cases.
 ************************************************************************************/
 
 struct OBSECommandTableInterface
 {
+
 	const CommandInfo*	(* Start)(void);
 	const CommandInfo*	(* End)(void);
 	const CommandInfo*	(* GetByOpcode)(UInt32 opcode);
@@ -403,6 +405,7 @@ struct OBSECommandTableInterface
 	UInt32				(* GetReturnType)(const CommandInfo* cmd);		// return type enum defined in CommandTable.h
 	UInt32				(* GetRequiredOBSEVersion)(const CommandInfo* cmd);
 	const PluginInfo*	(* GetParentPlugin)(const CommandInfo* cmd);	// returns a pointer to the PluginInfo of the OBSE plugin that adds the command, if any. returns NULL otherwise
+	bool				(* Replace)(UInt32 opcodeToReplace, CommandInfo* replaceWith);  //Use carefully.
 };
 
 /**** script API docs **********************************************************

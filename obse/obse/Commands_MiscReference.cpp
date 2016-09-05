@@ -2364,6 +2364,7 @@ static bool Cmd_SetAtEditorLocation_Execute(COMMAND_ARGS){
 			refr->rotY = angle[1];
 			refr->rotX = angle[0];
 			refr->rotZ = angle[2];
+			//0x00508FC0  is the SetPos command location. Found the Real SetPos function for objects
 			//Need SetPos() and SetRot functions-	
 		}
 	}

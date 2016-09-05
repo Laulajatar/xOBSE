@@ -26,7 +26,7 @@ bool ModTable::SetAlias (const std::string& name, UInt8 modIndex)
 
 bool ModTable::IsModLoaded (const std::string& name)
 {
-	const ModEntry* modEntry = (*g_dataHandler)->LookupModByName (name.c_str ());
+	const ModEntry* modEntry = (*g_dataHandler)->LookupModByName(name.c_str ());
 	if (modEntry)
 		return modEntry->IsLoaded ();
 	else	// alias?

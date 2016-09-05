@@ -884,56 +884,66 @@ static bool Cmd_GetEquippedItems_Execute(COMMAND_ARGS)
 	return true;
 }
 
-//doesn't seem to work. Need fixing
 //Return true if actor has no LowerBody armour or clothing equipped and optionally for UpperBody. 
-static bool IsNaked(Actor* npc, bool requiredUpperBody){
+static UInt32 IsNaked(Actor* npc, bool requiredUpperBody){
 	EquippedItemsList list = npc->GetEquippedItems();
 	bool foundLower = false;
 	bool foundUpper = requiredUpperBody ?  false : true;
+	if(IsConsoleMode()) Console_Print("IsNaked SizeList:  %08X", list.size());
 	for(int i = 0; i < list.size(); i++){
 		TESForm* eq = list.at(i);
+		if(IsConsoleMode()) Console_Print("IsNaked Element:  %08X", eq->refID);
 		//Not interested in Weapons
 		if(!eq) continue;
+		//TODO TESBIpedForm
 		TESObjectARMO* armor = OBLIVION_CAST(eq, TESForm, TESObjectARMO);
 		if(!armor){
 			TESObjectCLOT* cloth = OBLIVION_CAST(eq, TESForm, TESObjectCLOT);
 			if(!cloth) continue;
-			if(foundLower == false)
-			foundLower = (cloth->bipedModel.partMask & TESBipedModelForm::kPart_LowerBody )== TESBipedModelForm::kPart_LowerBody;
-			if(foundUpper == false)
-			foundUpper = (cloth->bipedModel.partMask & TESBipedModelForm::kPart_UpperBody )== TESBipedModelForm::kPart_UpperBody;
+			if(foundLower == false)	foundLower = (cloth->bipedModel.partMask & 8) == 8;
+			if(foundUpper == false)	foundUpper = (cloth->bipedModel.partMask & 4) == 4;
 		}
 		else{
-			_MESSAGE("%08X,    %08X",armor->bipedModel.partMask, TESBipedModelForm::kPart_LowerBody);
-			if(foundLower == false)
-			foundLower = (armor->bipedModel.partMask & TESBipedModelForm::kPart_LowerBody )== TESBipedModelForm::kPart_LowerBody;
-			if(foundUpper == false)
-			foundUpper = (armor->bipedModel.partMask & TESBipedModelForm::kPart_UpperBody )== TESBipedModelForm::kPart_UpperBody;
+			if(foundLower == false) foundLower = (armor->bipedModel.partMask & 8) == 8;
+			if(foundUpper == false) foundUpper = (armor->bipedModel.partMask & 4) == 4;
 		}
 		if(foundLower == true  && foundUpper == true){
-			return false;
+			if(IsConsoleMode()) Console_Print("IsNaked Exit with true:  %08X", 0);
+			return 0;
 		}
 	}
-	return true;
+	if(IsConsoleMode()) Console_Print("IsNaked Exit with true:  %08X", 1);
+	return 1;
 }
-
+//This works
 static bool Cmd_IsNaked_Eval(COMMAND_ARGS_EVAL){
 	*result = 0;
 	Actor* act = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
 	if(!act) return true;
-	UInt32 requireUpperBody = *((UInt32*)arg1);
-	*result = IsNaked(act,requireUpperBody == 0 ? false : true) ? 1 : 0;
+	bool requireUpperBody = false;
+	if(arg1) requireUpperBody = (*((UInt32*)arg1)) != 0 ? true : false;
+	*result = IsNaked(act, requireUpperBody);
 	return true;
 }
 
 static bool Cmd_IsNaked_Execute(COMMAND_ARGS){
 	*result = 0;
+	UInt32* resultUI = (UInt32*) result;  //This should not be needed, but *result failed to assign properly in this specific case.
+	//Casting explictly to Uint32* instead work correctly. Maybe an issue triggered by optimizations? 
+	//The strange thing is that the Eval version instead assign correctly to *result.
 	Actor* act = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
 	UInt32 requireUpper = 0;
 	if(!act) return true;
 	ExtractArgs(PASS_EXTRACT_ARGS, &requireUpper);
-	*result = IsNaked(act, requireUpper == 0 ? false : true) ? 1 : 0;
-	if(IsConsoleMode()) Console_Print("IsNaked:  %08X", *result);
+	bool requireUpperBody = requireUpper != 0 ? true : false;
+	*resultUI = IsNaked(act, requireUpperBody); 
+	if(IsNaked(act, requireUpperBody) == 1){ 
+		if(IsConsoleMode()) Console_Print("Is Naked True");
+	}
+	else{
+		if(IsConsoleMode()) Console_Print("Is Naked False");
+	}
+	if(IsConsoleMode()) Console_Print("IsNaked:  %08X", *resultUI);
 	return true;
 }
 
@@ -1495,7 +1505,7 @@ CommandInfo kCommandInfo_HasSpell =
 	HANDLER(Cmd_HasSpell_Execute),
 	Cmd_Default_Parse,
 	HANDLER_EVAL(Cmd_HasSpell_Eval),
-	1,
+	0,
 };
 
 CommandInfo kCommandInfo_IsDiseased = {
@@ -1525,7 +1535,7 @@ CommandInfo kCommandInfo_IsNaked =
 	HANDLER(Cmd_IsNaked_Execute),
 	Cmd_Default_Parse,
 	HANDLER_EVAL(Cmd_IsNaked_Eval),
-	1,
+	0,
 };
 
 

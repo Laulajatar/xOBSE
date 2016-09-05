@@ -3202,7 +3202,7 @@ void CommandTable::Init(void)
 	g_scriptCommands.Add(&kCommandInfo_GetEnemies);
 	g_scriptCommands.Add(&kCommandInfo_IsMajorRef);
 	g_scriptCommands.Add(&kCommandInfo_DeleteClonedForm);
-	//g_scriptCommands.Add(&kCommandInfo_IsNaked);
+	g_scriptCommands.Add(&kCommandInfo_IsNaked);
 	UInt32 opcodeGetDisease =  g_scriptCommands.GetByName("GetDisease")->opcode;
 	CommandInfo newgetDisease = kCommandInfo_IsDiseased;
 	newgetDisease.shortName = "GetDisease";
@@ -3795,4 +3795,5 @@ namespace PluginAPI {
 	UInt32 GetCmdRetnType(const CommandInfo* cmd) { return g_scriptCommands.GetReturnType(cmd); }
 	UInt32 GetReqVersion(const CommandInfo* cmd) { return g_scriptCommands.GetRequiredOBSEVersion(cmd); }
 	const PluginInfo* GetCmdParentPlugin(const CommandInfo* cmd) { return g_scriptCommands.GetParentPlugin(cmd); }
+	bool ReplaceCmd(UInt32 opcodeToReplace, CommandInfo* replaceWith){return g_scriptCommands.Replace(opcodeToReplace,replaceWith);}
 }

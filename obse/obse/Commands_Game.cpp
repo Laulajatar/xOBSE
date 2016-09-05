@@ -486,7 +486,7 @@ static bool Cmd_IsModLoaded_Execute(COMMAND_ARGS)
 	if (!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &modName))
 		return true;
 
-	if (ModTable::Get().IsModLoaded (modName))
+	if (ModTable::Get().IsModLoaded(modName))
 		*result = 1.0;
 
 	if (IsConsoleMode())

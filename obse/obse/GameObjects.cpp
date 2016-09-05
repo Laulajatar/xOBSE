@@ -462,6 +462,9 @@ TESPackage* Actor::GetCurrentPackage()
 		pkg = process->GetCurrentPackage();
 		// Game code for GetIsCurrentPackage checks flag bit 0xB on pkg; if not set it looks for an ExtraPackage in extra data list
 		// ###TODO: figure out what that flag bit is
+		//llde Note: Maybe it's just a flag that indicate thet the sepcific package is dynamic (combat and dialogue package
+		//If the AI package that the BaseProcess::GetCurrentPAckage() found has that flag what return?
+		//TODO: Investigate.
 		if (pkg && (pkg->packageFlags & TESPackage::kPackageFlag_Unk11) == 0)
 		{
 			ExtraPackage* xPkg = (ExtraPackage*)baseExtraList.GetByType(kExtraData_Package);
