@@ -25,7 +25,7 @@ bool HasSpell(TESForm* spell, TESActorBase* actor){
 		}
 		curEntry = curEntry->next;
 	}
-	return false;
+ 	return false;
 }
 
 static bool Cmd_HasSpell_Eval(COMMAND_ARGS_EVAL){
@@ -929,21 +929,12 @@ static bool Cmd_IsNaked_Eval(COMMAND_ARGS_EVAL){
 
 static bool Cmd_IsNaked_Execute(COMMAND_ARGS){
 	*result = 0;
-	UInt32* resultUI = (UInt32*) result;  //This should not be needed, but *result failed to assign properly in this specific case.
-	//Casting explictly to Uint32* instead work correctly. Maybe an issue triggered by optimizations? 
-	//The strange thing is that the Eval version instead assign correctly to *result.
 	Actor* act = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
 	UInt32 requireUpper = 0;
 	if(!act) return true;
 	ExtractArgs(PASS_EXTRACT_ARGS, &requireUpper);
 	bool requireUpperBody = requireUpper != 0 ? true : false;
 	*result = IsNaked(act, requireUpperBody); 
-	if(IsNaked(act, requireUpperBody) == 1){ 
-		if(IsConsoleMode()) Console_Print("Is Naked True");
-	}
-	else{
-		if(IsConsoleMode()) Console_Print("Is Naked False");
-	}
 	if(IsConsoleMode()) Console_Print("IsNaked:  %f" , *result);
 	return true;
 }
@@ -988,8 +979,7 @@ public:
 
 static bool Cmd_GetBaseAV2_Execute(COMMAND_ARGS)
 {
-	// only differs from vanilla cmd for player, and only for attributes and health
-
+	*result = 0;
 	UInt32 actorVal = -1;
 	Actor* actor = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
 	if (!actor)
@@ -997,24 +987,44 @@ static bool Cmd_GetBaseAV2_Execute(COMMAND_ARGS)
 
 	if (ExtractArgs(PASS_EXTRACT_ARGS, &actorVal))
 	{
-		*result = actor->GetBaseActorValue(actorVal);
-		if (actor == *g_thePlayer)
+		//*result = actor->GetBaseActorValue(actorVal);
+	//	if (actorVal <= kActorVal_Luck)
+	//	{
+		//	if(actorVal <= kActorVal_Luck){
+		//	TESAttributes* attr = OBLIVION_CAST(actor->baseForm, TESForm, TESAttributes);
+		//	*result = attr->attr[actorVal];
+		//	}
+		//	else if(actorVal == kActorVal_Health){
+			*result = actor->GetBaseActorValue(actorVal);  //In a perfect world we should try to fix this function directly instead of workaroundin this.
+		//	}
+			MagicTarget::EffectNode* list = actor->GetMagicTarget()->GetEffectList();
+			MagicTarget::EffectNode* curr = list;
+			while(curr){
+				if(curr->data->spellType == SpellItem::kType_Ability){
+					//BUG: Health Drain/Fortify effect affect also Magicka and Energy. Potentially is true also the contrary.
+					//FIX Is possible.
+					if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRHE')){
+						*result += curr->data->effectItem->magnitude;
+						//Note account for Truncated Drain effects
+					}
+					else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOHE')){
+						*result -= curr->data->effectItem->magnitude;
+						//Note for 0 reducing.
+					}
+				}
+				curr = curr->Next();
+			}
+		//}
+	/*	else if (actorVal == kActorVal_Health)
 		{
-			if (actorVal <= kActorVal_Luck)
-			{
-				TESAttributes* attr = OBLIVION_CAST((*g_thePlayer)->baseForm, TESForm, TESAttributes);
-				*result = attr->attr[actorVal];
-			}
-			else if (actorVal == kActorVal_Health)
-			{
-				ActiveEffectVisitor visitor(actor->GetMagicTarget()->GetEffectList());
-				ActiveEffectModifierRemover fixer(*result);
-				visitor.Visit(fixer);
-				*result = fixer.Val();
-			}
-		}
+			ActiveEffectVisitor visitor(actor->GetMagicTarget()->GetEffectList());
+			ActiveEffectModifierRemover fixer(*result);
+			visitor.Visit(fixer);
+			*result = fixer.Val(); 
+		}	*/
 	}
-
+	//Truncate negative optionally
+	if(IsConsoleMode()) Console_Print("GetBaseAV2:  %f ",*result);
 	return true;
 }
 

@@ -13,6 +13,7 @@
 			-(Set/Is)CantWait (BETA).
 			-IsDiseased
 			-GetEnemies (ALPHA)
+			-IsNaked  (Script and conditional function)
 			-IsDiseased, HasSpell, GetActorLightAmount,IsMajor usable as conditional functions. for dialogues and quests.
 
 		Fixed/Changed:
