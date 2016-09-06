@@ -977,54 +977,64 @@ public:
 	UInt32 Val()  { return m_fixedActorValue; }
 };
 
-static bool Cmd_GetBaseAV2_Execute(COMMAND_ARGS)
-{
+static void GetBaseAV2(UInt32 actorValue, EffectItem* item){}   //TODO: GetBaseAV2 as conditional function
+
+static bool Cmd_GetBaseAV2_Execute(COMMAND_ARGS){
 	*result = 0;
 	UInt32 actorVal = -1;
 	Actor* actor = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
-	if (!actor)
-		return true;
-
-	if (ExtractArgs(PASS_EXTRACT_ARGS, &actorVal))
-	{
-		//*result = actor->GetBaseActorValue(actorVal);
-	//	if (actorVal <= kActorVal_Luck)
-	//	{
-		//	if(actorVal <= kActorVal_Luck){
-		//	TESAttributes* attr = OBLIVION_CAST(actor->baseForm, TESForm, TESAttributes);
-		//	*result = attr->attr[actorVal];
-		//	}
-		//	else if(actorVal == kActorVal_Health){
-			*result = actor->GetBaseActorValue(actorVal);  //In a perfect world we should try to fix this function directly instead of workaroundin this.
-		//	}
-			MagicTarget::EffectNode* list = actor->GetMagicTarget()->GetEffectList();
-			MagicTarget::EffectNode* curr = list;
-			while(curr){
-				if(curr->data->spellType == SpellItem::kType_Ability){
-					//BUG: Health Drain/Fortify effect affect also Magicka and Energy. Potentially is true also the contrary.
-					//FIX Is possible.
+	if (!actor)	return true;
+	if (ExtractArgs(PASS_EXTRACT_ARGS, &actorVal)){
+		*result = actor->GetBaseActorValue(actorVal);  //In a perfect world we should try to fix this function directly instead of workaroundin this.
+		MagicTarget::EffectNode* list = actor->GetMagicTarget()->GetEffectList();
+		MagicTarget::EffectNode* curr = list;
+		while(curr){
+			if(curr->data->spellType == SpellItem::kType_Ability){
+				if(actorVal <= kActorVal_Luck){
+					if(curr->data->effectItem->actorValueOrOther == actorVal){
+						if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRAT')){
+							*result += curr->data->effectItem->magnitude;
+							//Note account for Truncated Drain effects
+						}
+						else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOAT')){
+							*result -= curr->data->effectItem->magnitude;
+						}
+					}
+				}
+				else if(actorVal == kActorVal_Health){
 					if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRHE')){
 						*result += curr->data->effectItem->magnitude;
 						//Note account for Truncated Drain effects
 					}
 					else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOHE')){
 						*result -= curr->data->effectItem->magnitude;
-						//Note for 0 reducing.
 					}
 				}
-				curr = curr->Next();
+				else if(actorVal == kActorVal_Magicka){	
+					if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRSP')){
+						*result += curr->data->effectItem->magnitude;
+						//Note account for Truncated Drain effects
+					}
+					else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOSP')){
+						*result -= curr->data->effectItem->magnitude;
+					}
+				}
+				else if(actorVal == kActorVal_Energy){
+					if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRFA')){
+						*result += curr->data->effectItem->magnitude;
+						//Note account for Truncated Drain effects
+					}
+					else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOFA')){
+						*result -= curr->data->effectItem->magnitude;
+					}
+				}
 			}
-		//}
-	/*	else if (actorVal == kActorVal_Health)
-		{
-			ActiveEffectVisitor visitor(actor->GetMagicTarget()->GetEffectList());
-			ActiveEffectModifierRemover fixer(*result);
-			visitor.Visit(fixer);
-			*result = fixer.Val(); 
-		}	*/
+			curr = curr->Next();
+		}
 	}
 	//Truncate negative optionally
-	if(IsConsoleMode()) Console_Print("GetBaseAV2:  %f ",*result);
+	if(*result < 0) *result = 0;
+	if(IsConsoleMode()) Console_Print("GetBaseAV2 :  %f ",*result);
 	return true;
 }
 
