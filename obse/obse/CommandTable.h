@@ -137,6 +137,37 @@ struct ScriptLineBuffer;
 	0 \
 	};
 
+#define DEFINE_COMMAND_CONDITIONAL(name ,description ,refRequired ,numParams ,paramInfo)\
+	CommandInfo (kCommandInfo_ ## name) = { \
+	#name, \
+	"", \
+	0, \
+	#description, \
+	refRequired, \
+	numParams, \
+	paramInfo, \
+	HANDLER(Cmd_ ## name ## _Execute), \
+	Cmd_Default_Parse, \
+	HANDLER_EVAL(Cmd_ ## name ## _Eval), \
+	0 \
+	};
+
+
+#define DEFINE_COMMAND_CONDITIONAL_ALTNAME(name, altname ,description ,refRequired ,numParams ,paramInfo)\
+	CommandInfo (kCommandInfo_ ## name) = { \
+	#name, \
+    #altname, \
+	0, \
+	#description, \
+	refRequired, \
+	numParams, \
+	paramInfo, \
+	HANDLER(Cmd_ ## name ## _Execute), \
+	Cmd_Default_Parse, \
+	HANDLER_EVAL(Cmd_ ## name ## _Eval), \
+	0 \
+	};
+
 #define DEFINE_CMD_COND(name, description, refRequired, paramInfo) \
 	CommandInfo (kCommandInfo_ ## name) = { \
 	#name, \
@@ -222,7 +253,7 @@ struct CommandInfo
 	Cmd_Parse	parse;			// 1C
 	Cmd_Eval	eval;			// 20 - smaller version of Cmd_Execute with arg extracted already, used for dialog condition evaluation
 
-	UInt32	flags;				// 24
+	UInt32	flags;				// 24  //What is this flag?
 
 	void	DumpFunctionDef() const;
 	void	DumpDocs() const;

@@ -7,6 +7,7 @@
 		-Added all FormFlags
 		-Decoded TESObjectCELL flag0 unk2 flag (InvertFastTravelBehaviour).
 		-Added TESObjectREFR::Drop()
+		-Added some helper macros for Eval commands
 	Functions:
 		Added:
 			-SetInvertFastTravel/IsInvertFastTravel (BETA)
@@ -14,7 +15,7 @@
 			-IsDiseased
 			-GetEnemies (ALPHA)
 			-IsNaked  (Script and conditional function)
-			-IsDiseased, HasSpell, GetActorLightAmount,IsMajor usable as conditional functions. for dialogues and quests.
+			-IsDiseased, HasSpell, GetActorLightAmount,IsMajor, GetBaseAV2(C) usable as conditional functions. for dialogues and quests targets.
 
 		Fixed/Changed:
 			-Fixed GetDistance --According to Tiawar
@@ -30,7 +31,7 @@
 			-GetSelectedSpells CTD fixed.
 			-GetFirstRef(and similia) take an optional parameter to include deleted references.
 			-GetFirstRef(and similia) take filter type 90 for Deleted References.
-
+			-Fixed  GetBaseAV2 function that was returning highly incorrect values.
 0021:
 -Fixed swimming event registrations
 -Fixed format string evaluation inside compiler overridden blocks

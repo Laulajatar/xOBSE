@@ -977,61 +977,69 @@ public:
 	UInt32 Val()  { return m_fixedActorValue; }
 };
 
-static void GetBaseAV2(UInt32 actorValue, EffectItem* item){}   //TODO: GetBaseAV2 as conditional function
+static double GetBaseAV2(UInt32 actorValue, Actor* actor){
+	double val = actor->GetBaseActorValue(actorValue);  //In a perfect world we should try to fix this function directly instead of workaroundin this.
+	MagicTarget::EffectNode* list = actor->GetMagicTarget()->GetEffectList();
+	while(list){
+		if(list->data->spellType == SpellItem::kType_Ability){
+			if(actorValue <= kActorVal_Luck){
+				if(list->data->effectItem->actorValueOrOther == actorValue){
+					if(list->data->effectItem->effectCode == MACRO_SWAP32('DRAT')){
+						val += list->data->effectItem->magnitude;
+						//Note account for Truncated Drain effects
+					}
+					else if(list->data->effectItem->effectCode == MACRO_SWAP32('FOAT')){
+						val -= list->data->effectItem->magnitude;
+					}
+				}
+			}
+			else if(actorValue == kActorVal_Health){
+				if(list->data->effectItem->effectCode == MACRO_SWAP32('DRHE')){
+					val += list->data->effectItem->magnitude;
+					//Note account for Truncated Drain effects
+				}
+				else if(list->data->effectItem->effectCode == MACRO_SWAP32('FOHE')){
+					val -= list->data->effectItem->magnitude;
+				}
+			}
+			else if(actorValue == kActorVal_Magicka){	
+				if(list->data->effectItem->effectCode == MACRO_SWAP32('DRSP')){
+					val += list->data->effectItem->magnitude;
+					//Note account for Truncated Drain effects
+				}
+				else if(list->data->effectItem->effectCode == MACRO_SWAP32('FOSP')){
+					val -= list->data->effectItem->magnitude;
+				}
+			}
+			else if(actorValue == kActorVal_Energy){
+				if(list->data->effectItem->effectCode == MACRO_SWAP32('DRFA')){
+					val += list->data->effectItem->magnitude;
+					//Note account for Truncated Drain effects
+				}
+				else if(list->data->effectItem->effectCode == MACRO_SWAP32('FOFA')){
+					val -= list->data->effectItem->magnitude;
+				}
+			}
+		}
+		list = list->Next();
+	}
+	return val;
+}   
+
+static bool Cmd_GetBaseAV2_Eval(COMMAND_ARGS_EVAL){
+	*result = 0;
+	Actor* actor = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
+	UInt32 actorVal = *((UInt32*)arg1);
+	if(actor)  *result = GetBaseAV2(actorVal, actor);
+	return true;
+}
 
 static bool Cmd_GetBaseAV2_Execute(COMMAND_ARGS){
 	*result = 0;
 	UInt32 actorVal = -1;
 	Actor* actor = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
 	if (!actor)	return true;
-	if (ExtractArgs(PASS_EXTRACT_ARGS, &actorVal)){
-		*result = actor->GetBaseActorValue(actorVal);  //In a perfect world we should try to fix this function directly instead of workaroundin this.
-		MagicTarget::EffectNode* list = actor->GetMagicTarget()->GetEffectList();
-		MagicTarget::EffectNode* curr = list;
-		while(curr){
-			if(curr->data->spellType == SpellItem::kType_Ability){
-				if(actorVal <= kActorVal_Luck){
-					if(curr->data->effectItem->actorValueOrOther == actorVal){
-						if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRAT')){
-							*result += curr->data->effectItem->magnitude;
-							//Note account for Truncated Drain effects
-						}
-						else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOAT')){
-							*result -= curr->data->effectItem->magnitude;
-						}
-					}
-				}
-				else if(actorVal == kActorVal_Health){
-					if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRHE')){
-						*result += curr->data->effectItem->magnitude;
-						//Note account for Truncated Drain effects
-					}
-					else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOHE')){
-						*result -= curr->data->effectItem->magnitude;
-					}
-				}
-				else if(actorVal == kActorVal_Magicka){	
-					if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRSP')){
-						*result += curr->data->effectItem->magnitude;
-						//Note account for Truncated Drain effects
-					}
-					else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOSP')){
-						*result -= curr->data->effectItem->magnitude;
-					}
-				}
-				else if(actorVal == kActorVal_Energy){
-					if(curr->data->effectItem->effectCode == MACRO_SWAP32('DRFA')){
-						*result += curr->data->effectItem->magnitude;
-						//Note account for Truncated Drain effects
-					}
-					else if(curr->data->effectItem->effectCode == MACRO_SWAP32('FOFA')){
-						*result -= curr->data->effectItem->magnitude;
-					}
-				}
-			}
-			curr = curr->Next();
-		}
-	}
+	if (ExtractArgs(PASS_EXTRACT_ARGS, &actorVal))	*result = GetBaseAV2(actorVal, actor);
 	//Truncate negative optionally
 	if(*result < 0) *result = 0;
 	if(IsConsoleMode()) Console_Print("GetBaseAV2 :  %f ",*result);
@@ -2150,7 +2158,7 @@ DEFINE_COMMAND(GetEquippedItems,
 			   "returns an array containing the calling actor's equipped items",
 			   1, 0, NULL);
 
-DEFINE_COMMAND(GetBaseAV2, testing, 1, 1, kParams_OneActorValue);
+DEFINE_COMMAND_CONDITIONAL(GetBaseAV2, "returns the base actor value without magical modifiers", 1, 1, kParams_OneActorValue);
 CommandInfo kCommandInfo_GetBaseAV2C =
 {
 	"GetBaseAV2C",
@@ -2162,7 +2170,7 @@ CommandInfo kCommandInfo_GetBaseAV2C =
 	kParams_OneInt,
 	HANDLER(Cmd_GetBaseAV2_Execute),
 	Cmd_Default_Parse,
-	NULL,
+	HANDLER_EVAL(Cmd_GetBaseAV2_Eval),
 	0
 };
 
