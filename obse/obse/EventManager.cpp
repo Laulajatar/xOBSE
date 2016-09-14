@@ -1743,6 +1743,39 @@ bool RemoveHandler(const char* id, EventCallback& handler)
 	return bRemovedAtLeastOne;
 }
 
+bool EventHandlerExist(const char*  ev, EventCallback& handler){
+	ScopedLock lock(s_criticalSection);
+
+	UInt32 eventType = EventIDForString(ev);
+	bool found = false;
+	if (eventType < s_eventInfos.size() && s_eventInfos[eventType].callbacks) {
+		CallbackList* callbacks = s_eventInfos[eventType].callbacks;
+		for (CallbackList::iterator iter = callbacks->begin(); iter != callbacks->end(); ) {
+			if (iter->script == handler.script) {
+				found = true;
+				if (eventType == kEventID_OnHealthDamage) { 
+					if (handler.callingObj && handler.callingObj != iter->object) {	// OnHealthDamage special-casing
+						found = false;
+					}
+				}
+				else if (handler.object && handler.object != iter->object) {
+					found = false;
+				}
+				
+				if (handler.source && handler.source != iter->source) {
+					found = false;
+				}
+				if(found) break;
+			}
+			else {
+				++iter;
+			}
+		}
+	}
+	return found;
+}
+
+
 bool TryGetReference(TESObjectREFR* refr)
 {
 	// ### HACK HACK HACK

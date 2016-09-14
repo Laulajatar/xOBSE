@@ -1,6 +1,6 @@
 #include "obse/PluginAPI.h"
 #include "obse/CommandTable.h"
-
+#include "obse_common/SafeWrite.cpp"
 #if OBLIVION
 #include "obse/GameAPI.h"
 
@@ -495,7 +495,6 @@ bool OBSEPlugin_Load(const OBSEInterface * obse)
 	 *	obse_readme.txt for more information.
 	 *	
 	 **************************************************************************/
-
 	// register commands
 	obse->SetOpcodeBase(0x2000);
 	obse->RegisterCommand(&kPluginTestCommand);
