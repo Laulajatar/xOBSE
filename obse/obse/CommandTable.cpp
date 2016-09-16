@@ -3203,6 +3203,7 @@ void CommandTable::Init(void)
 	g_scriptCommands.Add(&kCommandInfo_IsMajorRef);
 	g_scriptCommands.Add(&kCommandInfo_DeleteClonedForm);
 	g_scriptCommands.Add(&kCommandInfo_IsNaked);
+	g_scriptCommands.Add(&kCommandInfo_EventHandlerExist);
 	UInt32 opcodeGetDisease =  g_scriptCommands.GetByName("GetDisease")->opcode;
 	CommandInfo newgetDisease = kCommandInfo_IsDiseased;
 	newgetDisease.shortName = "GetDisease";

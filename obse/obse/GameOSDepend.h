@@ -169,7 +169,11 @@ public:
 	UInt32					unk070;						// 070
 	UInt32					unk074;						// 074
 	IDirectSound3DListener	* listenerInterface;		// 078
-	UInt32					unk07C[(0x0A4-0x07C) >> 2];	// 07C
+	UInt32					unk07C;						// 07C
+	float					PlayerPosX;					// 080
+	float					PlayerPosY;					// 084
+	float					PlayerPosZ;					// 088
+	UInt32					unk08C[(0x0A4-0x08C) >> 2];	// 08C
 	UInt8					unk0A4;						// 0A4
 	UInt8					unk0A5;						// 0A5
 	UInt8					unk0A6;						// 0A6

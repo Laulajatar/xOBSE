@@ -29,7 +29,7 @@ extern CommandInfo kCommandInfo_GetArrayVariable;
 
 extern CommandInfo kCommandInfo_SetEventHandler;
 extern CommandInfo kCommandInfo_RemoveEventHandler;
-
+extern CommandInfo kCommandInfo_EventHandlerExist;
 extern CommandInfo kCommandInfo_GetCurrentEventName;
 
 extern CommandInfo kCommandInfo_GetCurrentScript;

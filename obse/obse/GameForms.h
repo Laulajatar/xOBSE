@@ -4031,7 +4031,7 @@ public:
 	TESTexture			texture;			// 20
 
 	UInt8				opacity;			// 2C init'ed to 0x4B
-	UInt8				unk2D;				//    looks like flags
+	UInt8				waterType;				//    looks like flags
 	UInt8				pad2E[2];
 	UInt32				unk30;				// 30
 	UInt16				unk34;				// 34
