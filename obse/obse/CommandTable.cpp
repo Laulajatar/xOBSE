@@ -3228,6 +3228,7 @@ void CommandTable::Init(void)
 	g_scriptCommands.Add(&kCommandInfo_RemoveAllSpells); // had some crashing problems
 	g_scriptCommands.Add(&kCommandInfo_SetScriptedEffectItem);
 	g_scriptCommands.Add(&kCommandInfo_SetCombatStyleAttackChoiceChances);
+	g_scriptCommands.Add(&kCommandInfo_GetFlyCameraPosition);
 	*/
 
 #ifdef _DEBUG

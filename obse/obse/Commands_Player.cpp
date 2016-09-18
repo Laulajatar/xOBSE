@@ -621,7 +621,30 @@ static bool Cmd_SetFlyCameraSpeedMult_Execute(COMMAND_ARGS)
 
 	return true;
 }
-
+//Placeholder
+static bool Cmd_GetFlyCameraPosition_Execute(COMMAND_ARGS){
+	UInt32 asse = 0;
+	*result = 0;
+	ExtractArgs(PASS_EXTRACT_ARGS, &asse);
+	if(!(*g_thePlayer)) return true;
+/*	if(IsConsoleMode()) {
+		if((*g_thePlayer)->isFlyCam) Console_Print("IsFlyCamera: true");
+		else Console_Print("IsFlyingCamera: false");
+	}
+	if(asse == 0){
+		*result = (*g_thePlayer)->FlyCamPosX;
+		if(IsConsoleMode()) Console_Print("Asse X Pos Flycamera :  %f", result);
+	}
+	else if(asse == 1){
+		*result = (*g_thePlayer)->FlyCamPosY;
+		if(IsConsoleMode()) Console_Print("Asse Y Pos Flycamera :  %f", result);
+	}
+	else{
+		*result = (*g_thePlayer)->FlyCamPosZ;
+		if(IsConsoleMode()) Console_Print("Asse Z Pos Flycamera :  %f", result);
+	}*/
+	return true;
+}
 #endif
 
 CommandInfo kCommandInfo_GetActiveSpell =
@@ -1154,3 +1177,18 @@ CommandInfo kCommandInfo_SetFlyCameraSpeedMult =
 	0
 };
 
+
+CommandInfo kCommandInfo_GetFlyCameraPosition =
+{
+	"GetFlyCameraPosition",
+	"GFCP",
+	0,
+	"return the position of the fly camera on the specified axis: 0 x, 1 y,  2 z",
+	0,
+	1,
+	kParams_OneInt,
+	HANDLER(Cmd_GetFlyCameraPosition_Execute),
+	Cmd_Default_Parse,
+	NULL,
+	0
+};

@@ -2356,15 +2356,10 @@ static bool Cmd_SetAtEditorLocation_Execute(COMMAND_ARGS){
 			float angle[3] = {0,0,0};
 			refr->GetStartingAngle(angle);
 			//kExtraData_StartingWorldOrCell doesn't have a defined struct
-			refr->baseExtraList.GetByType(kExtraData_StartingWorldOrCell);
-			//refr->ChangeCell(cell);
-			refr->posY = pos[1];
-			refr->posX = pos[0];
-			refr->posZ = pos[2];
-			refr->rotY = angle[1];
-			refr->rotX = angle[0];
-			refr->rotZ = angle[2];
-			//0x00508FC0  is the SetPos command location. Found the Real SetPos function for objects
+			//how much ExtraPersistantCell is different as struct?
+			ExtraPersistentCell* cell = (ExtraPersistentCell*)refr->baseExtraList.GetByType(kExtraData_StartingWorldOrCell);
+			refr->ChangeCell(cell->cell);
+			//refr->ChangeCell(cell);			//0x00508FC0  is the SetPos command location. Found the Real SetPos function for objects
 			//Need SetPos() and SetRot functions-	
 		}
 	}

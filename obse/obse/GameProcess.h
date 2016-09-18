@@ -653,11 +653,11 @@ public:
 	virtual void	Destructor(void);
 	virtual void	Unk_01(void) = 0;
 	virtual UInt32	GetProcessLevel(void) = 0;	// 0 - high, 3 - low
-	virtual void	Unk_03(UInt32 arg0, UInt32 arg1) = 0;
-	virtual void	Unk_04(UInt32 arg0) = 0;
+	virtual void	Unk_03(Actor* Act, UInt32 Arg1) = 0;  //Or Definition
+	virtual void	ManagePackProcedure(Actor* Act) = 0;   //Or definition
 	virtual void	Unk_05(UInt32 arg0, UInt32 arg1) = 0;
 	virtual bool	Unk_06(UInt32 arg0, UInt32 arg1) = 0;
-	virtual void	SetCurHour(float arg0) = 0;
+	virtual void	SetCurHour(float Hour) = 0;
 	virtual void	Unk_08(void) = 0;
 	virtual bool	Unk_09(void) = 0;
 	virtual float	GetCurHour(void) = 0;
@@ -751,11 +751,11 @@ public:
 	virtual void	Unk_5A(void) = 0;
 	virtual void	Unk_5B(void) = 0;
 	virtual void	Unk_5C(void) = 0;
-	virtual void	Unk_5D(void) = 0;
-	virtual void	SetUnk004(UInt32 arg) = 0;
-	virtual UInt32	GetCurrentPackProcedure(void) = 0;
-	virtual TESPackage * GetCurrentPackage(void) = 0;	// returns MiddleHighProcess::pkg0C0 if not NULL, else BaseProcess::package
-	virtual void	Unk_61(UInt32 arg0) = 0;			// marks ScriptEventList::kEvent_OnPackageDone
+	virtual void					SetCurrentPackage(TESPackage* Package) = 0;
+	virtual void					SetCurrentPackProcedure(TESPackage::eProcedure PackProcedure) = 0; //OR def Note OR definiton say this return a eProcedure
+	virtual TESPackage::eProcedure	GetCurrentPackProcedure(void) = 0;  //OR def
+	virtual TESPackage*				GetCurrentPackage(void) = 0;	// returns MiddleHighProcess::pkg0C0 if not NULL, else BaseProcess::package
+	virtual void					Unk_61(UInt32 arg0) = 0;			// marks ScriptEventList::kEvent_OnPackageDone
 	virtual bhkCharacterProxy **	GetCharProxy(bhkCharacterProxy ** characterProxy) = 0;	// increfs and returns the proxy (or sets to NULL)
 	virtual void	Unk_63(void * obj) = 0;
 	virtual void	Unk_64(void) = 0;
@@ -789,8 +789,8 @@ public:
 	virtual void	Unk_80(void) = 0;
 	virtual void	Unk_81(void) = 0;
 	virtual void	Unk_82(void) = 0;
-	virtual UInt8	GetUnk01F(void) = 0;
-	virtual void	SetUnk01F(UInt8 arg) = 0;
+	virtual UInt8	GetIsAlerted(void) = 0;  //OR definition
+	virtual void	SetIsAlerted(UInt8 IsAlerted) = 0; //OR definition
 	virtual void	Unk_85(void) = 0;
 	virtual void	Unk_86(void) = 0;
 	virtual void	Unk_87(void) = 0;
@@ -852,10 +852,11 @@ public:
 	// arg3 is a multiplier, arg4 appears to be base force to apply
 	virtual void	KnockbackActor(Actor* target, float arg1, float arg2, float arg3, float arg4) = 0;
 	virtual void	Unk_BD(void) = 0;
-	virtual void	Unk_BE(void) = 0;
-	virtual void	Unk_BF(void) = 0;
-	virtual void	Unk_C0(void) = 0;
-	virtual void	Unk_C1(void) = 0;
+	virtual UInt8	GetCombatMode(void) = 0;
+	virtual UInt8	SetCombatMode(UInt8 CombatMode) = 0;
+	virtual UInt8	GetWeaponOut(void) = 0;
+	virtual UInt8	SetWeaponOut(UInt8 WeaponOut) = 0;
+
 	virtual void	Unk_C2(void) = 0;
 	virtual void *	Unk_C3(void) = 0;	// returns some pointer
 	virtual void	Unk_C4(void) = 0;
@@ -883,7 +884,7 @@ public:
 	virtual void	Unk_DA(void) = 0;
 	virtual UInt8	GetSleepState(void) = 0;
 	virtual void	Unk_DC(void) = 0;
-	virtual void	Unk_DD(void) = 0;
+	virtual TESObjectREFR*	GetFurniture() = 0;
 	virtual void	Unk_DE(void) = 0;
 	virtual void	Unk_DF(void) = 0;
 	virtual UInt32	GetUnk0D4(void) = 0;
@@ -891,8 +892,8 @@ public:
 	virtual void	Unk_E2(void) = 0;
 	virtual UInt8	GetUnk01C(void) = 0;
 	virtual void	SetUnk01C(UInt8 arg) = 0;
-	virtual void	Unk_E5(void) = 0;
-	virtual void	Unk_E6(void) = 0;
+	virtual UInt8	GetUnk180(void) = 0;
+	virtual void	SetUnk180(UInt8 arg) = 0;
 	virtual void	Unk_E7(void) = 0;
 	virtual void	Unk_E8(void) = 0;
 	virtual void	Unk_E9(void) = 0;
@@ -1009,7 +1010,7 @@ public:
 	virtual void	Unk_142(void) = 0;
 	virtual void	Unk_143(void) = 0;
 	virtual void	Unk_144(void) = 0;
-	virtual void	Unk_145(void) = 0;
+	virtual void	Alarm(Actor* Act) = 0;
 	virtual void	Unk_146(void) = 0;
 	virtual void	Unk_147(void) = 0;
 	virtual void	Unk_148(void) = 0;
@@ -1027,8 +1028,8 @@ public:
 	virtual void	Unk_154(void) = 0;
 	virtual void	Unk_155(void) = 0;
 	virtual void	Unk_156(void) = 0;
-	virtual void	Unk_157(void) = 0;
-	virtual void	Unk_158(void) = 0;
+	virtual UInt8	MountHorse(Actor* Act) = 0;				// 560
+	virtual UInt8	DismountHorse(Actor* Act) = 0;			// 564
 	virtual void	Unk_159(void) = 0;
 
 	float	unk00C;				// 00C - initialized to -1
@@ -1038,12 +1039,12 @@ public:
 	UInt8	unk01C;				// 01C
 	UInt8	unk01D;				// 01D
 	UInt8	unk01E;				// 01E
-	UInt8	unk01F;				// 01F
+	UInt8	IsAlerted;			// 01F
 	UInt8	unk020;				// 020
 	UInt8	pad021[3];			// 021
 	TESForm * usedItem;			// 024 for idles like reading book, making potions, etc
 	float	unk028;				// 028
-	TESObjectREFR	* unk02C;	// 02C
+	Actor*	Follow;				// 02C
 	TESObjectREFR   * unk030;	// 030 seen XMarkerHeading refs here
 	PathLow	* pathing;			// 034
 	UInt32	unk038;				// 038
@@ -1127,9 +1128,9 @@ public:
 	virtual void	Unk_15D(void) = 0;
 	virtual void	Unk_15E(void) = 0;
 	virtual void	Unk_15F(void) = 0;
-	virtual void	Unk_160(void) = 0;
-	virtual void	Unk_161(void) = 0;
-	virtual void	Unk_162(void) = 0;
+	virtual void	Dialogue(Actor* Act) = 0;
+	virtual void	RemoveWornItems(Actor* Act, UInt8 Arg2, int Arg3) = 0;
+	virtual void	Travel(Actor* Act, UInt8 Arg2, float Arg3, int Arg4 = 0) = 0;
 	virtual void	Unk_163(void) = 0;
 	virtual void	Unk_164(void) = 0;
 
@@ -1165,10 +1166,10 @@ public:
 	UInt8				unk0D0;		// 0D0
 	UInt8				pad0D0[15];	// 0D1 - never initialized
 	UInt32				unk0E0;		// 0E0
-	ExtraContainerChanges::EntryData* equippedWeaponData;		// 0E4
-	UInt32				unk0E8;		// 0E8
-	ExtraContainerChanges::EntryData*	equippedAmmoData;		// 0EC
-	UInt32				unk0F0;		// 0F0
+	ExtraContainerChanges::EntryData* equippedWeaponData;	// 0E4
+	ExtraContainerChanges::EntryData* equippedLightData;	// 0E8
+	ExtraContainerChanges::EntryData* equippedAmmoData;		// 0EC
+	ExtraContainerChanges::EntryData* equippedShieldData;   // 0F0
 	UInt8				unk0F4;		// 0F4
 	UInt8				unk0F5;		// 0F5
 	UInt8				pad0F6[2];	// 0F6
@@ -1183,11 +1184,11 @@ public:
 	UInt8				unk115;		// 115
 	UInt8				pad116[2];	// 116
 	bhkCharacterProxy	* charProxy;	// 118 - seen bhkCharacterProxy
-	SInt8				knockedState;	// 11C
+	SInt8				knockedState;	// 11C  //TODO maybe unsigned??
 	UInt8				sleepState;		// 11D
 	UInt8				pad11E;		// 11E
 	UInt8				pad11F;		// 11F
-	TESObjectREFR		* unk120;	// 120 Furniture ref NPC is sitting on (may be used for other things)
+	TESObjectREFR*		Furniture;	// 120
 	UInt8				unk124;		// 124 - init'd to 0x7F
 	Unk128				unk128;		// 128
 	UInt16				unk138;		// 138

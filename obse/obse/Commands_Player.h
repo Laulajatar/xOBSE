@@ -69,3 +69,5 @@ extern CommandInfo kCommandInfo_SetPlayersLastRiddenHorse;
 extern CommandInfo kCommandInfo_ClearPlayersLastRiddenHorse;
 
 extern CommandInfo kCommandInfo_SetFlyCameraSpeedMult;
+
+extern CommandInfo kCommandInfo_GetFlyCameraPosition;

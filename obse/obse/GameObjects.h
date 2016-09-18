@@ -550,13 +550,13 @@ public:
 	virtual void	GetStartingPos(float * pos) = 0;
 	virtual void	Unk_3E(void) = 0;
 	virtual void	Unk_3F(void) = 0;
-	virtual void	RemoveItem(TESForm* toRemove, BaseExtraList* extraList, UInt32 unk2, UInt32 unk3, UInt32 unk4, TESObjectREFR* destRef,
-		UInt32 unk6, UInt32 unk7, UInt32 unk8, UInt8 unk9) = 0;	// 40 unk2 quantity?
+	virtual void	RemoveItem(TESForm* toRemove, BaseExtraList* extraList, UInt32 quantity, UInt32 unk3, UInt32 unk4, TESObjectREFR* destRef,
+		UInt32 unk6, UInt32 unk7, UInt32 unk8, UInt8 unk9) = 0;	// 40 unk2 quantity? According OR yes.
 	virtual void	Unk_41(void) = 0;
-	virtual void	Unk_42(void) = 0;
-	virtual void	Unk_43(void) = 0;
+	virtual UInt8	Equip(TESForm* toEquip, UInt32 Quantity, BaseExtraList* extraList, UInt32 unk4) = 0;
+	virtual UInt8	Unequip(TESForm* toUnequip, UInt32 Quantity, BaseExtraList* extraList) = 0;
 	virtual void	Unk_44(void) = 0;
-	virtual void	AddItem(TESForm* item, ExtraDataList* xDataList) = 0;
+	virtual void	AddItem(TESForm* item, ExtraDataList* xDataList) = 0; //UInt32 last param for quantity??? 
 	virtual void	Unk_46(void) = 0;
 	virtual void	Unk_47(void) = 0;
 	virtual void	Unk_48(void) = 0;
@@ -576,32 +576,32 @@ public:
 	virtual void	Unk_56(void) = 0;
 	virtual void	Unk_57(UInt32 arg0) = 0;
 	virtual void	Unk_58(void) = 0;
-	virtual void	Unk_59(void) = 0;
+	virtual ActorAnimData* GetAnimData(void) = 0;
 	virtual void	Unk_5A(void) = 0;
 	virtual void	Unk_5B(void) = 0;
-	virtual TESForm *	GetBaseForm(void) = 0;	// returns type this object references
-	virtual float *	GetPos(void) = 0;
+	virtual TESForm*	GetBaseForm(void) = 0;	// returns type this object references
+	virtual float*	GetPos(void) = 0;
 	virtual void	Unk_5E(void) = 0;
 	virtual void	Unk_5F(void) = 0;
-	virtual void	Unk_60(void) = 0;	// 60
+	virtual void	Unk_60(UInt32 arg0) = 0;	// 60 //OR definition: gets something from the ridden creature or actor
 	virtual void	Unk_61(void) = 0;
 	virtual void	Unk_62(void) = 0;
 	virtual UInt8	GetSleepState(void) = 0;
 	virtual bool	IsActor(void) = 0;
 	virtual void	ChangeCell(TESObjectCELL * newCell) = 0;
-	virtual bool	IsDead(bool arg0) = 0;
-	virtual void	Unk_67(void) = 0;
+	virtual bool	IsDead(bool arg0) = 0;   //OR make return a UInt8 and take no arg
+	virtual UInt8	GetKnockedState(void) = 0;  //OR definition: calls the Process::GetKnockedState
 	virtual void	Unk_68(void) = 0;
 	virtual void	Unk_69(void) = 0;
 
 	TESChildCell	childCell;		// 018
-	TESForm	* baseForm;				// 01C
+	TESForm* baseForm;				// 01C
 										// U8(typeInfo + 4) == 0x23 is true if the object is a character
 	float	rotX, rotY, rotZ;		// 020 - either public or accessed via simple inline accessor common to all child classes
 	float	posX, posY, posZ;		// 02C - seems to be private
 	float	scale;					// 038
-	NiNode	* niNode;				// 03C
-	TESObjectCELL	* parentCell;	// 040
+	NiNode* niNode;				// 03C
+	TESObjectCELL*  parentCell;	// 040
 	BaseExtraList	baseExtraList;	// 044
 
 	ScriptEventList* GetEventList() const;
@@ -616,7 +616,7 @@ public:
 	}
 	bool IsPersistent() { return (flags & kFlags_Persistent) ? true : false; }
 	bool IsTemporary() { return (flags & kFlags_Temporary) ? true : false; }
-	TESForm * GetInventoryItem(UInt32 itemIndex, bool bGetWares);
+	TESForm* GetInventoryItem(UInt32 itemIndex, bool bGetWares);
 	void Disable();
 	void Enable();
 	bool RunScripts();		// runs magic effect and object scripts plus any scripts on items in inventory
@@ -673,7 +673,7 @@ public:
 	virtual void	Unk_7E(void) = 0;
 	virtual void	Unk_7F(void) = 0;
 	virtual void	Unk_80(void) = 0;	// 80
-	virtual void	Unk_81(void) = 0;
+	virtual SInt32	GetFame(void) = 0;  //OR definition
 
 	BaseProcess	* process;			// 058
 };
@@ -689,7 +689,7 @@ public:
 	~Actor();
 
 	virtual SInt32	GetInfamy(void) = 0;	// 82
-	virtual void	Unk_83(void) = 0;
+	virtual void	Resurrect(UInt8 Unk1, UInt8 Unk2, UInt8 Unk3) = 0; //OR Defintion
 	virtual void	Unk_84(void) = 0;
 	virtual void	Unk_85(void) = 0;
 	virtual void	Unk_86(void) = 0;
@@ -699,9 +699,9 @@ public:
 	// invoked for fall damage (attacker == NULL), melee attacks, not spell damage.
 	virtual void	ApplyDamage(float damage, float arg1, Actor* attacker) = 0;
 	virtual void	Unk_89(void) = 0;
-	virtual void	Unk_8A(void) = 0;	// handles input for PlayerCharacter
+	virtual void	ProcessControls(void) = 0; //OR Definition handles input for PlayerCharacter
 	virtual void	Unk_8B(void) = 0;
-	virtual void	Unk_8C(void) = 0;
+	virtual void	SetPackageDismount(void) = 0; //Or Definition
 	virtual void	Unk_8D(void) = 0;
 	virtual void	Unk_8E(void) = 0;
 	virtual void	Unk_8F(void) = 0;
@@ -715,14 +715,14 @@ public:
 	virtual void	Unk_97(void) = 0;
 	virtual bool	HasVampireFed(void) = 0;
 	virtual void	SetVampireHasFed(bool bFed) = 0;
-	virtual void	Unk_9A(void) = 0;
+	virtual void	GetBirthSign(void) = 0; //TODO COntrol the OR definition. Doesn't seem right. Possibly return a pointer to a birthsign or an unique identifier.
 	virtual void	Unk_9B(void) = 0;
 	virtual void	Unk_9C(void) = 0;
 	virtual void	Unk_9D(void) = 0;
 	virtual void	Unk_9E(void) = 0;
 	virtual void	Unk_9F(void) = 0;
 	virtual void	Unk_A0(void) = 0;	// A0
-	virtual SInt32	GetActorValue(UInt32 avCode) = 0;								// current, cumulative value
+	virtual SInt32	GetActorValue(UInt32 avCode) = 0;				//Contol Siged or Unsigned				// current, cumulative value
 	virtual float	GetAV_F(UInt32 avCode) = 0;
 	virtual void	SetAV_F(UInt32 avCode, float val) = 0;							// base value
 	virtual void	SetActorValue(UInt32 avCode, UInt32 val) = 0;
@@ -757,11 +757,11 @@ public:
 	virtual void	Unk_C1(void) = 0;
 	virtual void	Unk_C2(void) = 0;
 	virtual void	Unk_C3(void) = 0;
-	virtual void	Unk_C4(void) = 0;
+	virtual void	ManageAlarm(void) = 0; //OR Defninition
 	virtual void	Unk_C5(void) = 0;
 	virtual void	Unk_C6(void) = 0;
 	virtual void	Unk_C7(void) = 0;
-	virtual void	Unk_C8(void) = 0;
+	virtual void	AddPackageWakeUp(void) = 0;
 	virtual void	Unk_C9(void) = 0;
 	virtual void	Unk_CA(void) = 0;
 	virtual void	Unk_CB(void) = 0;
@@ -854,8 +854,19 @@ public:
 	ActorValues		avModifiers;					// 088
 	PowerListEntry  greaterPowerList;				// 09C
 	Unk0A4			unk0A4;							// 0A4
-	UInt32			unk0AC[(0x0CC - 0x0AC) >> 2];	// 0AC
-	TESObjectREFR	* unk0CC;						// 0CC
+	float			unk0AC;							// 0AC
+	UInt32			DeadState;						// 0B0
+	UInt32			unk0B4;							// 0B4
+	UInt32			unk0B8;							// 0B8
+	float			unk0BC;							// 0BC
+	UInt8			unk0C0;							// 0C0
+	UInt8			pad0C0[3];						// 0C1
+	UInt32			unk0C4;							// 0C4
+	UInt8			unk0C8;							// 0C8
+	UInt8			unk0C9;							// 0C9
+	UInt8			unk0CA;							// 0CA
+	UInt8			pad0C8;							// 0CB
+	TESObjectREFR*	unk0CC;							// 0CC
 	UInt32			unk0D0;							// 0D0
 	Actor			* horseOrRider;					// 0D4 - For Character, currently ridden horse
 														 //- For horse (Creature), currently riding Character
@@ -971,7 +982,7 @@ public:
 	// +5A9 UInt8, fast travel disabled
 	// +658	UInt32, misc stat array
 	// +70C	'initial state' buffer
-
+//TODO Expose isInSeWorld flag may be useful check OBlivionReloaded definitions.
 	UInt32		unk104[(0x118 - 0x104) >> 2];				// 104
 	DialoguePackage	* dialoguePackage;						// 118
 	UInt32		unk11C[(0x130 - 0x11C) >> 2];				// 11C
@@ -990,7 +1001,7 @@ public:
 	UInt8		isThirdPerson;					// 588
 	UInt8		pad589[3];						// 589
 	UInt32		unk58C[(0x5B0 - 0x58C) >> 2];	// 58C
-	void		* unk5B0;						// 5B0 - freed when running SetInCharGen 0
+	void		* unk5B0;				 //Seem to be a struct		// 5B0 - freed when running SetInCharGen 0
 	UInt8		** attributeBonuses;			// 5B4
 	UInt16		unk5B8;							// 5B8
 	UInt8		unk5BA;
@@ -1016,7 +1027,7 @@ public:
 	UInt8		pad612[2];						// 612
 	UInt32		unk614[(0x624 - 0x614) >> 2];	// 614
 	MagicItem	* activeMagicItem;				// 624
-	TESObjectBOOK	* book;						// 628
+	TESObjectBOOK	* book;						// 628 /MAybe last activated book or last activated skill book 
 	UInt32		unk62C[(0x644 - 0x62C) >> 2];	// 62C
 	BirthSign	* birthSign;					// 644
 	UInt32		unk648[(0x650 - 0x648) >> 2];	// 648
@@ -1034,35 +1045,28 @@ public:
 	float		requiredSkillExp[21];			// 7A4 total amt of exp needed to increase each skill
 	UInt32		unk7F8;							// 7F8
 	UInt32		unk7FC;							// 7FC
-
 	// 800
-
 	bool	SetActiveSpell(MagicItem * item);
 	UInt8	GetAttributeBonus(UInt32 whichAttribute) {
 		return whichAttribute < kActorVal_Luck ? (*attributeBonuses)[whichAttribute] : -1;
 	}
-
 	void	SetAttributeBonus(UInt32 whichAttr, UInt8 newVal) {
 		if (whichAttr < kActorVal_Luck)	(*attributeBonuses)[whichAttr] = newVal;
 	}
-
 	UInt32 GetSkillAdvanceCount(UInt32 valSkill) {
 		return IsSkill(valSkill) ? skillAdv[valSkill - kActorVal_Armorer] : 0;
 	}
-
 	void SetSkillAdvanceCount(UInt32 valSkill, UInt32 val) {
 		if (IsSkill(valSkill)) {
 			skillAdv[valSkill - kActorVal_Armorer] = val;
 		}
 	}
-
 	UInt32 ModSkillAdvanceCount(UInt32 valSkill, SInt32 mod);
 	UInt32 ModMajorSkillAdvanceCount(SInt32 mod) {
 		SInt32 adjustedVal = majorSkillAdvances + mod;
 		majorSkillAdvances = (adjustedVal > 0) ? adjustedVal : 0;
 		return majorSkillAdvances;
 	}
-
 	MagicItem* GetActiveMagicItem();
 	bool IsThirdPerson() { return isThirdPerson ? true : false; }
 	void TogglePOV(bool bFirstPerson);
@@ -1070,18 +1074,14 @@ public:
 	void ChangeExperience(UInt32 actorValue, UInt32 scaleIndex, float baseDelta);
 	void ChangeExperience(UInt32 actorValue, float amount);
 	float ExperienceNeeded(UInt32 skill, UInt32 atLevel);
-
 	TESClass* GetPlayerClass() const;
-
 	bool SetSkeletonPath(const char* newPath);
-
 	static void UpdateHead(void);	// TODO: investigate further
 };
-
+//TODO genral control of the definitions.
 #if OBLIVION
 STATIC_ASSERT(sizeof(PlayerCharacter) == 0x800);
 #endif
-
 class Creature : public Character
 {
 public:
@@ -1106,11 +1106,11 @@ public:
 	void	RefreshClimate(TESClimate * climate, UInt32 unk1);	// pass 1 for unk1 to pick new random weather etc
 
 //	void		** _vtbl;						// 000
-	NiNode*		niNode004;						// 004
-	NiNode*		niNode008;						// 008
-	TESClimate	* firstClimate;					// 00C
-	TESWeather	* firstWeather;					// 010
-	UInt32		unk014;							// 014
+	NiNode*		nodeSkyRoot;					// 004
+	NiNode*		nodeMoonsRoot;					// 008
+	TESClimate* firstClimate;					// 00C
+	TESWeather* firstWeather;					// 010
+	TESWeather*	weather014;						// 014
 	TESWeather*	weather018;						// 018
 	TESWeather* weatherOverride;				// 01C
 	Atmosphere* atmosphere;						// 020

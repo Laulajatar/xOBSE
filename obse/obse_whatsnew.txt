@@ -15,6 +15,7 @@
 			-IsDiseased
 			-GetEnemies (ALPHA)
 			-IsNaked  (Script and conditional function)
+			-EventHandlerExist(ALPHA)
 			-IsDiseased, HasSpell, GetActorLightAmount,IsMajor, GetBaseAV2(C) usable as conditional functions. for dialogues and quests targets.
 
 		Fixed/Changed:
