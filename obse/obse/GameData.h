@@ -237,9 +237,9 @@ public:
 	tList<TESWaterForm>		waterForms;						// 0A4
 	tList<TESEffectShader>	effectShaders;					// 0AC
 	tList<TESObjectANIO>	objectAnios;					// 0B4
-	TESRegionList			* regionList;					// 0BC
-	NiTArray <TESObjectCELL *>	cellArray;					// 0C0
-	UInt32					unk0D0[2];						// 0D0
+	TESRegionList*			regionList;						// 0BC
+	NiTLargeArray<TESObjectCELL*>	cellArray;				// 0C0
+	//UInt32				unk0D0[2];						// 0D0
 	TESSkill				skills[0x15];					// 0D8
 	_Unk8B8					unk8B8;							// 8B8
 	ModEntry				modList;						// 8C8
@@ -247,7 +247,7 @@ public:
 	ModEntry::Data			* modsByID[0xFF];				// 8D4
 	UInt32					unkCD0[(0xCD8 - 0xCD0) >> 2];	// CD0
 	TESRegionDataManager	* regionDataManager;			// CD8
-	UInt32					unkCDC;							// CDC
+	void*					unkCDC;							// CDC  //Pointer to an extra data
 
 	bool	ConstructObject(ModEntry::Data* tesFile, bool unk1);
 

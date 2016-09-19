@@ -310,7 +310,7 @@ enum
 };
 
 #if OBLIVION
-#if OBLIVION_VERSION == OBLIVION_VERSION
+#if OBLIVION_VERSION == OBLIVION_VERSION_1_2_416
 	static const UInt32 kTESObjectREFR_IsOffLimitsToPlayerAddr = 0x004DEBF0;
 #else
 #error unsupported oblivion version
@@ -342,25 +342,25 @@ public:
 	MagicCaster();
 	~MagicCaster();
 
-	virtual void	Unk_00(UInt32 arg0, UInt32 arg1);
-	virtual void	Unk_01(UInt32 arg0, UInt32 arg1, UInt32 arg2);
-	virtual void	Unk_02(UInt32 arg0, UInt32 arg1, UInt32 arg2);
-	virtual void	Unk_03(void);
-	virtual void	Unk_04(void);
-	virtual void	Unk_05(void);
-	virtual void	Unk_06(void);
+	virtual void	AddAbility(MagicItemForm* ability, bool noHitFX = false);
+	virtual void	AddDisease(MagicItemForm* dis, MagicTarget* targ, bool noHitFX = false);
+	virtual void	AddObjectEnchantment(MagicItem* magicItem, TESBoundObject* sourceObj, bool noHitVFX = false);
+	virtual MagicTarget*	FindTouchTarget(void);
+	virtual void	PlayTargettedCastingAnim(void);
+	virtual void	PlayCastingAnim(void); // starts the spellcasting animation.  Use SetActiveMagicItem() before calling.
+	virtual void	ApplyMagicItemCost(MagicItem* magicItem, bool applyStatChanges = true);// applies power cooldowns, combat controller misc if applyStatChanges is true, apply magicka + fatigue + experience changes                                           
 
 	// looks like returns true if can use magicItem, filling out type (and arg1 is magicka cost?)
-	virtual bool	Unk_07(MagicItem* magicItem, float* arg1, UInt32* outMagicItemType, UInt32 arg3);
+	virtual bool	IsMagicItemUseable(MagicItem* magicItem, float* wortcraftSkill = 0, UInt32* failureCode = 0, bool useBaseMagicka = false); 
 	virtual TESObjectREFR*	GetParentRefr(void);
 	virtual NiNode	* GetMagicNode(void);	// looks up "magicnode" node in caster's NiNode
-	virtual void	Unk_0A(void);
-	virtual float	GetSpellEffectiveness(float arg0, float arg1);	// seen (0, 0)
-	virtual MagicItem * GetQueuedMagicItem(void);		// calls through to MiddleHighProcess
-	virtual void	Unk_0D(void);
-	virtual void	Unk_0E(void);
-	virtual void	Unk_0F(void);
-	virtual void	Unk_10(MagicItem* magicItem, UInt32 mgefCode, UInt32 unk2);	// activate effect?
+	virtual void	AddEffectToSelf(ActiveEffect* actvEff);  // used internally for *all* OnSelf effects, once they are created. caster must also be a magic target
+	virtual float	GetSpellEffectiveness(bool ignoreFatigue = false, float currentFatigue = 0.0);	// seen (0, 0)
+	virtual MagicItem * GetActiveMagicItem(void);		// calls through to MiddleHighProcess
+	virtual void	SetActiveMagicItem(MagicItem* item);
+	virtual MagicTarget*	GetCastingTarget(void);
+	virtual void	SetCastingTarget(MagicTarget* magicTarget);
+	virtual ActiveEffect*	CreateActiveMagicEffect(MagicItem* magicItem, EffectItem* effect, TESBoundObject* src);	// activate effect?
 
 	enum {
 		kState_Inactive			= 0,
@@ -395,7 +395,7 @@ public:
 		ActiveEffect* Info() const { return data; }
 		EffectNode* Next() const { return next; }
 	};
-
+	//COEF report a much bigger vtbl
 	virtual void	Destructor(void);
 	virtual TESObjectREFR *	GetParent(void);
 	virtual EffectNode *	GetEffectList(void);
@@ -540,42 +540,53 @@ public:
 
 	TESObjectREFR();
 	~TESObjectREFR();
-
-	virtual void	Unk_37(void) = 0;
-	virtual void	Unk_38(void) = 0;	// 38
-	virtual void	Unk_39(void) = 0;
-	virtual void	Unk_3A(void) = 0;
+//Start COEF definitions
+	virtual void	Unk_37(TESTopic* topic, TESObjectREFR* speaker, bool arg2, bool arg3, UInt32 arg4) = 0;
+	virtual bool	CanCastShadows(void) = 0;	// 38 //
+	virtual void	SetCastShadows(bool set) = 0;
+	virtual bool	IsProjectile(void) = 0;
+//End COEF definitions.
 	virtual float	GetScale(void) = 0;
 	virtual void	GetStartingAngle(float * pos) = 0;
 	virtual void	GetStartingPos(float * pos) = 0;
-	virtual void	Unk_3E(void) = 0;
-	virtual void	Unk_3F(void) = 0;
-	virtual void	RemoveItem(TESForm* toRemove, BaseExtraList* extraList, UInt32 quantity, UInt32 unk3, UInt32 unk4, TESObjectREFR* destRef,
-		UInt32 unk6, UInt32 unk7, UInt32 unk8, UInt8 unk9) = 0;	// 40 unk2 quantity? According OR yes.
-	virtual void	Unk_41(void) = 0;
-	virtual UInt8	Equip(TESForm* toEquip, UInt32 Quantity, BaseExtraList* extraList, UInt32 unk4) = 0;
+	virtual void	MoveInitialPosition(float* pos) = 0;  //COEF
+	virtual bool	UpdateLights(void) = 0;  //COEF
+	virtual void	RemoveItem(TESForm* toRemove,  //OR,OBME and COEF defs agree on quantity. COEF complete with others args
+		BaseExtraList* extraList,
+		UInt32 quantity,  //Seen Signed
+		UInt32 useContOwner = false, 
+		UInt32 drop = false,    	
+		TESObjectREFR* destRef =  NULL,
+		float* destPos = 0,
+		float* destRot = 0,
+		bool unk8 = true,
+		bool useExistingEntryExtra = true) = 0;	
+	//unk3 seem drop. COEF
+
+	virtual void	RemoveItemByType(UInt32 formType, bool useContainerOwnership, UInt32 count) = 0; // remove forms of specified type. COEF
+	virtual UInt8	Equip(TESForm* toEquip, UInt32 Quantity, BaseExtraList* extraList, UInt32 unk4) = 0;  //Return bool??
 	virtual UInt8	Unequip(TESForm* toUnequip, UInt32 Quantity, BaseExtraList* extraList) = 0;
 	virtual void	Unk_44(void) = 0;
-	virtual void	AddItem(TESForm* item, ExtraDataList* xDataList) = 0; //UInt32 last param for quantity??? 
+	virtual void	AddItem(TESForm* item, ExtraDataList* xDataList, UInt32 count) = 0; //UInt32 last param for quantity??? 
 	virtual void	Unk_46(void) = 0;
 	virtual void	Unk_47(void) = 0;
-	virtual void	Unk_48(void) = 0;
-	virtual MagicTarget *	GetMagicTarget(void) = 0;
-	virtual void	Unk_4A(void) = 0;
-	virtual void	Unk_4B(void) = 0;
-	virtual void	Unk_4C(void) = 0;
-	virtual void	Unk_4D(void) = 0;
-	virtual void	Unk_4E(void) = 0;
-	virtual void	Unk_4F(void) = 0;
-	virtual void	Unk_50(void) = 0;	// 50
+	virtual MagicCaster*	GetMagicCaster(void) = 0;
+	virtual MagicTarget*	GetMagicTarget(void) = 0;
+	virtual TESForm*	GetTemplateForm(void) = 0;     //COEF Report inlined
+	virtual void	SetTemplateForm(TESForm* templateForm) = 0;  //COEF report Inlined
+	virtual BSFaceGenNiNode*	GetFaceGenNiNodeBiped(NiNode* arg0 = 0) = 0;  // argument seems to be ignored for all four FaceGen methods
+	virtual BSFaceGenNiNode*	GetFaceGenNiNodeSkinned(NiNode* arg0 = 0) = 0;
+	virtual BSFaceGenNiNode*  GetFaceGenNiNode(NiNode* arg0 = 0) = 0; // returns GetBSFaceGenNiNodeSkinned().
+	virtual NiAVObject*	GetFaceGenAnimationData(NiNode* arg0 = 0) = 0; // extracts anim data from GetFaceGenNiNode(). //Need BSFaceGenAnimationData
+	virtual bool	MoveToGroundLevel(void) = 0;	// 50
 	virtual void	Unk_51(void) = 0;
 	virtual void	Unk_52(void) = 0;			// inits animation-related data, and more
 	virtual NiNode*	GenerateNiNode(void) = 0;
 	virtual void	Set3D(NiNode* niNode);
-	virtual NiNode *	GetNiNode(void) = 0;
+	virtual NiNode*	GetNiNode(void) = 0;
 	virtual void	Unk_56(void) = 0;
 	virtual void	Unk_57(UInt32 arg0) = 0;
-	virtual void	Unk_58(void) = 0;
+	virtual void	UpdateNiNode(void) = 0;
 	virtual ActorAnimData* GetAnimData(void) = 0;
 	virtual void	Unk_5A(void) = 0;
 	virtual void	Unk_5B(void) = 0;
@@ -585,14 +596,14 @@ public:
 	virtual void	Unk_5F(void) = 0;
 	virtual void	Unk_60(UInt32 arg0) = 0;	// 60 //OR definition: gets something from the ridden creature or actor
 	virtual void	Unk_61(void) = 0;
-	virtual void	Unk_62(void) = 0;
-	virtual UInt8	GetSleepState(void) = 0;
+	virtual bool	IsMobileObject(void) = 0;
+	virtual UInt8	GetSitSleepState(void) = 0;
 	virtual bool	IsActor(void) = 0;
 	virtual void	ChangeCell(TESObjectCELL * newCell) = 0;
-	virtual bool	IsDead(bool arg0) = 0;   //OR make return a UInt8 and take no arg
+	virtual bool	IsDead(bool arg0) = 0;  //COEF:arg0 = count deathstate 6 as dead, for actors.  ignored for base class. OR takes no args
 	virtual UInt8	GetKnockedState(void) = 0;  //OR definition: calls the Process::GetKnockedState
-	virtual void	Unk_68(void) = 0;
-	virtual void	Unk_69(void) = 0;
+	virtual void	HasFatigue(void) = 0;
+	virtual void	IsParalized(void) = 0;
 
 	TESChildCell	childCell;		// 018
 	TESForm* baseForm;				// 01C
@@ -653,7 +664,7 @@ public:
 	virtual void	Unk_6A(void) = 0;	// 6A
 	virtual void	Unk_6B(void) = 0;
 	virtual void	Unk_6C(void) = 0;
-	virtual void	Move(void) = 0;
+	virtual void	Move(float arg0, float* pos, UInt32 arg2) = 0;
 	virtual void	Jump(void) = 0;	// jump?
 	virtual void	Unk_6F(void) = 0;
 	virtual void	Unk_70(void) = 0;	// 70
@@ -664,7 +675,7 @@ public:
 	virtual void	Unk_75(void) = 0;
 	virtual void	Unk_76(void) = 0;
 	virtual void	Unk_77(void) = 0;
-	virtual void	Unk_78(void) = 0;
+	virtual float	GetZRotation(void) = 0;
 	virtual void	Unk_79(void) = 0;
 	virtual void	Unk_7A(void) = 0;
 	virtual void	Unk_7B(void) = 0;

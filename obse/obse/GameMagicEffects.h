@@ -19,20 +19,20 @@ public:
 
 	virtual void			Destroy(bool bFreeMem);
 	virtual ActiveEffect *	Clone(void);
-	virtual void			Unk_02(UInt32 arg);
-	virtual UInt16			GetSaveSize(UInt32 arg);
+	virtual void			UpdateEffect(UInt32 timeElapsed);  //arg is float?
+	virtual UInt16			GetSaveSize(UInt32 arg);  //args is TESObjectREFER* type?
 	virtual void			SaveGame(UInt32 arg);
 	virtual void			LoadGame(UInt32 arg);
-	virtual void			Unk_06(UInt32 arg);
-	virtual void			Unk_07(UInt32 arg);
-	virtual void			Unk_08(UInt32 arg);
-	virtual bool			UnregisterCaster(MagicCaster * _caster);	// returns 1 and clears caster if it matches the parameter, else returns 0
-	virtual bool			Unk_0A(void);
-	virtual void			CopyTo(ActiveEffect * target);
-	virtual bool			Unk_0C(UInt32 arg);
-	virtual bool			Unk_0D(UInt32 arg);
-	virtual void			Unk_0E(void);	// update/add effect?
-	virtual void			Terminate(void);
+	virtual void			LinkEffect(UInt32 arg);
+	virtual void			PostLinkEffect(UInt32 arg);
+	virtual void			PreLoadEffect(UInt32 arg);
+	virtual bool			UnregisterCaster(MagicCaster* caster);	// returns 1 and clears caster if it matches the parameter, else returns 0
+	virtual bool			DoesHealthDamage(void);
+	virtual void			CopyTo(ActiveEffect* target);
+	virtual bool			Unk_0C(UInt32 arg);  //JRoush think this is  not used at all by game
+	virtual bool			IsMagicTargetValid(MagicTarget* targ);
+	virtual void			ApplyEffect(void);	// update/add effect?
+	virtual void			RemoveEffect(void);
 
 //	void		** _vtbl;			// 00
 	float		timeElapsed;		// 04
@@ -40,9 +40,9 @@ public:
 	EffectItem	* effectItem;		// 0C
 	bool		bApplied;			// 10
 	bool		bTerminated;		// 11 set to 1 when effect is to be removed
-	UInt8		flags12;			// 12
+	bool		bRemoved;			// 12
 	UInt8		pad13;				// 13
-	UInt32		unk14;				// 14
+	UInt32		aeFlags;				// 14
 	float		magnitude;			// 18 - adjusted based on target?
 	float		duration;			// 1C - adjusted based on target?
 	MagicTarget	* target;			// 20
@@ -93,6 +93,8 @@ public:
 	virtual ~ValueModifierEffect();
 
 	UInt32	actorVal;	// 38
+
+	//TODO vtbl  2 virtual function according COEF
 };
 
 // 3C
