@@ -875,7 +875,7 @@ static bool GetPackageFlagFunc_Execute(COMMAND_ARGS, UInt32 flag)
 {
 	TESPackage* pkg = NULL;
 	if (ExtractArgs(PASS_EXTRACT_ARGS, &pkg))
-		return GetPackageFlagFunc_Eval(thisObj, (void*)pkg, NULL, result, flag);
+		return GetPackageFlagFunc_Eval(thisObj, pkg, NULL, result, flag);
 
 	return true;
 }

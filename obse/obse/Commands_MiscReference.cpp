@@ -2365,6 +2365,19 @@ static bool Cmd_SetAtEditorLocation_Execute(COMMAND_ARGS){
 	}
 	return true;
 }
+
+
+static bool Cmd_GetReferenceCount_Execute(COMMAND_ARGS){
+	TESForm* tt = NULL;
+	*result = NULL;
+	if(ExtractArgs(PASS_EXTRACT_ARGS, &tt)){
+		TESObject* obj = OBLIVION_CAST(tt, TESForm, TESObject);
+		if(obj != NULL){
+			*result = obj->GetObjectRefCount(); //Seem like Additem, placeatme and at this point I think all of them doesn't increment the Refcount
+		}
+	}
+	return true;
+}
 #endif
 
 CommandInfo kCommandInfo_GetTravelHorse =
@@ -3250,3 +3263,22 @@ DEFINE_COMMAND(GetTimeLeft, returns the time left for the light reference, 1, 0,
 DEFINE_COMMAND(SetTimeLeft, sets the time left for the light reference, 1, 1, kParams_OneFloat);
 
 DEFINE_COMMAND(LinkToDoor, links the caling door reference with the specified door reference, 1, 1, kParams_OneObjectRef);
+
+static ParamInfo kParams_Object[1] = {
+	{"Object" , kParamType_TESObject, 0},
+};
+
+CommandInfo kCommandInfo_GetObjectReferenceCount =
+{
+	"GetObjectReferenceCount",
+	"GetObjRefCount",
+	0,
+	"returns thie number of existing reference for this object",
+	1,
+	1,
+	kParams_Object,
+	HANDLER(Cmd_GetRefCount_Execute),
+	Cmd_Default_Parse,
+	NULL,
+	0
+};
