@@ -184,7 +184,7 @@ static bool Cmd_GetParentCellOwner_Execute(COMMAND_ARGS)
 
 	if (!thisObj)
 		return true;
-
+	if (thisObj->parentCell == NULL) return true;
 	TESForm* owner = GetOwner(&(thisObj->parentCell->extraData));
 	if (owner)
 		*refResult = owner->refID;
@@ -1667,9 +1667,9 @@ static bool Cmd_SetLoopSound_Execute(COMMAND_ARGS)
 static bool Cmd_DeleteReference_Execute(COMMAND_ARGS)
 {
 	*result = 0;
-
+	if (thisObj == NULL) return true;
 	// Don't delete temp refs or non-dynamic refs
-	if (thisObj && thisObj->GetModIndex() == 0xFF && !(thisObj->flags & 0x4000))
+	if (thisObj->GetModIndex() == 0xFF && !(thisObj->flags & 0x4000))
 	{
 		// don't delete objects in inventories
 		// references must be disabled before deletion
@@ -1687,7 +1687,7 @@ static bool Cmd_DeleteReference_Execute(COMMAND_ARGS)
 	return true;
 }
 
-static enum {
+enum {
 	kProjectile_Speed,
 	kProjectile_Distance,
 	kProjectile_Time,
@@ -1758,7 +1758,7 @@ static bool Cmd_GetProjectileLifetime_Execute(COMMAND_ARGS)
 	return GetProjectileValue_Execute(PASS_COMMAND_ARGS, kProjectile_Time);
 }
 
-static enum {
+enum {
 	kArrow_BowEnchantment,
 	kArrow_Enchantment,
 	kArrow_Poison
@@ -1884,13 +1884,13 @@ static bool Cmd_SetProjectileSpeed_Execute(COMMAND_ARGS)
 	return SetProjectileValue(PASS_COMMAND_ARGS, kProjectile_Speed);
 }
 
-static enum {
+enum {
 	kMapMarker_Visible,
 	kMapMarker_CanTravel,
 	kMapMarker_Type
 };
 
-static enum {
+enum {
 	kSet,
 	kGet
 };
@@ -2019,11 +2019,11 @@ static bool Cmd_GetParentWorldspace_Execute(COMMAND_ARGS)
 {
 	*result = 0;
 
-	if(!thisObj || !thisObj->parentCell || !thisObj->parentCell->worldSpace) return true;
-
-	UInt32	* refResult = (UInt32 *)result;
+	if(!thisObj) return true;
+	if (thisObj->parentCell == NULL) return true;
+	if (thisObj->parentCell->worldSpace == NULL) return true;
+	UInt32* refResult = (UInt32*)result;
 	*refResult = thisObj->parentCell->worldSpace->refID;
-
 	return true;
 }
 
