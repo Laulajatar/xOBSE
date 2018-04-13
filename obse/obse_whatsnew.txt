@@ -1,6 +1,6 @@
 0022 beta 1:
 	API:
-		-Ported to VS2012
+		-Ported to VS2017
 		-Fixed obse_plugin_example
 		-Avoid unecessary unresolvable symbols during OBSE plugin compilation
 		-Added SetRelJz function in SafeWrite API.

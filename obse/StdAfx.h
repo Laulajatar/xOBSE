@@ -12,6 +12,9 @@
 
 #define DPSAPI_VERSION	1
 
+//TODO Remove and fix properly va_list usage
+#define _CRT_NO_VA_START_VALIDATION
+
 // WIN32
 #include <winsock2.h>
 #include <windows.h>
@@ -77,3 +80,6 @@
 #include "common\IDirectoryIterator.h"
 #include "common\IFileStream.h"
 #include "common\IDebugLog.h"
+
+//Workaround for force include 
+#include "obse_common\obse_prefix.h"

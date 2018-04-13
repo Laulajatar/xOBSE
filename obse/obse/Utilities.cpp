@@ -590,6 +590,7 @@ ErrOutput::ErrOutput(_ShowError errorFunc, _ShowWarning warningFunc)
 	ShowError = errorFunc;
 }
 
+
 void ErrOutput::vShow(ErrOutput::Message& msg, va_list args)
 {
 	char msgText[0x400];
@@ -603,6 +604,7 @@ void ErrOutput::vShow(ErrOutput::Message& msg, va_list args)
 	else
 		ShowError(msgText);
 }
+
 
 void ErrOutput::Show(ErrOutput::Message& msg, ...)
 {
