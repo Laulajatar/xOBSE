@@ -279,13 +279,15 @@
 
 <body>
 
-<h1>OBSE v0021 Command Documentation</h1>
+<h1>xOBSE v0022.4.1 Command Documentation</h1>
 
 <p><a href="http://cs.elderscrolls.com/index.php?title=Category:Oblivion_Script_Extender">OBSE @ Oblivion Construction Set Wiki</a> - follow the links throughout this documentation to gain access to additional information on the official Oblivion Construction Set Wiki. Users are encouraged to add to the wiki.<br />
+<a href="https://github.com/llde/xOBSE">xOBSE @ GitHub</a> is is a community maintained up-to-date fork of Oblivion Script Extender (OBSE).
 
 <h2>Table of Contents</h2>
 
 <ul>
+    <li><a href="#New_xOBSE_Features">New xOBSE Features</a></li>
 	<li><a href="#New_Functions">New Features</a></li>
 	<li><a href="#Function_Syntax_Format">Function Syntax Format</a></li>
 	<li><a href="#Function_Calling_Conventions">Function Calling Conventions</a></li>
@@ -321,9 +323,28 @@
 	<li><a href="#Deprecated_Functions">Deprecated Functions</a></li>
 </ul>
 
-<h2><a id="New_Functions">New Features</a></h2>
+<h2><a id="New_xOBSE_Features">New xOBSE Features</a></h2>
+<p>Besides fixing some long standing bugs and adding new game versions (like the GOG version) to the launcher, xOBSE adds a couple of new functions (and deprecates some others):</p><ul>
+    <li><h3>xOBSE v0022.4</h3></li>
+	<li><a href="#SetAltControl2">SetAltControl2</a></li>
+    <li>SetAltControl, GetAltControl and RefreshControlMap marked as deprecated</li>
+    <li><h3>xOBSE v0022.3</h3></li>
+    <li>Add experimental support for OnKeyEvent and OnControlEvent for Event Manager</li>
+	<li><a href="#OnKeyEvent">OnKeyEvent</a></li>
+	<li><a href="#OnControlEvent">OnControlEvent</a></li>
+    <li><h3>xOBSE v0021.8</h3></li>
+    <li><a href="#GetBaseAV3">GetBaseAV3</a>/<a href="#GetBaseAV3C">GetBaseAV3C</a></li>
+    <li>GetBaseAV2(C) functions are deprecated</li>
+	<li><a href="#IsNaked">IsNaked</a></li>
+    <li><h3>xOBSE v0021.5</h3></li>
+	<li><a href="#EventHandlerExist">EventHandlerExist</a></li>
+</ul>
 
-<p>OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href="#User_Defined_Events">user-defined events</a>, and includes the following new commands:</p><ul>
+
+<h2><a id="New_Functions">New Features in OBSE v0021</a></h2>
+
+<p>Being from 2013, the additions of OBSE v0021 aren't exactly new, but since the online documentation still links to the v0020 one, the changes of v0021 will remain listed here for now, for convenience.<br>
+OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href="#User_Defined_Events">user-defined events</a>, and includes the following new commands:</p><ul>
 	<li><a href="#HasTail">HasTail</a></li>
 	<li><a href="#GetLuckModifiedSkill">GetLuckModifiedSkill</a></li>
 	<li><a href="#SetCellMusicType">SetCellMusicType</a></li>
@@ -359,8 +380,6 @@
 	<li><a href="#SetActorMaxSwimBreath">SetActorMaxSwimBreath</a></li>
 	<li><a href="#OverrideActorSwimBreath">OverrideActorSwimBreath</a></li>
 	<li><a href="#SetFlyCameraSpeedMult">SetFlyCameraSpeedMult</a></li>
-	<li><a href="#IsNaked">IsNaked</a></li>
-
 </ul>
 
 <h2><a id="Function_Syntax_Format">Function Syntax Format</a></h2>
@@ -1911,8 +1930,8 @@
 <p><a id="PlayIdle" class="f" href="http://cs.elderscrolls.com/index.php?title=PlayIdle">PlayIdle</a> - attempts to make the calling actor play the specified idle animation. The animation must be one defined in the editor's Gameplay > Idle Animations window. Pass 1 for the forceIdle parameter to force the actor to play the idle regardless of any other animations currently playing.<br />
 <code class="s">(idlePlayed:bool) ref.PlayIdle idleAnim:ref <span class="op">forceIdle:bool</span></code></p>
 
-<p><a id="IsNaked" class="f" href="http://cs.elderscrolls.com/index.php?title=IsNaked">IsNaked</a> - returns 1 if the calling actor is naked, 0 otherwise. Naked means without a lowerbody equipment, and if requireUpper is 1 also requre an upperbody equipped <br />
-<code class="s">(isNaked:bool) reference.IsNaked <span class="op">requireUpperbody: bool</span></code></p>
+<p><a id="IsNaked" class="f" href="http://cs.elderscrolls.com/index.php?title=IsNaked">IsNaked</a> - returns 1 if the calling actor is naked, 0 otherwise. Naked means without a lowerbody equipment. If requireUpperbody is 1 it also requires an upperbody equipment.<br />
+<code class="s">(isNaked:bool) reference.IsNaked <span class="op">requireUpperbody:bool</span></code></p>
 
 <h3><a id="AI_Package">AI Package</a></h3>
 
@@ -5675,8 +5694,8 @@ End</pre>
 	<tr><td>QQQ	</td><td>NONE</td><td>exiting via QQQ/QuitGame console command</td></tr>
 	<tr><td>OnNewGame</td><td>NONE</td><td>user starts a new game from the main menu</td></tr>
 	<tr><td>OnSaveIni</td><td>postSave:bool</td><td>Invoked before (postSave=false) and after (postSave=true) the game's ini settings are saved to the ini file. Not invoked when saving ini settings when quitting the game - use an ExitGame handler if settings must be reset before the ini is saved at game exit</td></tr>
-	<tr><td>OnKeyEvent</td><td>key:int  action:int</td><td>Invoked when the key is pressed (action 0) released (action 1) or hold (action 2). Experimental</td></tr>
-    <tr><td>OnControlEvent</td><td>control:int  action:int</td><td>Invoked when the control is pressed (action 0) released (action 1) or hold (action 2). Experimental</td></tr>
+	<tr><td id="OnKeyEvent">OnKeyEvent</td><td>key:int  action:int</td><td>Invoked when the key is pressed (action 0) released (action 1) or hold (action 2). Experimental</td></tr>
+    <tr><td id="OnControlEvent">OnControlEvent</td><td>control:int  action:int</td><td>Invoked when the control is pressed (action 0) released (action 1) or hold (action 2). Experimental</td></tr>
 </table>
 
 <p>For events associated with block types, you may provide a specific value for any, all, or none of the arguments when registering an event handler. The first argument is referred to by the name "first" or "ref" and the second as "second" or "object", regardless of the names of the argument variables in your function script (exception: for OnHealthDamage, "second" or "object" refers to the damaged actor). Doing so allows you to filter out events you're not interested in. For instance, to handle events involving the player being hit by another actor, use <code>SetEventHandler OnHit yourScript first::playerRef</code>. To handle events in which the player, and only the player, hits anyone else, use <code>SetEventHandler OnHit yourScript second::playerRef</code>. To handle the player being affected by a Restore Health magic effect, use <code>SetEventHandler OnMagicEffectHit yourScript first::playerRef second::"REHE"</code>.</p>
@@ -5721,6 +5740,9 @@ Example usage:
 </pre></code>
 <p><a id="RemoveEventHandler" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveEventHandler">RemoveEventHandler</a> - removes the specified script as an event handler for the specified event. Two optional arguments can be supplied as key::value pairs to filter events according to the target and/or object. If both filters are omitted, all event handlers matching the script and event will be removed. If only one filter is omitted, all handlers matching the script, event, and the other filter will be removed. Returns true if at least one matching event handler was found and removed, false otherwise.<br />
 <code class="s">(removed:bool) RemoveEventHandler eventID:string functionScript:ref <span class="op">filter1:pair filter2:pair</span></code></p>
+
+<p><span id="EventHandlerExist" class="f">EventHandlerExist</span> - checks if the specified script is set as an event handler for the specified event. Two optional arguments can be supplied as key::value pairs to filter events according to the target and/or object. If both filters are omitted, all event handlers matching the script and event will return true.<br />
+<code class="s">(exists:bool) EventHandlerExist eventID:string functionScript:ref <span class="op">filter1:pair filter2:pair</span></code></p>
 
 <p><a id="GetCurrentEventName" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentEventName">GetCurrentEventName</a> - When called from within an event handler, returns the name of the event currently being handled, as defined <a href="#Events">above</a>.<br />
 <code class="s">(eventName:string) GetCurrentEventName</code></p>
