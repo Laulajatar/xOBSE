@@ -4843,7 +4843,15 @@ Two one-dimensional arrays (as opposed to two-dimensional vectors) cannot be mul
 
 <p>Output functions are used to display messages. Some take a string containing format specifiers and an optional list of up to 20 variables which may include reference variables. Format specifiers include all of those used by the <code>Message</code> and <code>MessageBox</code> functions, as well as additional specifiers.</p>
 
-<p><a id="PrintToConsole" class="f" href="http://cs.elderscrolls.com/index.php?title=PrintToConsole">PrintToConsole</a> - prints a formatted message to the console using the extended format specifiers<br />
+<p><a id="MessageEX" class="f" href="https://cs.elderscrolls.com/index.php?title=MessageEx">MessageEX</a> - prints a formatted message using the extended <a href="#Format_Specifiers">format specifiers</a> to the top-left corner of the screen.<br />
+It is recommended to pass a string_var to the vanilla function "Message" instead, unless you need the <a href="#SetMessageSound">SetMessageSound</a> or <a href="#SetMessageIcon">SetMessageIcon</a> functions.<br />
+<code class="s">(nothing) MessageEX <a href="#Format_Specifiers">formatString</a>:string <span class="op">var1 var2 ... var20 duration:int</span></code></p>
+
+<p><a id="MessageBoxEX" class="f" href="https://cs.elderscrolls.com/index.php?title=MessageBoxEx">MessageBoxEX</a> - 
+displays a formatted messagebox using the extended <a href="#Format_Specifiers">format specifiers</a>. Format specifiers may appear within buttons. Button text should be included within the format string, separated by a pipe character when called from a script or the '@' character when called from the console.<br />
+<code class="s">(nothing) MessageBoxEX <a href="#Format_Specifiers">formatString</a>:string <span class="op">var1 var2 ... var20</span></code></p>
+
+<p><a id="PrintToConsole" class="f" href="http://cs.elderscrolls.com/index.php?title=PrintToConsole">PrintToConsole</a> - prints a formatted message to the console using the extended <a href="#Format_Specifiers">format specifiers</a>.<br />
 <code class="s">(nothing) PrintToConsole <a href="#Format_Specifiers">formatString</a>:string <span class="op">var1 var2 ... var20</span></code><br />
 <code class="s">(nothing) PrintC <a href="#Format_Specifiers">formatString</a>:string <span class="op">var1 var2 ... var20</span></code></p>
 
@@ -4862,7 +4870,7 @@ Two one-dimensional arrays (as opposed to two-dimensional vectors) cannot be mul
 <p><a id="SetMessageSound" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMessageSound">SetMessageSound</a> - sets the sound which is to be played by the next call to <code>MessageEX</code>. The sound must be defined in the Sounds branch of the Object Window. Once <code>MessageEX</code> has been called the sound is cleared.<br />
 <code class="s">(nothing) SetMessageSound soundID:string</code></p>
 
-<p><a id="SetMessageIcon" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMessageIcon">SetMessageIcon</a> - sets the icon which is to be displayed to the left of the text for the next call to <code>MessageEX</code>. The icon is a .dds file located in the folder "Data\Textures\Menus\" or a subfolder thereof. Once <code>MessageEX</code> has been called the icon will be cleared.<br />
+<p><a id="SetMessageIcon" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMessageIcon">SetMessageIcon</a> - sets the icon which is to be displayed to the left of the text for the next call to <code>MessageEX</code>. The icon is a .dds file located in the folder "Data\Textures\Menus\" or a subfolder thereof. The full path must be entered starting with "Data". Once <code>MessageEX</code> has been called the icon will be cleared.<br />
 <code class="s">(nothing) SetMessageIcon iconPath:string</code></p>
 
 <p><a id="DebugPrint" class="f" href="http://cs.elderscrolls.com/index.php?title=DebugPrint">DebugPrint</a> - prints a message to the console only if debug mode has been enabled for the mod from which the calling script originates. Use <code>SetDebugMode</code> to toggle debug messages on or off. <br />
@@ -7581,13 +7589,12 @@ SetHair<sup>13</sup></a><br />
 	<li>SetIconPathEX - use <a href="#SetTexturePath">SetTexturePath</a></li>
 	<li>GetIconPath - use <a href="#GetTexturePath">GetTexturePath</a></li>
 	<li>SetModelPathEX - pass a string_var to <code>SetModelPath</code></li>
-	<li>MessageBoxEx - pass a string_var to <code>MessageBox</code></li>
 	<li>GetBaseAV2 (C) - replaced by <a href="#GetBaseAV3">GetBaseAV3 (C)</a></li>
 	<li>MenuHoldKey - use <a href="#HoldKey">HoldKey</a></li>
 	<li>MenuReleaseKey - use <a href="#ReleaseKey">ReleaseKey</a></li>
 	<li>MenuTapKey - use <a href="#TapKey">TapKey</a></li>
     <li>RefreshControlMap - has no effect</li>
-    <li>SetAltControl - don't correctly swap binded mouse keys. Use use <a href="#SetAltControl2">SetAltControl2</a></li> 
+    <li>SetAltControl - doesn't correctly swap bound mouse keys. Use <a href="#SetAltControl2">SetAltControl2</a> instead</li> 
 </ul>
 
 <p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a></p></body>
