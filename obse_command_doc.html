@@ -386,7 +386,99 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <pre class="code">(returnValueName:returnValueType)    reference.FunctionName    parameter1:type  parameter2:type</pre>
 
-<p><span class="op">optional</span> - optional parameters or references are in italics</p><table>	<caption>Parameter Types: designated after colon</caption>	<tr>		<th>float</th>		<td>a positive or negative decimal number</td>		<td>3.1415</td>	</tr>		<tr class="alt">		<th>int</th>		<td>a positive or negative integer</td>		<td>100, -98765</td>	</tr>	<tr>		<th>ref</th>		<td>a ref</td>		<td>objectID</td>	</tr>	<tr class="alt">		<th>chars</th>		<td>a 4 character magic effect code</td>		<td>FIDG, Z001</td>	</tr>	<tr>		<th>string</th>		<td>a set of characters in quotes</td>		<td>"Uriel Septim"</td>	</tr>	<tr class="alt">		<th>bool</th>		<td>a short with only 2 values: 1 for true and 0 for false</td>		<td>1, 0</td>	</tr></table><table>	<caption>Additional OBSE parameter types</caption>	<tr>		<th>formatString</th>		<td>a string containing zero or more <a href="#Format_Specifiers">format specifiers</a> followed by up totwenty variables</td>	</tr>	<tr class="alt">		<th>string_var</th>		<td>a variable defined as a <a href="#String_Variables">string_var</a>, with a unique ID representing a string of characters</td>	</tr>	<tr>		<th>array_var</th>		<td>an <a href="#Array_Variables">array_var</a> variable, with a unique ID representing an array of keys and values</td>	</tr>	<tr class="alt">		<th>array</th>		<td>an array, not necessarily stored in a variable. (ex: <strong>someArr[1:4]</strong> is an array but not an array_var)</td>	</tr>	<tr>		<th>arrayKey</th>		<td>an array key (either a string, integer, or float)</td>	</tr>	<tr class="alt">		<th>Array</th>		<td>an array of type Array, with integer keys</td>	</tr>	<tr>		<th>StringMap</th>		<td>an array of type StringMap, with string keys</td>	</tr>	<tr class="alt">		<th>Map</th>		<td>an array of type Map, with floating point keys</td>	</tr>	<tr>		<th><em>expr</em></th>		<td>an OBSE <a href="#OBSE_Expressions">expression</a></td>	</tr>	<tr class="alt">		<th>multi</th>		<td>a value of any type float, short, string, or array, e.g. an array element or a function return value</td>	</tr></table>
+<p><span class="op">optional</span> - optional parameters or references are in italics</p>
+    <table>
+        <caption>Vanilla parameter Types: designated after colon</caption>
+        <tr>
+            <th>float</th>
+            <td>a positive or negative decimal number*</td>
+            <td>3.1415</td>
+        </tr>
+        <tr class="alt">
+            <th>short</th>
+            <td>a positive or negative integer in range -32768 to 32767**</td>
+            <td>100, -15765</td>
+        </tr>
+        <tr>
+            <th>long</th>
+            <td>a positive or negative integer in range -2147483648 to 2147483647***</td>
+            <td>123987</td>
+        </tr>
+        <tr class="alt">
+            <th>int</th>
+            <td>an alias for short</td>
+            <td>100, -15765</td>
+        </tr>
+        <tr>
+            <th>ref</th>
+            <td>a ref</td>
+            <td>objectID</td>
+        </tr>
+        <tr class="alt">
+            <th>chars</th>
+            <td>a 4 character magic effect code</td>
+            <td>FIDG, Z001</td>
+        </tr>
+        <tr>
+            <th>string</th>
+            <td>a set of characters in quotes</td>
+            <td>"Uriel Septim"</td>
+        </tr>
+        <tr class="alt">
+            <th>bool</th>
+            <td>a short with only 2 values: 1 for true and 0 for false</td>
+            <td>1, 0</td>
+        </tr>
+    </table>
+    <p>*A float will not accurately display more than 7 digits.</p>
+    <p>**Longer short/int variables don't actually get cut off, but some functions might behave unpredictable if the value doesn't match the parameter type.</p>
+    <p>***In Oblivion, all ints are actually stored as floats, so they experience the same limitations as floats, and so cannot actually reach the ranges that a long should be able to reach. The largest integer you can reliably store in a long var is 16,777,216.</p>
+    <p>Assinging a float value to an integer will round them off. If a variable is a Global, then it will always be a float and therefore will not round off the decimal values. Keep that in mind when using variables as parameter.</p>
+    <table>
+        <caption>Additional OBSE parameter types</caption>
+        <tr>
+            <th>formatString</th>
+            <td>a string containing zero or more <a href="#Format_Specifiers">format specifiers</a> followed by up to twenty variables</td>
+        </tr>
+    <tr class="alt">
+        <th>string_var</th>
+        <td>a variable defined as a <a href="#String_Variables">string_var</a>, with a unique ID representing a string of characters</td>
+    </tr>
+    <tr>
+        <th>array_var</th>
+        <td>an <a href="#Array_Variables">array_var</a> variable, with a unique ID representing an array of keys and values</td>
+    </tr>
+    <tr class="alt">
+        <th>array</th>
+        <td>an array, not necessarily stored in a variable. (ex: <strong>someArr[1:4]</strong> is an array but not an array_var)</td>
+    </tr>
+    <tr>
+        <th>arrayKey</th>
+        <td>an array key (either a string, integer, or float)</td>
+    </tr>
+    <tr class="alt">
+        <th>Array</th>
+        <td>an array of type Array, with integer keys</td>
+    </tr>
+    <tr>
+        <th>StringMap</th>
+        <td>an array of type StringMap, with string keys</td>
+    </tr>
+    <tr class="alt">
+        <th>Map</th>
+        <td>an array of type Map, with floating point keys</td>
+    </tr>
+    <tr>
+        <th>
+            <em>expr</em>
+        </th>
+        <td>an OBSE <a href="#OBSE_Expressions">expression</a></td>
+    </tr>
+    <tr class="alt">
+        <th>multi</th>
+        <td>a value of any type float, short, string, or array, e.g. an array element or a function return value</td>
+    </tr>
+</table>
 
 <h2><a id="Function_Calling_Conventions">Function Calling Conventions:</a></h2>
 
