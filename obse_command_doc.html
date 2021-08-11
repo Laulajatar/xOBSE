@@ -556,9 +556,11 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(isEssential:bool) reference.IsRefEssential</code></p>
 
 <p><a id="SetRefEssential" class="f" href="http://cs.elderscrolls.com/index.php?title=SetRefEssential">SetRefEssential</a> - sets the calling ref to be essential or not<br />
+<b>Note: </b>Although used on a reference, this function changes the Essential flag on the Base Object, thus affecting all references from that Base Object.<br />
 <code class="s">reference.SetRefEssential isEssential:bool</code></p>
 
 <p><a id="GetActorLightAmount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActorLightAmount">GetActorLightAmount</a> - returns a float describing the amount of light falling on an actor, or 100 if the actor is not in high/medium-high process.<br />
+<b>Note: </b>The values appear to range from 0.00 for complete darkness to 100.00 for very bright light.<br />
 <code class="s">(lightAmount:float) reference.GetActorLightAmount</code></p>
 
 <p><a id="CanCorpseCheck" class="f" href="http://cs.elderscrolls.com/index.php?title=CanCorpseCheck">CanCorpseCheck</a> - returns 1 if the Can Corpse Check flag is set on the actor<br />
@@ -581,7 +583,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="GetNthFaction" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthFaction">GetNthFaction</a> - returns the nth faction to which the actor belongs<br />
 <code class="s">(faction:ref) <span class="op">reference.</span>GetNthFaction  whichFaction:short <span class="op">actor:ref</span></code></p>
 
-<p><a id="GetActorSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActorSoulLevel">GetActorSoulLevel</a> - returns the soul level of any actor. If an NPC it returns Grand, otherwise if a creature it returns the creature's soul level.<br />
+<p><a id="GetActorSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActorSoulLevel">GetActorSoulLevel</a> - returns the <a href="#Soul_Level">soul level</a> of any actor. If an NPC it returns Grand, otherwise if a creature it returns the creature's soul level.<br />
 <code class="s">(soulLevel:int) <span class="op">reference.</span>GetActorSoulLevel <span class="op">actor:ref</span></code></p>
 
 <p><a id="HasLowLevelProcessing" class="f" href="http://cs.elderscrolls.com/index.php?title=HasLowLevelProcessing">HasLowLevelProcessing</a> - returns 1 if the actor has low level processing enabled<br />
@@ -617,7 +619,8 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="SetLowLevelProcessing" class="f" href="http://cs.elderscrolls.com/index.php?title=SetLowLevelProcessing">SetLowLevelProcessing</a> - turns low level processing on or off for the actor. Note that this sets the No Low Level Processing flag to the opposite of the passed value.<br />
 <code class="s">(nothing) <span class="op">reference.</span>SetLowLevelProcessing flag:int <span class="op">actor:ref</span></code></p>
 
-<p><a id="SetPCLevelOffset" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCLevelOffset">SetPCLevelOffset</a> - changes the PC Level Offset flag on the actor, and optionally specifies the minimum andmaximum levels. If minLevel or maxLevel is omitted or passed as -1, the existing value will be retained. Note that changes to the min/max levels are not saved in the savegame.<br />
+<p><a id="SetPCLevelOffset" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCLevelOffset">SetPCLevelOffset</a> - changes the PC Level Offset flag on the actor, and optionally specifies the minimum andmaximum levels. If minLevel or maxLevel is omitted or passed as -1, the existing value will be retained.<br />
+<b>Note:</b> Changes to the min/max levels are not saved in the savegame.<br />
 <code class="s">(nothing) <span class="op">reference.</span>SetPCLevelOffset flag:int <span class="op">minLevel:int maxLevel:int actor:ref</span></code></p>
 
 <p><a id="GetNumPackages" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNumPackages">GetNumPackages</a> - returns the number of AI packages in the actor's package list<br />
@@ -957,6 +960,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(description:string) <span class="op">ref</span>.GetDescription <span class="op">object:ref skillrank:int</span></code></p>
 
 <p><a id="SetDescription" class="f" href="http://cs.elderscrolls.com/index.php?title=SetDescription">SetDescription</a> - modifies the text of a TESDescription (e.g. book, class, skill, skill level, etc). The modified description will be used for the remainder of the game session. To modify the text displayed when achieving a new level of mastery (Apprentice, Journeyman, etc) in a skill, pass the skill as the second argument and a skill level as the third, where skill level ranges from 0 (Apprentice) to 3 (Master)<br />
+<b>Note: </b>Calling <code>SetDescription</code> on a skill while omitting the optional skillLevel argument sets the general description of the skill as well as all 4 mastery levels. Currently there is no way to only set the general skill description.<br />
 <code class="s">(success:bool) <span class="op">reference.</span>SetDescription description:string<span class="op"> form:ref</span><span class="op"> skillLevel:int</span></code></p>
 
 <h3><a id="Edible">Edible</a></h3>
@@ -4844,7 +4848,7 @@ Two one-dimensional arrays (as opposed to two-dimensional vectors) cannot be mul
 <p>Output functions are used to display messages. Some take a string containing format specifiers and an optional list of up to 20 variables which may include reference variables. Format specifiers include all of those used by the <code>Message</code> and <code>MessageBox</code> functions, as well as additional specifiers.</p>
 
 <p><a id="MessageEX" class="f" href="https://cs.elderscrolls.com/index.php?title=MessageEx">MessageEX</a> - prints a formatted message using the extended <a href="#Format_Specifiers">format specifiers</a> to the top-left corner of the screen.<br />
-It is recommended to pass a string_var to the vanilla function "Message" instead, unless you need the <a href="#SetMessageSound">SetMessageSound</a> or <a href="#SetMessageIcon">SetMessageIcon</a> functions.<br />
+It is recommended to pass a string_var to the vanilla function <code>Message</code> instead, unless you need the <a href="#SetMessageSound">SetMessageSound</a> or <a href="#SetMessageIcon">SetMessageIcon</a> functions.<br />
 <code class="s">(nothing) MessageEX <a href="#Format_Specifiers">formatString</a>:string <span class="op">var1 var2 ... var20 duration:int</span></code></p>
 
 <p><a id="MessageBoxEX" class="f" href="https://cs.elderscrolls.com/index.php?title=MessageBoxEx">MessageBoxEX</a> - 
@@ -4868,6 +4872,7 @@ displays a formatted messagebox using the extended <a href="#Format_Specifiers">
 <p>The script displays a messageBox in the following format:</p><pre class="msgbox">	Press TAB to summon a companion	                  Cost: 500 gold	               [Adrian Decanus]	                   [Shady Sam]	                     [Cancel]</pre>
 
 <p><a id="SetMessageSound" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMessageSound">SetMessageSound</a> - sets the sound which is to be played by the next call to <code>MessageEX</code>. The sound must be defined in the Sounds branch of the Object Window. Once <code>MessageEX</code> has been called the sound is cleared.<br />
+<b>Note: </b>This function takes a string as soundID, not a ref, so it will not complain if the sound does not exist.<br />
 <code class="s">(nothing) SetMessageSound soundID:string</code></p>
 
 <p><a id="SetMessageIcon" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMessageIcon">SetMessageIcon</a> - sets the icon which is to be displayed to the left of the text for the next call to <code>MessageEX</code>. The icon is a .dds file located in the folder "Data\Textures\Menus\" or a subfolder thereof. The full path must be entered starting with "Data". Once <code>MessageEX</code> has been called the icon will be cleared.<br />
@@ -5293,7 +5298,8 @@ end
 
 <p>Additionally in v0017, support for string operations has been integrated into the language via OBSE expressions, which leaves functions such as <code>sv_Construct</code>, <code>sv_Substring</code>, etc. mostly deprecated.</p>
 
-<p><a id="sv_Construct" class="f" href="http://cs.elderscrolls.com/index.php?title=sv_Construct">sv_Construct</a> - [text has been deleted]<br />
+<p><a id="sv_Construct" class="f" href="http://cs.elderscrolls.com/index.php?title=sv_Construct">sv_Construct</a> - constructs a string from a format string and set of variables and assigns the result to a string variable.<br />
+While mostly no longer needed due to OBSE expressions being able to handle string operations, there are some uses for this still. Most noteably when OBSE expressions can't be used, like in custom ini files, or when certain <a href="#Format_Specifiers">format specifiers</a> are needed.<br />
 <code class="s">(nothing) sv_Construct <a href="#Format_Specifiers">formatString</a>:string <span class="op">var1 var2 ... var20</span> variableToSet:string_var</code></p>
 
 <p><a id="sv_Destruct" class="f" href="http://cs.elderscrolls.com/index.php?title=sv_Destruct">sv_Destruct</a> - destroys a string variable, setting its value to zero and preventing its contents from being saved in the savegame. Two different syntaxes are supported: the first should be used in an assignment with no parameters, using the <code>Set</code> keyword: <code>set stringVar to sv_Destruct</code>. The second is used without assignment and accepts up to ten string variables as arguments, destroying them all: <code>sv_Destruct var1 var2 ... var10</code>.<br />
