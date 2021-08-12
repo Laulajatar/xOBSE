@@ -561,6 +561,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><a id="GetActorLightAmount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActorLightAmount">GetActorLightAmount</a> - returns a float describing the amount of light falling on an actor, or 100 if the actor is not in high/medium-high process.<br />
 <b>Note: </b>The values appear to range from 0.00 for complete darkness to 100.00 for very bright light.<br />
+<b>Note: </b>Without EngineBugFixes, some creatures (like horses and trolls) will always report a light level of 0.<br />
 <code class="s">(lightAmount:float) reference.GetActorLightAmount</code></p>
 
 <p><a id="CanCorpseCheck" class="f" href="http://cs.elderscrolls.com/index.php?title=CanCorpseCheck">CanCorpseCheck</a> - returns 1 if the Can Corpse Check flag is set on the actor<br />
@@ -647,6 +648,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(powers:Array) ref.GetUsedPowers</code></p>
 
 <p><a id="HasSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=HasSpell">HasSpell</a> - returns whether the actor has the specified spell<br />
+<b>Notes: </b>Return always 0 on Creatures. (Todo: Verify)<br />
 <code class="s">(hasSpell:bool) reference.HasSpell spell:ref</code></p>
 
 <p><a id="RemoveBaseSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveBaseSpell">RemoveBaseSpell</a> - the game's RemoveSpell removes a spell from a base actor but must be called on a reference. This command does the same thing as RemoveSpell but takes a base object as an argument, returning 1 if the spell was removed.<br />
@@ -735,6 +737,8 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(nothing) reference.SetAVC <a href="#Actor_Value_Codes">actorValueCode</a>:int value:int</code></p>
 
 <p><a id="ModActorValue2" class="f" href="http://cs.elderscrolls.com/index.php?title=ModActorValue2">ModActorValue2</a> - modifies the current value without changing the base value. Acts like a spell: a negative number reduces the value which can be restored and a positive value restores values without exceeding the maximum of the stat.<br />
+<b>Note: </b>The value is an unrounded integer; ModAV2 StatName 3.9 would result in a 3 point change.<br />
+<b>Note: </b>Attempting to mod a positive-only stat like health and attributes to negative values will crash the game. (Todo: Verify)<br />
 <code class="s">(nothing) reference.ModActorValue2 actorValueName:string value:int</code><br />
 <code class="s">(nothing) reference.ModAV2 actorValueName:string value:int</code></p>
 
@@ -918,6 +922,9 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetNumItems" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNumItems">GetNumItems</a> - returns the number of different object types in the container<br />
+<b>Note: </b>This function can be used to check if a container is empty.<br />
+<b>Note: </b>Keep in mind that gold counts as an item.<br />
+<b>Note: </b>Using this function every frame will significantly drop FPS. (Todo: Verify)<br />
 <code class="s">(count:int) reference.GetNumItems</code></p>
 
 <p><a id="GetInventoryObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetInventoryObject">GetInventoryObject</a> - returns the objectID of the Nth item type in the container<br />
@@ -930,7 +937,8 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(respawns:bool) <span class="op">reference</span>.GetContainerRespawns <span class="op">objectID:ref</span></code><br />
 <code class="s">(respawns:bool) <span class="op">reference</span>.IsUnsafeRespawns <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetContainerRespawns" class="f" href="http://cs.elderscrolls.com/index.php?title=SetContainerRespawns">SetContainerRespawns</a> - sets whether the container's contents respawn. <strong>Note - this change is not persisted in the save game.</strong><br />
+<p><a id="SetContainerRespawns" class="f" href="http://cs.elderscrolls.com/index.php?title=SetContainerRespawns">SetContainerRespawns</a> - sets whether the container's contents respawn.<br />
+<b>Note: </b>This change is not persisted in the save game.<br />
 <code class="s">(nothing) <span class="op">reference.</span>SetContainerRespawns respawns:bool <span class="op">objectID:ref</span></code><br />
 <code class="s">(nothing) <span class="op">reference.</span>SetUnsafeContainer respawns:bool <span class="op">objectID:ref</span></code></p>
 
@@ -961,6 +969,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><a id="SetDescription" class="f" href="http://cs.elderscrolls.com/index.php?title=SetDescription">SetDescription</a> - modifies the text of a TESDescription (e.g. book, class, skill, skill level, etc). The modified description will be used for the remainder of the game session. To modify the text displayed when achieving a new level of mastery (Apprentice, Journeyman, etc) in a skill, pass the skill as the second argument and a skill level as the third, where skill level ranges from 0 (Apprentice) to 3 (Master)<br />
 <b>Note: </b>Calling <code>SetDescription</code> on a skill while omitting the optional skillLevel argument sets the general description of the skill as well as all 4 mastery levels. Currently there is no way to only set the general skill description.<br />
+<b>Note: </b>For books, setting a description longer than 65535 characters crashes the game when the book is opened in game. (Todo: Verify)<br />
 <code class="s">(success:bool) <span class="op">reference.</span>SetDescription description:string<span class="op"> form:ref</span><span class="op"> skillLevel:int</span></code></p>
 
 <h3><a id="Edible">Edible</a></h3>
@@ -995,6 +1004,9 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(enchantment:ref) <span class="op">reference.</span>GetEnchantment <span class="op">objectID:ref</span></code></p>
 
 <p><a id="SetEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=SetEnchantment">SetEnchantment</a> - sets the specific enchantment on the object and returns any previous enchantment<br />
+<b>Note: </b>For equipped armor and clothing, the new enchantment will only take affect after the actor unequips and re-equips the item.<br />
+<b>Note: </b>Changes to weapon enchantments occur immediately, but the shader will not update until the actor unequips and re-equips the weapon.<br />
+<b>Note: </b>Doesn't work on arrows.<br />
 <code class="s">(oldEnchantment:ref) <span class="op">reference.</span>SetEnchantment nuEnchantment:ref <span class="op">objectID:ref</span></code></p>
 
 <p><a id="RemoveEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveEnchantment">RemoveEnchantment</a> - removes the enchantment from the object and returns any previous enchantment<br />
@@ -1038,14 +1050,15 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetEquipmentSlot" class="f" href="http://cs.elderscrolls.com/index.php?title=GetEquipmentSlot">GetEquipmentSlot</a> - returns the equipment slot or slots taken by the object<br />
+<b>Note: </b>For multiple-slot items, use <code><a href="#GetBipedSlotMask">GetBipedSlotMask</a></code> to determine which slots are covered by the item.<br />
 <code class="s">(<a href="#Equipment_Slot_IDs">slot</a>:int) <span class="op">reference</span>.GetEquipentSlot <span class="op">objectID:ref</span></code></p>
 
 <p><a id="SetEquipmentSlot" class="f" href="http://cs.elderscrolls.com/index.php?title=SetEquipmentSlot">SetEquipmentSlot</a> - sets the equipment slot or slots taken by the object.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetEquipmentSlot slot:int <span class="op">objectID:ref</span></code></p>
-
 <p>See also: <a href="#GetEquippedObject">GetEquippedObject</a></p>
 
 <p><a id="EquipMe" class="f" href="http://cs.elderscrolls.com/index.php?title=EquipMe">EquipMe</a> - when called on an object in an actor's inventory, attempts to equip the object on the actor and runs the object's <code>OnEquip</code> script block if applicable. If called on an inventory reference with a count greater than one, equips only one unless the item is a stack of arrows, in which case the entire stack is equipped.<br />
+<b>Note: </b>This function will not work on non-playable items. (Todo: Verify. Also not on NPCs?)<br />
 <code class="s">(nothing) ref.EquipMe</code></p>
 
 <p><a id="UnequipMe" class="f" href="http://cs.elderscrolls.com/index.php?title=UnequipMe">UnequipMe</a> - when called on an object in an actor's inventory, attempts to unequip the object on the actor and runs the object's <code>OnUnequip</code> script block if applicable<br />
@@ -1066,6 +1079,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetBaseObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBaseObject">GetBaseObject</a> - returns the base object of the reference<br />
+<b>Note: </b>If Ref is a base object already, then calling BaseObjectRef.GetBaseObject will halt the script (quest scripts will show as still running but won't execute any more). (Todo: Verify)<br />
 <code class="s">(objectID:ref) reference.GetBaseObject</code></p>
 
 <p><a id="GetObjectType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetObjectType">GetObjectType</a> - returns a type code for each type of object<br />
@@ -1115,6 +1129,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(weight:float) <span class="op">reference</span>.GetWeight <span class="op">objectID:ref</span></code></p>
 
 <p><a id="SetWeight" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeight">SetWeight</a> - sets the weight of the type<br />
+<b>Note: </b>If you change the weight of an item while the player has it in their inventory, their encumbrance won't be updated automatically. They have to pick up another item, or you can add/remove another item to force an update.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetWeight nuWeight:float <span class="op">objectID:ref</span></code></p>
 
 <p><a id="ModWeight" class="f" href="http://cs.elderscrolls.com/index.php?title=ModWeight">ModWeight</a> - modifies the weight of the type up or down <br />
@@ -1148,9 +1163,11 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetOpenKey" class="f" href="http://cs.elderscrolls.com/index.php?title=GetOpenKey">GetOpenKey</a> - returns the key used to unlock the calling reference.<br />
+<b>Note: </b>The key reference is only set on one side of the door. If a reference isn't returned, then check its linked door with <code>GetLinkedDoor</code>. (Todo: Verify, request)<br />
 <code class="s">(key:ref) reference.GetOpenKey</code></p>
 
 <p><a id="SetOpenKey" class="f" href="http://cs.elderscrolls.com/index.php?title=SetOpenKey">SetOpenKey</a> - sets the key used to unlock the reference to the specified key.<br />
+<b>Note: </b>Normally, doors only have the key set on one side of the door. Setting the key on both sides of a linked door may produce odd results, so use with caution and check the other side of the door first with <code>GetLinkedDoor</code>.<br />
 <code class="s">(nothing) reference.SetOpenKey key:ref</code></p>
 
 <h3><a id="Magic">Magic</a></h3>
