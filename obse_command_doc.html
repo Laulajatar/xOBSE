@@ -433,7 +433,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
     <p>*A float will not accurately display more than 7 digits.</p>
     <p>**Longer short/int variables don't actually get cut off, but some functions might behave unpredictable if the value doesn't match the parameter type.</p>
     <p>***In Oblivion, all ints are actually stored as floats, so they experience the same limitations as floats, and so cannot actually reach the ranges that a long should be able to reach. The largest integer you can reliably store in a long var is 16,777,216.</p>
-    <p>Assinging a float value to an integer will round them off. If a variable is a Global, then it will always be a float and therefore will not round off the decimal values. Keep that in mind when using variables as parameter.</p>
+    <p>Assinging a float value to an integer will cut them off, not round them (both 2.1 and 2.7 will become 2, while -1,5 will become -1). If a variable is a Global, then it will always be a float and therefore will not cut off the decimal values. Keep that in mind when using variables as parameter.</p>
     <table>
         <caption>Additional OBSE parameter types</caption>
         <tr>
@@ -584,8 +584,8 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="GetNthFaction" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthFaction">GetNthFaction</a> - returns the nth faction to which the actor belongs<br />
 <code class="s">(faction:ref) <span class="op">reference.</span>GetNthFaction  whichFaction:short <span class="op">actor:ref</span></code></p>
 
-<p><a id="GetActorSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActorSoulLevel">GetActorSoulLevel</a> - returns the <a href="#Soul_Level">soul level</a> of any actor. If an NPC it returns Grand, otherwise if a creature it returns the creature's soul level.<br />
-<code class="s">(soulLevel:int) <span class="op">reference.</span>GetActorSoulLevel <span class="op">actor:ref</span></code></p>
+<p><a id="GetActorSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActorSoulLevel">GetActorSoulLevel</a> - returns the soul level of any actor. If an NPC it returns Grand, otherwise if a creature it returns the creature's soul level.<br />
+<code class="s">(<a href="#Soul_Level">soulLevel</a>:int) <span class="op">reference.</span>GetActorSoulLevel <span class="op">actor:ref</span></code></p>
 
 <p><a id="HasLowLevelProcessing" class="f" href="http://cs.elderscrolls.com/index.php?title=HasLowLevelProcessing">HasLowLevelProcessing</a> - returns 1 if the actor has low level processing enabled<br />
 <code class="s">(hasLowProc:bool) <span class="op">reference.</span>HasLowLevelProcessing <span class="op">actor:ref</span></code></p>
@@ -921,19 +921,19 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <h4>Functions:</h4>
 
-<p><a id="GetNumItems" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNumItems">GetNumItems</a> - returns the number of different object types in the container<br />
+<p><a id="GetNumItems" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNumItems">GetNumItems</a> - returns the number of different object types in the container or actor's inventory.<br />
 <b>Note: </b>This function can be used to check if a container is empty.<br />
 <b>Note: </b>Keep in mind that gold counts as an item.<br />
-<b>Note: </b>Using this function every frame will significantly drop FPS. (Todo: Verify)<br />
 <code class="s">(count:int) reference.GetNumItems</code></p>
-
-<p><a id="GetInventoryObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetInventoryObject">GetInventoryObject</a> - returns the objectID of the Nth item type in the container<br />
+<p><a id="GetInventoryObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetInventoryObject">GetInventoryObject</a> - returns the objectID of the Nth item type in the container or actor's inventory<br />
+<b>Note: </b>For most use cases, this function is deprecated. If you need to find all objects in a certain container, check out <a href="#Inventory_Reference">Inventory References</a>.<br />
 <code class="s">(objectID:ref) reference.GetInventoryObject whichObject:int</code></p>
 
-<p><a id="IsContainer" class="f" href="http://cs.elderscrolls.com/index.php?title=IsContainer">IsContainer</a> - returns whether the reference or passed objectID is a container<br />
+<p><a id="IsContainer" class="f" href="http://cs.elderscrolls.com/index.php?title=IsContainer">IsContainer</a> - returns whether the reference or passed objectID is a container.<br />
+<b>Note: </b>Actors do not count as containers.<br />
 <code class="s">(isContainer:bool) <span class="op">reference.</span>IsContainer <span class="op">objectID:ref</span></code></p>
 
-<p><a id="GetContainerRespawns" class="f" href="http://cs.elderscrolls.com/index.php?title=GetContainerRespawns">GetContainerRespawns</a> - returns whether the container's contents repawn<br />
+<p><a id="GetContainerRespawns" class="f" href="http://cs.elderscrolls.com/index.php?title=GetContainerRespawns">GetContainerRespawns</a> - returns whether the container's contents repawn.<br />
 <code class="s">(respawns:bool) <span class="op">reference</span>.GetContainerRespawns <span class="op">objectID:ref</span></code><br />
 <code class="s">(respawns:bool) <span class="op">reference</span>.IsUnsafeRespawns <span class="op">objectID:ref</span></code></p>
 
@@ -945,7 +945,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="GetItems" class="f" href="http://cs.elderscrolls.com/index.php?title=GetItems">GetItems</a> - returns an Array containing all of the items in a container's or actor's inventory. Up to 10 form types may be passed in to restrict the returned items to only include items matching those type(s).<br />
 <code class="s">(items:Array) reference.GetItems <span class="op">type1:int type2:int ... type10:int</span></code></p>
 
-<p><a id="GetBaseItems" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBaseItems">GetBaseItems</a> - returns an Array of StringMaps containing the items present in a base container or actor inventory and the quantity of each. These are the items added to the base object in the editor and may include leveled items. Some, all, or none of the items may be present in the inventory of a specific reference to the base object. Each element of the returned Array is a StringMap with two elements:<br />
+<p><a id="GetBaseItems" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBaseItems">GetBaseItems</a> - returns an Array of StringMaps containing the items present in a base container or actor's inventory and the quantity of each. These are the items added to the base object in the editor and may include leveled items. Some, all, or none of the items may be present in the inventory of a specific reference to the base object. Each element of the returned Array is a StringMap with two elements:<br />
 <span class="ind" style="font-family: monospace;">"item"  : <strong>ref</strong></span> <span style="font-style: italic;">; the item</span><br />
 <span class="ind" style="font-family: monospace;">"count" : <strong>short</strong></span> <span style="font-style: italic;">; the quantity of this item</span><br />
 <code class="s">(items:Array) <span class="op">reference.</span>GetBaseItems <span class="op">baseContainer:ref</span></code></p>
@@ -1078,79 +1078,79 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <h4>Functions:</h4>
 
-<p><a id="GetBaseObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBaseObject">GetBaseObject</a> - returns the base object of the reference<br />
+<p><a id="GetBaseObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBaseObject">GetBaseObject</a> - returns the base object of the reference.<br />
 <b>Note: </b>If Ref is a base object already, then calling BaseObjectRef.GetBaseObject will halt the script (quest scripts will show as still running but won't execute any more). (Todo: Verify)<br />
 <code class="s">(objectID:ref) reference.GetBaseObject</code></p>
 
-<p><a id="GetObjectType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetObjectType">GetObjectType</a> - returns a type code for each type of object<br />
+<p><a id="GetObjectType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetObjectType">GetObjectType</a> - returns a type code for each type of object.<br />
 <code class="s">(<a href="#Form_Type_IDs">type</a>:int) <span class="op">reference.</span>GetObjectType <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsWeapon" class="f" href="http://cs.elderscrolls.com/index.php?title=IsWeapon">IsWeapon</a> - returns whether the object is a weapon<br />
+<p><a id="IsWeapon" class="f" href="http://cs.elderscrolls.com/index.php?title=IsWeapon">IsWeapon</a> - returns whether the object is a weapon.<br />
 <code class="s">(isWeapon:bool) <span class="op">reference.</span>IsWeapon <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsAmmo" class="f" href="http://cs.elderscrolls.com/index.php?title=IsAmmo">IsAmmo</a> - returns whether the object is ammunition<br />
+<p><a id="IsAmmo" class="f" href="http://cs.elderscrolls.com/index.php?title=IsAmmo">IsAmmo</a> - returns whether the object is ammunition.<br />
 <code class="s">(isAmmo:bool) <span class="op">reference.</span>IsAmmo <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsArmor" class="f" href="http://cs.elderscrolls.com/index.php?title=IsArmor">IsArmor</a> - returns whether the object is armor<br />
+<p><a id="IsArmor" class="f" href="http://cs.elderscrolls.com/index.php?title=IsArmor">IsArmor</a> - returns whether the object is armor.<br />
 <code class="s">(isArmor:bool) <span class="op">reference.</span>IsArmor <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsBook" class="f" href="http://cs.elderscrolls.com/index.php?title=IsBook">IsBook</a> - returns whether the object is a book<br />
+<p><a id="IsBook" class="f" href="http://cs.elderscrolls.com/index.php?title=IsBook">IsBook</a> - returns whether the object is a book.<br />
 <code class="s">(isBook:bool) <span class="op">reference.</span>IsBook <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsClothing" class="f" href="http://cs.elderscrolls.com/index.php?title=IsClothing">IsClothing</a> - returns whether the object is clothing<br />
+<p><a id="IsClothing" class="f" href="http://cs.elderscrolls.com/index.php?title=IsClothing">IsClothing</a> - returns whether the object is clothing.<br />
 <code class="s">(isClothing:bool) <span class="op">reference.</span>IsClothing <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsIngredient" class="f" href="http://cs.elderscrolls.com/index.php?title=IsIngredient">IsIngredient</a> - returns whether the object is an ingredient<br />
+<p><a id="IsIngredient" class="f" href="http://cs.elderscrolls.com/index.php?title=IsIngredient">IsIngredient</a> - returns whether the object is an ingredient.<br />
 <code class="s">(isIngredient:bool) <span class="op">reference.</span>IsIngredient <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsKey" class="f" href="http://cs.elderscrolls.com/index.php?title=IsKey">IsKey</a> - returns whether the object is a key<br />
+<p><a id="IsKey" class="f" href="http://cs.elderscrolls.com/index.php?title=IsKey">IsKey</a> - returns whether the object is a key.<br />
 <code class="s">(isKey:bool) <span class="op">reference.</span>IsKey <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsAlchemyItem" class="f" href="http://cs.elderscrolls.com/index.php?title=IsAlchemyItem">IsAlchemyItem</a> - returns whether the object is an alchemy item (potion)<br />
+<p><a id="IsAlchemyItem" class="f" href="http://cs.elderscrolls.com/index.php?title=IsAlchemyItem">IsAlchemyItem</a> - returns whether the object is an alchemy item (potion).<br />
 <code class="s">(isAlchemyItem:bool) <span class="op">reference.</span>IsAlchemyItem <span class="op">objectID:ref</span></code><br />
 <code class="s">(isPotion:bool) <span class="op">reference.</span>IsPotion <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsApparatus" class="f" href="http://cs.elderscrolls.com/index.php?title=IsApparatus">IsApparatus</a> - returns whether the object is an alchemy apparatus<br />
+<p><a id="IsApparatus" class="f" href="http://cs.elderscrolls.com/index.php?title=IsApparatus">IsApparatus</a> - returns whether the object is an alchemy apparatus.<br />
 <code class="s">(isApparatus:bool) <span class="op">reference.</span>IsApparatus <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsSoulGem" class="f" href="http://cs.elderscrolls.com/index.php?title=IsSoulGem">IsSoulGem</a> - returns whether the object is a soul gem<br />
+<p><a id="IsSoulGem" class="f" href="http://cs.elderscrolls.com/index.php?title=IsSoulGem">IsSoulGem</a> - returns whether the object is a soul gem.<br />
 <code class="s">(isSoulGem:bool) <span class="op">reference.</span>IsSoulGem <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsSigilStone" class="f" href="http://cs.elderscrolls.com/index.php?title=IsSigilStone">IsSigilStone</a> - returns whether the object is a sigil stone<br />
+<p><a id="IsSigilStone" class="f" href="http://cs.elderscrolls.com/index.php?title=IsSigilStone">IsSigilStone</a> - returns whether the object is a sigil stone.<br />
 <code class="s">(isSigilStone:bool) <span class="op">reference.</span>IsSigilStone <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsLight" class="f" href="http://cs.elderscrolls.com/index.php?title=IsLight">IsLight</a> - returns whether the object is a light source<br />
+<p><a id="IsLight" class="f" href="http://cs.elderscrolls.com/index.php?title=IsLight">IsLight</a> - returns whether the object is a light source.<br />
 <code class="s">(isLight:bool) <span class="op">reference.</span>IsLight <span class="op">objectID:ref</span></code></p>
 
 <p><a id="IsFlora" class="f" href="http://cs.elderscrolls.com/index.php?title=IsFlora">IsFlora</a> - returns 1 if the object is a harvestable plant.<br />
 <code class="s">(isFlora:bool) <span class="op">reference.</span>IsFlora <span class="op">objectID:ref</span></code></p>
 
-<p><a id="GetWeight" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeight">GetWeight</a> - returns the weight of the type<br />
+<p><a id="GetWeight" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeight">GetWeight</a> - returns the weight of the type.<br />
 <code class="s">(weight:float) <span class="op">reference</span>.GetWeight <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetWeight" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeight">SetWeight</a> - sets the weight of the type<br />
+<p><a id="SetWeight" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeight">SetWeight</a> - sets the weight of the type.<br />
 <b>Note: </b>If you change the weight of an item while the player has it in their inventory, their encumbrance won't be updated automatically. They have to pick up another item, or you can add/remove another item to force an update.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetWeight nuWeight:float <span class="op">objectID:ref</span></code></p>
 
-<p><a id="ModWeight" class="f" href="http://cs.elderscrolls.com/index.php?title=ModWeight">ModWeight</a> - modifies the weight of the type up or down <br />
+<p><a id="ModWeight" class="f" href="http://cs.elderscrolls.com/index.php?title=ModWeight">ModWeight</a> - modifies the weight of the type up or down.<br />
 <code class="s">(nothing) <span class="op">reference.</span>ModWeight modifyBy:float <span class="op">objectID:ref</span></code></p>
 
-<p><a id="GetGoldValue" class="f" href="http://cs.elderscrolls.com/index.php?title=GetGoldValue">GetGoldValue</a> - returns the base gold value of the type<br />
+<p><a id="GetGoldValue" class="f" href="http://cs.elderscrolls.com/index.php?title=GetGoldValue">GetGoldValue</a> - returns the base gold value of the type.<br />
 <code class="s">(goldValue:int) <span class="op">reference</span>.GetGoldValue <span class="op">objectID:ref</span></code></p>
 
 <p><a id="GetFullGoldValue" class="f" href="http://cs.elderscrolls.com/index.php?title=GetFullGoldValue">GetFullGoldValue</a> - returns the full gold value of an item, including the value added by enchantments.<br />
 <code class="s">(goldValue:int) <span class="op">reference.</span>GetFullGoldValue <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetGoldValue" class="f" href="http://cs.elderscrolls.com/index.php?title=SetGoldValue">SetGoldValue</a> - sets the base gold value of the type<br />
+<p><a id="SetGoldValue" class="f" href="http://cs.elderscrolls.com/index.php?title=SetGoldValue">SetGoldValue</a> - sets the base gold value of the type.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetGoldValue nuGoldValue:int <span class="op">objectID:ref</span></code></p>
 
-<p><a id="ModGoldValue" class="f" href="http://cs.elderscrolls.com/index.php?title=ModGoldValue">ModGoldValue</a> - modifies the base gold value of the type up or down<br />
+<p><a id="ModGoldValue" class="f" href="http://cs.elderscrolls.com/index.php?title=ModGoldValue">ModGoldValue</a> - modifies the base gold value of the type up or down.<br />
 <code class="s">(nothing) <span class="op">reference</span>.ModGoldValue modifyBy:float <span class="op">objectID:ref</span></code></p>
 
-<p><a id="IsQuestItem" class="f" href="http://cs.elderscrolls.com/index.php?title=IsQuestItem">IsQuestItem</a> - returns whether the type is a quest item<br />
+<p><a id="IsQuestItem" class="f" href="http://cs.elderscrolls.com/index.php?title=IsQuestItem">IsQuestItem</a> - returns whether the type is a quest item.<br />
 <code class="s">(isQuestItem:bool) <span class="op">reference</span>.IsQuestItem <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetQuestItem" class="f" href="http://cs.elderscrolls.com/index.php?title=SetQuestItem">SetQuestItem</a> - sets whether the type is a quest item<br />
+<p><a id="SetQuestItem" class="f" href="http://cs.elderscrolls.com/index.php?title=SetQuestItem">SetQuestItem</a> - sets whether the type is a quest item.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetQuestItem isQuestItem:bool <span class="op">objectID:ref</span></code></p>
 
 <p><a id="SetCurrentSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetCurrentSoulLevel">SetCurrentSoulLevel</a> - sets the current soul level of the calling soulgem reference.<br />
@@ -1205,14 +1205,14 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(hasEffect:bool) MagicItemHasEffect effect:chars magicItem:ref <span class="op">actorValue:chars</span></code><br />
 <code class="s">(hasEffect:bool) MagicHasEffect effect:chars magicItem:ref <span class="op">actorValue:chars</span></code></p>
 
-<p><a id="MagicItemHasEffectCode" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicItemHasEffectCode">MagicItemHasEffectCode</a> - returns whether the magic item has an effect item with the specified effect code. Uses a long value returned from GetNthEffectItemCode or GetMagicEffectCode. Uses an optional actor value code for use with effects like fortify skill and fortify attribute.<br />
+<p><a id="MagicItemHasEffectCode" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicItemHasEffectCode">MagicItemHasEffectCode</a> - returns whether the magic item has an effect item with the specified effect code. Uses a long value returned from <code>GetNthEffectItemCode</code> or <code>GetMagicEffectCode</code>. Uses an optional actor value code for use with effects like fortify skill and fortify attribute.<br />
 <code class="s">(hasEffect:bool) MagicItemHasEffectCode effectCode:int magicItem:ref <span class="op"><a href="#Actor_Value_Codes">actorValueCode:int</a></span></code><br />
 <code class="s">(hasEffect:bool) MagicHasEffectC effectCode:int magicItem:ref  <span class="op"><a href="#Actor_Value_Codes">actorValueCode:int</a></span></code></p>
 
 <p><a id="MagicItemHasEffectCount" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicItemHasEffectCount">MagicItemHasEffectCount</a> - returns the count of the specified effects on the magic item. Has an optional actorValue name for use with effects like fortify skill and fortify attribute.<br />
 <code class="s">(effectCount:int) MagicItemHasEffectCount effect:chars magicItem:ref actorValueName:chars</code></p>
 
-<p><a id="MagicItemHasEffectCountCode" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicItemHasEffectCountCode">MagicItemHasEffectCountCode</a> -  returns the count of effects with the specified effect code on the magic item. Uses a long value returned from GetNthEffectItemCode or GetMagicEffectCode. Has an optional actorValueCode for use with effects like fortify skill and fortify attribute.<br />
+<p><a id="MagicItemHasEffectCountCode" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicItemHasEffectCountCode">MagicItemHasEffectCountCode</a> -  returns the count of effects with the specified effect code on the magic item. Uses a long value returned from <code>GetNthEffectItemCode</code> or <code>GetMagicEffectCode</code>. Has an optional actorValueCode for use with effects like fortify skill and fortify attribute.<br />
 <code class="s">(effectCount:int) MagicItemHasEffectCountCode effectCode:int magicItem:ref <span class="op"><a href="#Actor_Value_Codes">actorValueCode</a>:int</span></code><br />
 <code class="s">(effectCount:int) MagicItemHasEffectCountC effectCode:int magicItem:ref <span class="op"><a href="#Actor_Value_Codes">actorValueCode</a>:int</span></code></p>
 
@@ -1221,18 +1221,19 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(code:int) GetNthEICode magicItem:ref whichEffect:int</code></p>
 
 <p><a id="GetNthEffectItemMagnitude" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthEffectItemMagnitude">GetNthEffectItemMagnitude</a> - returns the magnitude of the specified effect item.<br />
+<b>Note: </b>Some magic effects will return a negative magnitude, even if the magnitude is unmodified. Frost Damage is confimed to return a negative magnitude.<br />
 <code class="s">(magnitude:int) GetNthEffectItemMagnitude magicItem:ref whichEffect:int</code><br />
 <code class="s">(magnitude:int) GetNthEIMagnitude magicItem:ref whichEffect:int</code></p>
 
 <p><a id="SetNthEffectItemMagnitude" class="f" href="http://cs.elderscrolls.com/index.php?title=SetNthEffectItemMagnitude">SetNthEffectItemMagnitude</a> - sets the magnitude of the specified effect item.<br />
+<b>Note: </b>You can set the magnitude of a spell to a negative number. The spell will have the opposite effect. Results may vary depending on the spell effect and are not verified.<br />
+<b>Note: </b>Frost Damage is confirmed to heal when set to a reversed magnitude, but note that an unmodified Frost Damage magnitude returns a negative number from <code>GetNthEffectItemMagnitude</code>, so setting it to a negative value will still deal damage. To make a Frost Damage effect heal, you must set it to a positive magnitude. This is believed to be true for Fire Damage and Shock Damage as well) (Todo: Verify).<br />
 <code class="s">(nothing) SetNthEffectItemMagnitude nuMagnitude:int magicItem:ref whichEffect:int</code><br />
 <code class="s">(nothing) SetNthEIMagnitude nuMagnitude:int magicItem:ref whichEffect:int</code></p>
 
 <p><a id="ModNthEffectItemMagnitude" class="f" href="http://cs.elderscrolls.com/index.php?title=ModNthEffectItemMagnitude">ModNthEffectItemMagnitude</a> - modifies the magnitude of the specified effect item up or down.<br />
 <code class="s">(nothing) ModNthEffectItemMagnitude modifyBy:float magicItem:ref whichEffect:int</code><br />
-<code class="s">(nothing) ModNthEIMagnitude modifyBy:float magicItem:ref whichEffect:int</code></p>
-
-<p><a id="GetNthEffectItemArea" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthEffectItemArea">GetNthEffectItemArea</a> - returns the area of the specified effect item.<br />
+<code class="s">(nothing) ModNthEIMagnitude modifyBy:float magicItem:ref whichEffect:int</code></p><p><a id="GetNthEffectItemArea" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthEffectItemArea">GetNthEffectItemArea</a> - returns the area of the specified effect item.<br />
 <code class="s">(area:int) GetNthEffectItemArea magicItem:ref whichEffect:int</code><br />
 <code class="s">(area:int) GetNthEIArea magicItem:ref whichEffect:int</code></p>
 
@@ -1249,6 +1250,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(duration:int) GetNthEIDuration magicItem:ref whichEffect:int</code></p>
 
 <p><a id="SetNthEffectItemDuration" class="f" href="http://cs.elderscrolls.com/index.php?title=SetNthEffectItemDuration">SetNthEffectItemDuration</a> - sets the duration of the specified effect item.<br />
+<b>Note: </b>It is not recommended to set the duration to negative values. A normal spell has no effect, while a scripted spell will still run. If cast on the player, the spell icon(s) will briefly apear.<br />
 <code class="s">(nothing) SetNthEffectItemDuration nuDuration:int magicItem:ref whichEffect:int</code><br />
 <code class="s">(nothing) SetNthEIDuration nuDuration:int magicItem:ref whichEffect:int</code></p>
 
@@ -1261,6 +1263,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(<a href="#Magic_Effect_Range">range</a>:int) GetNthEIRange magicItem:ref whichEffect:int</code></p>
 
 <p><a id="SetNthEffectItemRange" class="f" href="http://cs.elderscrolls.com/index.php?title=SetNthEffectItemRange">SetNthEffectItemRange</a> - sets the range of the specified effect item.<br />
+<b>Note: </b>If you set the range of a weapon enchantment item (which are always 1:Touch ranged in the CS) to 0:Self, the effect will apply as a Self-ranged effect, but will still be listed as 'On Strike' in the game UI. The effect will still only trigger on a successful hit with the weapon, and will not work as a constant effect.<br />
 <code class="s">(nothing) SetNthEffectItemRange <a href="#Magic_Effect_Range">nuRange</a>:int magicItem:ref whichEffect:int</code><br />
 <code class="s">(nothing) SetNthEIRange <a href="#Magic_Effect_Range">nuRange</a>:int magicItem:ref whichEffect:int</code></p>
 
@@ -1277,33 +1280,44 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(nothing) SetNthEIAVC <a href="#Actor_Value_Codes">nuActorValue</a>:int magicItem:ref whichEffect:int</code></p>
 
 <p><a id="RemoveNthEffectItem" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveNthEffectItem">RemoveNthEffectItem</a> - removesthe specified effect item.<br />
+<b>Note: </b>If a hostile effect is removed from a Spell so that it does not have any left, the Spell will not automatically become non-hostile. Use <code>SetSpellHostile</code> to update the hostility.<br />
 <code class="s">(nothing) RemoveNthEffectItem magicItem:ref whichEffect:int</code><br />
 <code class="s">(nothing) RemoveNthEffect magicItem:ref whichEffect:int</code></p>
 
 <p><a id="RemoveAllEffectItems" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveAllEffectItems">RemoveAllEffectItems</a> - removes all effect items from the magic item.<br />
+<b>Note: </b>If a hostile effect is removed from a Spell so that it does not have any left, the Spell will not automatically become non-hostile. Use <code>SetSpellHostile</code> to update the hostility.<br />
 <code class="s">(nothing) RemoveAllEffectItems magicItem:ref</code></p>
 
 <p><a id="CopyNthEffectItem" class="f" href="http://cs.elderscrolls.com/index.php?title=CopyNthEffectItem">CopyNthEffectItem</a> - copies the specified effect item from one magic item to another.<br />
+<b>Note: </b>When copying a scripted effect, the script, hostility flag, and school will copy, but not the visuals. Copied scripted effects are completely independent of the original scripted effect. <br />
+<b>Note: </b>Adding a hostile effect to a Spell which previously had none will not make the Spell hostile. Use <code>SetSpellHostile</code> to update the hostility.<br />
+<b>Note: </b>Effects will be added to copied-to magic item, even if that effect is already on the magic item, possibly resulting in two (or more) of the same effects.<br />
 <code class="s">(index:int) CopyNthEffectItem fromObjectID:ref toObjectID:ref whichEffect:int</code></p>
 
 <p><a id="CopyAllEffectItems" class="f" href="http://cs.elderscrolls.com/index.php?title=CopyAllEffectItems">CopyAllEffectItems</a> - copies all effect items from one magic item to another.<br />
+<b>Note: </b>When copying a scripted effect, the script, hostility flag, and school will copy, but not the visuals. Copied scripted effects are completely independent of the original scripted effect. <br />
+<b>Note: </b>Adding a hostile effect to a Spell which previously had none will not make the Spell hostile. Use <code>SetSpellHostile</code> to update the hostility.<br />
+<b>Note: </b>Effects will be added to copied-to magic item, even if that effect is already on the magic item, possibly resulting in two (or more) of the same effects.<br />
 <code class="s">(nothing) CopyAllEffectItems fromObjectID:ref toObjectId:ref</code></p>
 
 <p><a id="AddEffectItem" class="f" href="http://cs.elderscrolls.com/index.php?title=AddEffectItem">AddEffectItem</a> - adds a basic, empty EffectItem of the specified MagicEffect to the magic item.<br />
+<b>Note: </b>Adding a hostile effect to a Spell which previously had none will not make the Spell hostile. Use <code>SetSpellHostile</code> to update the hostility.<br />
 <code class="s">(index:int) AddEffectItem nuEffect:chars magicItem:ref</code><br />
 <code class="s">(index:int) AddEffectItemC nuEffectCode:int magicItem:ref</code></p>
 
 <p><a id="AddFullEffectItem" class="f" href="http://cs.elderscrolls.com/index.php?title=AddFullEffectItem">AddFullEffectItem</a> - adds a fully defined EffectItem to the magic item with the specified MagicEffect, magnitude, area, duration and range.<br />
+<b>Note: </b>Adding a hostile effect to a Spell which previously had none will not make the Spell hostile. Use <code>SetSpellHostile</code> to update the hostility.<br />
 <code class="s">(index:int) AddFullEffectItem nuEffect:chars magnitude:int area:int duration:int <a href="#Magic_Effect_Range">range</a>:int magicItem:ref</code><br />
 <code class="s">(index:int) AddFullEffectItemC nuEffectCode:int magnitude:int area:int duration:int <a href="#Magic_Effect_Range">range</a>:int magicItem:ref</code></p>
 
-<p><a id="IsMagicItemAutoCalc" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicItemAutoCalc">IsMagicItemAutoCalc</a> - returns 1 if the MagicItem determines magicka cost by autocalculation. Now works on all Magic Items (spells, alchemy, ingredients, enchantments).<br />
+<p><a id="IsMagicItemAutoCalc" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicItemAutoCalc">IsMagicItemAutoCalc</a> - returns 1 if the MagicItem determines magicka cost by autocalculation. Now works on all Magic Items (Spells, Alchemy, Ingredients, Enchantments).<br />
 <code class="s">(isAutocalc:bool) IsMagicItemAutoCalc magicItem:ref</code></p>
 
 <p><a id="SetMagicItemAutoCalc" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMagicItemAutoCalc">SetMagicItemAutoCalc</a> - sets whether the Magic Item determines cost by autocalculation. Currently works for Spells, AlchemyItems, Ingredients and Enchantments.<br />
 <code class="s">(nothing) SetMagicItemAutoCalc isAutocalc:bool objectID:ref</code></p>
 
 <p><a id="IsNthEffectItemScripted" class="f" href="http://cs.elderscrolls.com/index.php?title=IsNthEffectItemScripted">IsNthEffectItemScripted</a> - returns whether the specified effect item is scripted.<br />
+<b>Note: </b>This will return true if the effect is a scripted effect, even if no script has been attached to the effect. Use <code>GetNthEffectItemScript</code> to determine if there is a script on the effect.<br />
 <code class="s">(isScriptEffect:bool) IsNthEffectItemScripted magicItem:ref whichEffect:int</code></p>
 
 <p><a id="GetNthEffectItemScript" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthEffectItemScript">GetNthEffectItemScript</a> - returns the refID of the script associated with the specified scripted effect.<br />
@@ -1392,6 +1406,10 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <h4>Functions:</h4>
 
+<p><b>Note: </b>Active Effects from different sources are counted as unique Active Effects, even if they are the same effect type. If a Magic Item has 2 of the same effect, they will be counted separately, too.<br /></p>
+
+<p><b>Note: </b>Take care when changing any properties of active magic effects on actors. While the magic effect properties are updated, their effect on the actor is not. If the updated effect is removed from the actor, this could leave the actor with unintended values. (Todo: Verify)<br /></p>
+
 <p><a id="GetActiveEffectCount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActiveEffectCount">GetActiveEffectCount</a> - returns the number of ActiveEffects on the target<br />
 <code class="s">(count:int) reference.GetActiveEffectCount</code></p>
 
@@ -1400,6 +1418,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(effectCode:int) reference.GetNthAECode whichEffect:int</code></p>
 
 <p><a id="GetNthActiveEffectMagnitude" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthActiveEffectMagnitude">GetNthActiveEffectMagnitude</a> - returns the magnitude of the Nth ActiveEffect on the target<br />
+<b>Note: </b>This returns the magnitude applied to the actor, but not the original from the spell (may or may not include resistances, weaknesses and spell effectiveness).<br />
 <code class="s">(magnitude:int) reference.GetNthActiveEffectMagnitude whichEffect:int</code><br />
 <code class="s">(magnitude:int) reference.GetNthAEMagnitude whichEffect:int</code></p>
 
@@ -1408,6 +1427,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(duration:float) reference.GetNthAEDuration whichEffect:int</code></p>
 
 <p><a id="GetNthActiveEffectTimeElapsed" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthActiveEffectTimeElapsed">GetNthActiveEffectTimeElapsed</a> - returns the time that the Nth ActiveEffect has been applied to the target<br />
+<b>Note: </b>On the very first frame of an effect, this appears to always return 0.1 regardless of framerate.<br />
 <code class="s">(timeElapsed:float) reference.GetNthActiveEffectTimeElapsed whichEffect:int</code><br />
 <code class="s">(timeElapsed:float) reference.GetNthAETime whichEffect:int</code></p>
 
@@ -1441,7 +1461,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><a id="GetTotalActiveEffectMagnitude" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTotalActiveEffectMagnitude">GetTotalActiveEffectMagnitude</a> - returns the total magnitude of all ActiveEffects with a given code on the target<br />
 <code class="s">(totalMag:int) reference.GetTotalActiveEffectMagnitude effectCode:chars <span class="op">actorValue:chars</span> <span class="op">ignoreUnappliedEffects:bool</span></code><br />
-<code class="s">(totalMag:int) reference.GetTotalAEMagnitude effectCode:chars <span class="op">actorValue:chars</span></code> <span class="op">ignoreUnappliedEffects:bool</span><br />
+<code class="s">(totalMag:int) reference.GetTotalAEMagnitude effectCode:chars <span class="op">actorValue:chars</span> <span class="op">ignoreUnappliedEffects:bool</span></code><br />
 <code class="s">(totalMag:int) reference.GetTotalActiveEffectMagnitudeC effectCode:int <a href="#Actor_Value_Codes"><span class="op">actorValueCode:int</span></a> <span class="op">ignoreUnappliedEffects:bool</span></code><br />
 <code class="s">(totalMag:int) reference.GetTotalAEMagnitudeC effectCode:int <a href="#Actor_Value_Codes"><span class="op">actorValueCode:int</span></a> <span class="op">ignoreUnappliedEffects:bool</span></code></p>
 
@@ -1519,7 +1539,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <h4>Functions:</h4>
 
-<p><a id="SetName" class="f" href="http://cs.elderscrolls.com/index.php?title=SetName">SetName</a> - sets the display name of the type. SetName is a special function. It is defined to work on Inventory items, but it can be used with any form. To use with a non-Inventory item you must first assign the objectID to a ref. For most forms the name is part of the base form and changing the name will change it for all instances of the type.<br />
+<p><a id="SetName" class="f" href="http://cs.elderscrolls.com/index.php?title=SetName">SetName</a> - sets the display name of the type. SetName is a special function. It is defined to work on Inventory items, but it can be used with any form. To use with a non-Inventory item you must first assign the objectID to a ref. For most forms the name is part of the base form and changing the name will change it for all instances of the type. (Todo: AddLink)<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetName name:string <span class="op">objectID:ref</span></code></p>
 
 <p><a id="GetName" class="f" href="http://cs.elderscrolls.com/index.php?title=GetName">GetName</a> - returns the name of an object.<br />
@@ -1560,6 +1580,9 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetOwner" class="f" href="http://cs.elderscrolls.com/index.php?title=GetOwner">GetOwner</a> - returns the NPC or faction which owns the calling reference.<br />
+<b>Note: </b>Does not appear to work on activators such as switches and doors. (Todo: Verify)<br />
+<b>Note: </b>If a cell has a set Owner NPC, all items in the cell that do not have specific ownership set are owned by the NPC. In that case, this function may return 0, but <code>GetParentCellOwner</code> will return the true owner.<br />
+<b>Note: </b>The returned ownerID is a base ObjectID.<br />
 <code class="s">(owner:ref) reference.GetOwner</code></p>
 
 <p><a id="GetParentCellOwner" class="f" href="http://cs.elderscrolls.com/index.php?title=GetParentCellOwner">GetParentCellOwner</a> - returns the NPC or faction which owns the calling reference's parent cell.<br />
@@ -2749,14 +2772,15 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <h3><a id="Flora">Flora</a></h3>
 
-<p>Plants which can be harvested for alchemical ingredients</p>
+<p>Plants which can be harvested for alchemical ingredients.</p>
 
 <h4>Functions:</h4>
 
-<p><a id="IsHarvested" class="f" href="http://cs.elderscrolls.com/index.php?title=IsHarvested">IsHarvested</a> - returns 1 if the calling reference's ingredient has been harvested<br />
+<p><a id="IsHarvested" class="f" href="http://cs.elderscrolls.com/index.php?title=IsHarvested">IsHarvested</a> - returns 1 if the calling reference's ingredient has been harvested.<br />
 <code class="s">(isHarvested:bool) reference.IsHarvested</code></p>
 
-<p><a id="SetHarvested" class="f" href="http://cs.elderscrolls.com/index.php?title=SetHarvested">SetHarvested</a> - mark or unmark the calling reference as having been harvested. Changes are saved in the savegame.<br />
+<p><a id="SetHarvested" class="f" href="http://cs.elderscrolls.com/index.php?title=SetHarvested">SetHarvested</a> - mark or unmark the calling reference as having been harvested. Changes are <i>supposed to be</i> saved in the savegame.<br />
+<b>Note: </b>Changes are not actually saved into the savegame.<br />
 <code class="s">(nothing) reference.SetHarvested isHarvested:int</code></p>
 
 <p><a id="GetIngredient" class="f" href="http://cs.elderscrolls.com/index.php?title=GetIngredient">GetIngredient</a> - returns the ingredient contained in a plant.<br />
@@ -3895,7 +3919,7 @@ endif</pre>
  <code class="s">(nothing) SetSoulGemCapacity <a href="#Soul_Level">soulLevel</a>:int objectID:ref</code></p>
 
 <p><a id="GetCurrentSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentSoulLevel">GetCurrentSoulLevel</a> - returns the current soul level of the calling actor reference<br />
-<code class="s">(soulLevel:int) GetCurrentSoulLevel</code></p>
+<code class="s">(<a href="#Soul_Level">soulLevel</a>:int) GetCurrentSoulLevel</code></p>
 
 <h3><a id="Sound">Sound</a></h3>
 
