@@ -324,7 +324,10 @@
 </ul>
 
 <h2><a id="New_xOBSE_Features">New xOBSE Features</a></h2>
-<p>Besides fixing some long standing bugs and adding new game versions (like the GOG version) to the launcher, xOBSE adds a couple of new functions (and deprecates some others):</p><ul>
+<p>Besides fixing some long standing bugs and adding new game versions (like the GOG version) to the launcher, xOBSE adds a couple of new functions (and deprecates some others):</p>
+<ul>
+    <li><h3>xOBSE TBA</h3></li>
+	<li><a href="#IsMiscItem">IsMiscItem</a></li>
     <li><h3>xOBSE v0022.4</h3></li>
 	<li><a href="#SetAltControl2">SetAltControl2</a></li>
     <li>SetAltControl, GetAltControl and RefreshControlMap marked as deprecated</li>
@@ -333,7 +336,7 @@
 	<li><a href="#OnKeyEvent">OnKeyEvent</a></li>
 	<li><a href="#OnControlEvent">OnControlEvent</a></li>
     <li><h3>xOBSE v0021.8</h3></li>
-    <li><a href="#GetBaseAV3">GetBaseAV3</a>/<a href="#GetBaseAV3C">GetBaseAV3C</a></li>
+    <li><a href="#GetBaseAV3">GetBaseAV3(C)</a></li>
     <li>GetBaseAV2(C) functions are deprecated</li>
 	<li><a href="#IsNaked">IsNaked</a></li>
     <li><h3>xOBSE v0021.5</h3></li>
@@ -648,7 +651,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(powers:Array) ref.GetUsedPowers</code></p>
 
 <p><a id="HasSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=HasSpell">HasSpell</a> - returns whether the actor has the specified spell<br />
-<b>Notes: </b>Return always 0 on Creatures. (Todo: Verify)<br />
+<b>Notes: </b>Return always 0 on Creatures. (TODO: Verify)<br />
 <code class="s">(hasSpell:bool) reference.HasSpell spell:ref</code></p>
 
 <p><a id="RemoveBaseSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveBaseSpell">RemoveBaseSpell</a> - the game's RemoveSpell removes a spell from a base actor but must be called on a reference. This command does the same thing as RemoveSpell but takes a base object as an argument, returning 1 if the spell was removed.<br />
@@ -738,7 +741,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><a id="ModActorValue2" class="f" href="http://cs.elderscrolls.com/index.php?title=ModActorValue2">ModActorValue2</a> - modifies the current value without changing the base value. Acts like a spell: a negative number reduces the value which can be restored and a positive value restores values without exceeding the maximum of the stat.<br />
 <b>Note: </b>The value is an unrounded integer; ModAV2 StatName 3.9 would result in a 3 point change.<br />
-<b>Note: </b>Attempting to mod a positive-only stat like health and attributes to negative values will crash the game. (Todo: Verify)<br />
+<b>Note: </b>Attempting to mod a positive-only stat like health and attributes to negative values will crash the game. (TODO: Verify)<br />
 <code class="s">(nothing) reference.ModActorValue2 actorValueName:string value:int</code><br />
 <code class="s">(nothing) reference.ModAV2 actorValueName:string value:int</code></p>
 
@@ -969,7 +972,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><a id="SetDescription" class="f" href="http://cs.elderscrolls.com/index.php?title=SetDescription">SetDescription</a> - modifies the text of a TESDescription (e.g. book, class, skill, skill level, etc). The modified description will be used for the remainder of the game session. To modify the text displayed when achieving a new level of mastery (Apprentice, Journeyman, etc) in a skill, pass the skill as the second argument and a skill level as the third, where skill level ranges from 0 (Apprentice) to 3 (Master)<br />
 <b>Note: </b>Calling <code>SetDescription</code> on a skill while omitting the optional skillLevel argument sets the general description of the skill as well as all 4 mastery levels. Currently there is no way to only set the general skill description.<br />
-<b>Note: </b>For books, setting a description longer than 65535 characters crashes the game when the book is opened in game. (Todo: Verify)<br />
+<b>Note: </b>For books, setting a description longer than 65535 characters crashes the game when the book is opened in game. (TODO: Verify)<br />
 <code class="s">(success:bool) <span class="op">reference.</span>SetDescription description:string<span class="op"> form:ref</span><span class="op"> skillLevel:int</span></code></p>
 
 <h3><a id="Edible">Edible</a></h3>
@@ -1054,11 +1057,12 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(<a href="#Equipment_Slot_IDs">slot</a>:int) <span class="op">reference</span>.GetEquipentSlot <span class="op">objectID:ref</span></code></p>
 
 <p><a id="SetEquipmentSlot" class="f" href="http://cs.elderscrolls.com/index.php?title=SetEquipmentSlot">SetEquipmentSlot</a> - sets the equipment slot or slots taken by the object.<br />
-<code class="s">(nothing) <span class="op">reference</span>.SetEquipmentSlot slot:int <span class="op">objectID:ref</span></code></p>
+<b>Note: </b>If you need to set a slot combination not covered by the possible values, use <a href="#SetBipedSlotMask"><code>SetBipedSlotMask</code></a> instead.<br />
+<code class="s">(nothing) <span class="op">reference</span>.SetEquipmentSlot <a href="#Equipment_Slot_IDs">slot</a>:int <span class="op">objectID:ref</span></code></p>
 <p>See also: <a href="#GetEquippedObject">GetEquippedObject</a></p>
 
 <p><a id="EquipMe" class="f" href="http://cs.elderscrolls.com/index.php?title=EquipMe">EquipMe</a> - when called on an object in an actor's inventory, attempts to equip the object on the actor and runs the object's <code>OnEquip</code> script block if applicable. If called on an inventory reference with a count greater than one, equips only one unless the item is a stack of arrows, in which case the entire stack is equipped.<br />
-<b>Note: </b>This function will not work on non-playable items. (Todo: Verify. Also not on NPCs?)<br />
+<b>Note: </b>This function will not work on non-playable items. (TODO: Verify. Also not on NPCs?)<br />
 <code class="s">(nothing) ref.EquipMe</code></p>
 
 <p><a id="UnequipMe" class="f" href="http://cs.elderscrolls.com/index.php?title=UnequipMe">UnequipMe</a> - when called on an object in an actor's inventory, attempts to unequip the object on the actor and runs the object's <code>OnUnequip</code> script block if applicable<br />
@@ -1079,7 +1083,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetBaseObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBaseObject">GetBaseObject</a> - returns the base object of the reference.<br />
-<b>Note: </b>If Ref is a base object already, then calling BaseObjectRef.GetBaseObject will halt the script (quest scripts will show as still running but won't execute any more). (Todo: Verify)<br />
+<b>Note: </b>If Ref is a base object already, then calling BaseObjectRef.GetBaseObject will halt the script (quest scripts will show as still running but won't execute any more). (TODO: Verify)<br />
 <code class="s">(objectID:ref) reference.GetBaseObject</code></p>
 
 <p><a id="GetObjectType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetObjectType">GetObjectType</a> - returns a type code for each type of object.<br />
@@ -1118,6 +1122,10 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><a id="IsSigilStone" class="f" href="http://cs.elderscrolls.com/index.php?title=IsSigilStone">IsSigilStone</a> - returns whether the object is a sigil stone.<br />
 <code class="s">(isSigilStone:bool) <span class="op">reference.</span>IsSigilStone <span class="op">objectID:ref</span></code></p>
+
+<p><a id="IsMiscItem" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMiscItem">IsMiscItem</a> - returns whether the object is a miscellaneous item.<br />
+<code class="s">(isMiscItem:bool) <span class="op">reference.</span>IsMiscItem <span class="op">objectID:ref</span></code><br />
+<code class="s">(isMisc:bool) <span class="op">reference.</span>IsMisc <span class="op">objectID:ref</span></code></p>
 
 <p><a id="IsLight" class="f" href="http://cs.elderscrolls.com/index.php?title=IsLight">IsLight</a> - returns whether the object is a light source.<br />
 <code class="s">(isLight:bool) <span class="op">reference.</span>IsLight <span class="op">objectID:ref</span></code></p>
@@ -1163,7 +1171,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetOpenKey" class="f" href="http://cs.elderscrolls.com/index.php?title=GetOpenKey">GetOpenKey</a> - returns the key used to unlock the calling reference.<br />
-<b>Note: </b>The key reference is only set on one side of the door. If a reference isn't returned, then check its linked door with <code>GetLinkedDoor</code>. (Todo: Verify, request)<br />
+<b>Note: </b>The key reference is only set on one side of the door. If a reference isn't returned, then check its linked door with <code>GetLinkedDoor</code>. (TODO: Verify, request)<br />
 <code class="s">(key:ref) reference.GetOpenKey</code></p>
 
 <p><a id="SetOpenKey" class="f" href="http://cs.elderscrolls.com/index.php?title=SetOpenKey">SetOpenKey</a> - sets the key used to unlock the reference to the specified key.<br />
@@ -1227,7 +1235,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><a id="SetNthEffectItemMagnitude" class="f" href="http://cs.elderscrolls.com/index.php?title=SetNthEffectItemMagnitude">SetNthEffectItemMagnitude</a> - sets the magnitude of the specified effect item.<br />
 <b>Note: </b>You can set the magnitude of a spell to a negative number. The spell will have the opposite effect. Results may vary depending on the spell effect and are not verified.<br />
-<b>Note: </b>Frost Damage is confirmed to heal when set to a reversed magnitude, but note that an unmodified Frost Damage magnitude returns a negative number from <code>GetNthEffectItemMagnitude</code>, so setting it to a negative value will still deal damage. To make a Frost Damage effect heal, you must set it to a positive magnitude. This is believed to be true for Fire Damage and Shock Damage as well) (Todo: Verify).<br />
+<b>Note: </b>Frost Damage is confirmed to heal when set to a reversed magnitude, but note that an unmodified Frost Damage magnitude returns a negative number from <code>GetNthEffectItemMagnitude</code>, so setting it to a negative value will still deal damage. To make a Frost Damage effect heal, you must set it to a positive magnitude. This is believed to be true for Fire Damage and Shock Damage as well) (TODO: Verify).<br />
 <code class="s">(nothing) SetNthEffectItemMagnitude nuMagnitude:int magicItem:ref whichEffect:int</code><br />
 <code class="s">(nothing) SetNthEIMagnitude nuMagnitude:int magicItem:ref whichEffect:int</code></p>
 
@@ -1408,7 +1416,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><b>Note: </b>Active Effects from different sources are counted as unique Active Effects, even if they are the same effect type. If a Magic Item has 2 of the same effect, they will be counted separately, too.<br /></p>
 
-<p><b>Note: </b>Take care when changing any properties of active magic effects on actors. While the magic effect properties are updated, their effect on the actor is not. If the updated effect is removed from the actor, this could leave the actor with unintended values. (Todo: Verify)<br /></p>
+<p><b>Note: </b>Take care when changing any properties of active magic effects on actors. While the magic effect properties are updated, their effect on the actor is not. If the updated effect is removed from the actor, this could leave the actor with unintended values. (TODO: Verify)<br /></p>
 
 <p><a id="GetActiveEffectCount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActiveEffectCount">GetActiveEffectCount</a> - returns the number of ActiveEffects on the target<br />
 <code class="s">(count:int) reference.GetActiveEffectCount</code></p>
@@ -1539,7 +1547,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <h4>Functions:</h4>
 
-<p><a id="SetName" class="f" href="http://cs.elderscrolls.com/index.php?title=SetName">SetName</a> - sets the display name of the type. SetName is a special function. It is defined to work on Inventory items, but it can be used with any form. To use with a non-Inventory item you must first assign the objectID to a ref. For most forms the name is part of the base form and changing the name will change it for all instances of the type. (Todo: AddLink)<br />
+<p><a id="SetName" class="f" href="http://cs.elderscrolls.com/index.php?title=SetName">SetName</a> - sets the display name of the type. SetName is a special function. It is defined to work on Inventory items, but it can be used with any form. To use with a non-Inventory item you must first assign the objectID to a ref. For most forms the name is part of the base form and changing the name will change it for all instances of the type. (TODO: AddLink)<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetName name:string <span class="op">objectID:ref</span></code></p>
 
 <p><a id="GetName" class="f" href="http://cs.elderscrolls.com/index.php?title=GetName">GetName</a> - returns the name of an object.<br />
@@ -1580,7 +1588,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetOwner" class="f" href="http://cs.elderscrolls.com/index.php?title=GetOwner">GetOwner</a> - returns the NPC or faction which owns the calling reference.<br />
-<b>Note: </b>Does not appear to work on activators such as switches and doors. (Todo: Verify)<br />
+<b>Note: </b>Does not appear to work on activators such as switches and doors. (TODO: Verify)<br />
 <b>Note: </b>If a cell has a set Owner NPC, all items in the cell that do not have specific ownership set are owned by the NPC. In that case, this function may return 0, but <code>GetParentCellOwner</code> will return the true owner.<br />
 <b>Note: </b>The returned ownerID is a base ObjectID.<br />
 <code class="s">(owner:ref) reference.GetOwner</code></p>
@@ -1689,6 +1697,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="IsScripted" class="f" href="http://cs.elderscrolls.com/index.php?title=IsScripted">IsScripted</a> - returns whether the scriptable object has a script attached to it or not.<br />
+<b>Note: </b>This is not intended for use on spells, for which you should use <code>IsNthEffectItemScripted</code> instead. <br />
 <code class="s">(isScripted:bool) <span class="op">reference.</span>IsScripted <span class="op">targetObjectID:ref</span></code></p>
 
 <p><a id="GetScript" class="f" href="http://cs.elderscrolls.com/index.php?title=GetScript">GetScript</a> - returns the refID of the script attached to the object<br />
@@ -1697,10 +1706,17 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="RemoveScript" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveScript">RemoveScript</a> - removes and returns the script attached to the object. The object is no longer scripted<br />
 <code class="s">(script:refID) <span class="op">reference.</span>RemoveScript <span class="op">targetObjectID:ref</span></code></p>
 
-<p><a id="SetScript" class="f" href="http://cs.elderscrolls.com/index.php?title=SetScript">SetScript</a> - sets the specified script onto the calling object and returns any previous script. Note that Oblivion doesn't have a script variable type so you must assign the script to a ref variable for this to work. <strong>NOTE:</strong> If the specified object already has a script attached to it, after changing the script the stored values of local variables for references to that object will not match the variables in the new script. If called on a reference, the variable list for the calling reference will be updated to match the new script, but other references to the same base object will not be updated. <strong>Summary:</strong> SetScript is safe to use with quests, with previously unscripted objects, and on unique references (for which no other references exist to the same base object). Using the command on base objects for which non-unique references exist may result in undefined behavior.<br />
+<p><a id="SetScript" class="f" href="http://cs.elderscrolls.com/index.php?title=SetScript">SetScript</a> - sets the specified script onto the calling object and returns any previous script. Note that Oblivion doesn't have a script variable type so you must assign the script to a ref variable for this to work.<br />
+<strong>Note:</strong> If the specified object already has a script attached to it, after changing the script the stored values of local variables for references to that object will not match the variables in the new script. If called on a reference, the variable list for the calling reference will be updated to match the new script, but other references to the same base object will not be updated.<br />
+<strong>Note:</strong> SetScript is safe to use with quests, with previously unscripted objects, and on unique references (for which no other references exist to the same base object). Using the command on base objects for which non-unique references exist may result in undefined behavior.<br />
+<b>Note: </b><br />
+<b>Note: </b><br />
+<b>Note: </b><br />
 <code class="s">(script:refID) <span class="op">reference.</span>SetScript scriptID:ref <span class="op">targetObjectID:ref</span></code></p>
 
 <p><a id="IsFormValid" class="f" href="http://cs.elderscrolls.com/index.php?title=IsFormValid">IsFormValid</a> - returns 1 if the specified ref variable contains a valid object or reference.<br />
+<b>Note: </b>If you reload the game after picking up a non dynamic (= not mod index 0xFF) reference, <code>IsFormValid</code> will return false if the object was non-persistent and true if the object was persistent. (TODO: Verify)<br />
+<b>Note: </b>If you want to check for a reference originating in an esm file that has been deleted by an esp, use <code>IsRefDeleted</code> instead, as <code>IsFormValid</code> will return true.<br />
 <code class="s">(valid:bool) IsFormValid refVar:var</code></p>
 
 <p><a id="IsReference" class="f" href="http://cs.elderscrolls.com/index.php?title=IsReference">IsReference</a> - returns 1 if the specified ref variable contains a reference, as opposed to a base object.<br />
@@ -1722,6 +1738,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(scriptsAreIdentical:bool) CompareScripts script:ref script:ref</code></p>
 
 <p><a id="ResetAllVariables" class="f" href="http://cs.elderscrolls.com/index.php?title=ResetAllVariables">ResetAllVariables</a> - sets all variables in the calling script to zero.<br />
+<b>Note: </b>Don't use this in scripts with string_var or array_var, because they aren't cleaned up properly. (TODO: Verify)<br />
 <code class="s">(numVars:int) ResetAllVariables</code></p>
 
 <p><a id="GetNumExplicitRefs" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNumExplicitRefs">GetNumExplicitRefs</a> -  returns the number of explicit references in the calling object's script or in the passed script object. Explicit references are any objects mentioned by name in the script; for instance, if a script contains an "OnHit Player" block or a "Player.AddItem" command, its explicit references will include the player.<br />
@@ -1745,6 +1762,9 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="SetModelPath" class="f" href="http://cs.elderscrolls.com/index.php?title=SetModelPath">SetModelPath</a> - sets the model path for the type.<br />
+<b>Note: </b>This function alters the model for the base object, which means that objects of the same type which are subsequently loaded will share the new model.<br />
+<b>Note: </b>This function is for simple objects with one model, it doesn't work on clothing or armor and using it on actors may lead to crashes.<br />
+<b>Note: </b>The new model will not appear until the object is reloaded, i.e. unequipping and re-equipping for equipped objects and <code>Update3d</code> for world objects.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetModelPath modelPath:string <span class="op">objectID:ref</span></code></p>
 
 <p><a id="GetModelPath" class="f" href="http://cs.elderscrolls.com/index.php?title=GetModelPath">GetModelPath</a> - returns the model path for the object.<br />
@@ -1863,11 +1883,11 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="IsPlayable" class="f" href="http://cs.elderscrolls.com/index.php?title=IsPlayable">IsPlayable</a> - returns whether the specified object is playable or not. Returns true only if the object is of a type which can be flagged as playable in the editor.<br />
 <code class="s">(isPlayable:bool) <span class="op">reference</span>.IsPlayable <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetIsPlayable" class="f" href="http://cs.elderscrolls.com/index.php?title=SetIsPlayable">SetIsPlayable</a> - specifies whether the object can be used by the player<br />
-<code class="s">(nothing) <span class="op">reference</span>.SetIsPlayable isPlayable:bool <span class="op">objectID:ref</span></code></p>
-
 <p><a id="IsPlayable2" class="f" href="http://cs.elderscrolls.com/index.php?title=IsPlayable2">IsPlayable2</a> - returns whether the specified object is playable or not. If the object is of a type which cannot be flagged as playable in the editor, this function returns true.<br />
 <code class="s">(isPlayable:bool) <span class="op">reference.</span>IsPlayable2 <span class="op">objectID:ref</span></code></p>
+
+<p><a id="SetIsPlayable" class="f" href="http://cs.elderscrolls.com/index.php?title=SetIsPlayable">SetIsPlayable</a> - specifies whether the object can be used by the player<br />
+<code class="s">(nothing) <span class="op">reference</span>.SetIsPlayable isPlayable:bool <span class="op">objectID:ref</span></code></p>
 
 <p><a id="IsBipedIconPathValid" class="f" href="http://cs.elderscrolls.com/index.php?title=IsBipedIconPathValid">IsBipedIconPathValid</a> - returns 1 if the icon path for the object exists in the user's Data folder or within one of the BSA archives.<br />
 <code class="s">(isPathValid:bool) <span class="op">reference.</span>IsBipedIconPathValid <a href="#Biped_Path_Codes">bipedPathCode</a>:int <span class="op">object:ref</span></code></p>
@@ -1973,6 +1993,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(isBlocking:bool) reference.IsBlocking</code></p>
 
 <p><a id="IsAttacking" class="f" href="http://cs.elderscrolls.com/index.php?title=IsAttacking">IsAttacking</a> - returns 1 if the calling actor is attacking<br />
+<b>Note: </b>Will return 1 for a few frames while the player is power attacking as well. In cases where a normal and a power attack is to be differentiated, <code>OnControlDown</code> and <code>IsControlPressed</code> can be substituted for <code>IsAttacking</code> and <code>IsPowerAttacking</code> respectively, with appropriate checks. (TODO: Verify)<br />
 <code class="s">(isAttacking:bool) reference.IsAttacking</code></p>
 
 <p><a id="IsRecoiling" class="f" href="http://cs.elderscrolls.com/index.php?title=IsRecoiling">IsRecoiling</a> - returns 1 if the calling actor is recoiling<br />
@@ -2014,7 +2035,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="IsFlying" class="f" href="http://cs.elderscrolls.com/index.php?title=IsFlying">IsFlying</a> - returns 1 if the calling actor is flying. Only creatures can fly.<br />
 <code class="s">(isFlying:bool) reference.IsFlying</code></p>
 
-<p><a id="IsPowerAttacking" class="f" href="http://cs.elderscrolls.com/index.php?title=IsPowerAttacking">IsPowerAttacking</a> - returns 1 if the calling actor is executing a power attack<br />
+<p><a id="IsPowerAttacking" class="f" href="http://cs.elderscrolls.com/index.php?title=IsPowerAttacking">IsPowerAttacking</a> - returns 1 if the calling actor is executing a power attack. See also the note on <a href="#IsAttacking"><code>IsAttacking</code></a>.<br />
 <code class="s">(isPowerAttacking:bool) reference.IsPowerAttacking</code></p>
 
 <p><a id="IsCasting" class="f" href="http://cs.elderscrolls.com/index.php?title=IsCasting">IsCasting</a> - returns 1 if the calling actor is casting a spell<br />
@@ -2063,7 +2084,8 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="GetCombatSpells" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCombatSpells">GetCombatSpells</a> - for an actor in combat, returns an Array of all the spells in the actor's spellbook, including spells resolved from leveled spells lists (which are resolved into actual spells when the actor enters combat). The actor will use a subset of these spells during combat; use GetSelectedSpells to determine which of these spells have been selected for use.<br />
 <code class="s">(spells:Array) reference.GetCombatSpells</code></p>
 
-<p><a id="PlayIdle" class="f" href="http://cs.elderscrolls.com/index.php?title=PlayIdle">PlayIdle</a> - attempts to make the calling actor play the specified idle animation. The animation must be one defined in the editor's Gameplay > Idle Animations window. Pass 1 for the forceIdle parameter to force the actor to play the idle regardless of any other animations currently playing.<br />
+<p><a id="PlayIdle" class="f" href="http://cs.elderscrolls.com/index.php?title=PlayIdle">PlayIdle</a> - attempts to make the calling actor play the specified idle animation. The animation must be one defined in the editor's Gameplay &gt; Idle Animations window. Pass 1 for the forceIdle parameter to force the actor to play the idle regardless of any other animations currently playing.<br />
+<b>Note: </b>Directly using an idleAnim EditorID gives a compiler error (when not using the compiler override). You must load the idleAnim form in a ref variable and use the ref in the function.<br />
 <code class="s">(idlePlayed:bool) ref.PlayIdle idleAnim:ref <span class="op">forceIdle:bool</span></code></p>
 
 <p><a id="IsNaked" class="f" href="http://cs.elderscrolls.com/index.php?title=IsNaked">IsNaked</a> - returns 1 if the calling actor is naked, 0 otherwise. Naked means without a lowerbody equipment. If requireUpperbody is 1 it also requires an upperbody equipment.<br />
@@ -2074,6 +2096,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p>A set of information defining actor behavior. Commands which modify AI packages operate on the base package and may have no effect or unpredictable effects on actor references currently executing that package.</p>
 
 <p><a id="SetPackageTarget" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPackageTarget">SetPackageTarget</a> - sets the target of the specified package. Target can be of several types, leading to several syntaxes for this command. The first listed usage sets the target to a specific reference. The second sets it to a particular base object with a specified quantity; when the package executes the actor will look for references to that base object to use as the target(s). The third usage sets the target to a <a href="http://obse.silverlock.org/Package_Object_Codes">code</a> representing the type(s) of objects to be used as targets, along with a quantity. This command does not change the targets of actor references currently executing the package unless they re-evaluate their package after the change has been made.<br />
+<b>Note: </b>If the Package is of Follow type, the distance in feet (integer returned with "Value" key from the StringMap returned by <code>GetPackageTargetData</code>) to follow the Target will be automatically set to 1. So in this case, it will be better to use <code>SetPackageTargetData</code> instead.<br />
 <code class="s">(nothing) SetPackageTarget package:ref targetReference:ref</code><br />
 <code class="s">(nothing) SetPackageTarget package:ref baseObject:ref quantity:int</code><br />
 <code class="s">(nothing) SetPackageTarget package:ref objectCode:int quantity:int</code></p>
@@ -2118,9 +2141,11 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(success:bool) SetPackageTargetData package:ref data:StringMap</code></p>
 
 <p><a id="SetPackageLocationData" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPackageLocationData">SetPackageLocationData</a> - sets the location of a package based on the passed stringmap of the same format as that returned by <a href="#GetPackageLocationData">GetPackageLocationData</a>. Omitted fields retain their existing values.<br />
+<b>Note: </b>Omitted fields might not actually retain their existing values, need to check. If true, TODO: Add example here. (TODO: Verify)<br />
 <code class="s">(success:bool) SetPackageLocationData package:ref data:StringMap</code></p>
 
 <p><a id="SetPackageScheduleData" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPackageScheduleData">SetPackageScheduleData</a> - sets the schedule of a package. Accepts a stringmap of the same format as that returned by <a href="#GetPackageScheduleData">GetPackageScheduleData</a>. Omitted fields retain their existing values.<br />
+<b>Note: </b>TODO: Verify same thing as on function above.<br />
 <code class="s">(success:bool) SetPackageScheduleData package:ref data:StringMap</code></p>
 
 <p><a id="GetSetPackageFlags">Package Flag Commands</a> - gets or sets the state of one of the flags on the specified package. Syntax is identical for all commands; sample usage is given for Get/SetPackageOffersServices<br />
@@ -2164,6 +2189,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions</h4>
 
 <p><a id="IsPoison" class="f" href="http://cs.elderscrolls.com/index.php?title=IsPoison">IsPoison</a> - returns whether the alchemy item is a poison.<br />
+<b>Note: </b>An alchemy item with even a single non-hostile effect is not a poison.<br />
 <code class="s">(isPoison:bool) <span class="op">reference</span>.IsPoison <span class="op">objectID:ref</span></code></p>
 
 <p><a id="MatchPotion" class="f" href="http://cs.elderscrolls.com/index.php?title=MatchPotion">MatchPotion</a> - Oblivion keeps track of potions created by the player and reuses them if another potion is created with the same effects as one created previously. This command takes a potion and returns a previously-created potion bearing the same effects, if one exists. Note that in some cases it may return the same potion that was passed as the argument. Mainly useful during potion creation in the Alchemy menu, or when dynamically modifying potion effects via script.<br />
@@ -2223,6 +2249,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetArmorAR" class="f" href="http://cs.elderscrolls.com/index.php?title=GetArmorAR">GetArmorAR</a> - returns the armor rating of the object<br />
+<b>Note: </b>The value returned by this function is the armor rating as defined in the Construction Set, multiplied by 100. (TODO: Verify)<br />
 <code class="s">(armorRating:int) <span class="op">reference.</span>GetArmorAR <span class="op">objectID:ref</span></code></p>
 
 <p><a id="SetArmorAR" class="f" href="http://cs.elderscrolls.com/index.php?title=SetArmorAR">SetArmorAR</a> - sets the armor rating of the object<br />
@@ -2266,7 +2293,8 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(cantBeTaken:bool) <span class="op">reference</span>.GetBookCantBeTaken <span class="op">objectID:ref</span></code></p>
 
 <p><a id="GetBookIsScroll" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBookIsScroll">GetBookIsScroll</a> - returns whether the book is a scroll or not<br />
-<code class="s">(isScroll:bool) <span class="op">reference.</span>GetBookIsScroll <span class="op">objectID:ref</span></code></p>
+<code class="s">(isScroll:bool) <span class="op">reference.</span>GetBookIsScroll <span class="op">objectID:ref</span></code><br />
+<code class="s">(isScroll:bool) <span class="op">reference.</span>IsScroll <span class="op">objectID:ref</span></code></p>
 
 <p><a id="GetBookSkillTaught" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBookSkillTaught">GetBookSkillTaught</a> - returns the skill taught by the book. If no skill is taught, returns -1.<br />
 <code class="s">(<a href="#Actor_Value_Codes">skillTaught</a>:int) <span class="op">reference.</span>GetBookSkillTaught <span class="op">objectID:ref</span></code></p>
@@ -2780,7 +2808,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(isHarvested:bool) reference.IsHarvested</code></p>
 
 <p><a id="SetHarvested" class="f" href="http://cs.elderscrolls.com/index.php?title=SetHarvested">SetHarvested</a> - mark or unmark the calling reference as having been harvested. Changes are <i>supposed to be</i> saved in the savegame.<br />
-<b>Note: </b>Changes are not actually saved into the savegame.<br />
+<b>Note: </b>Changes are not actually saved into the savegame. (TODO: Version number of the fix.)<br />
 <code class="s">(nothing) reference.SetHarvested isHarvested:int</code></p>
 
 <p><a id="GetIngredient" class="f" href="http://cs.elderscrolls.com/index.php?title=GetIngredient">GetIngredient</a> - returns the ingredient contained in a plant.<br />
@@ -4916,7 +4944,8 @@ displays a formatted messagebox using the extended <a href="#Format_Specifiers">
 <b>Note: </b>This function takes a string as soundID, not a ref, so it will not complain if the sound does not exist.<br />
 <code class="s">(nothing) SetMessageSound soundID:string</code></p>
 
-<p><a id="SetMessageIcon" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMessageIcon">SetMessageIcon</a> - sets the icon which is to be displayed to the left of the text for the next call to <code>MessageEX</code>. The icon is a .dds file located in the folder "Data\Textures\Menus\" or a subfolder thereof. The full path must be entered starting with "Data". Once <code>MessageEX</code> has been called the icon will be cleared.<br />
+<p><a id="SetMessageIcon" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMessageIcon">SetMessageIcon</a> - sets the icon which is to be displayed to the left of the text for the next call to <code>MessageEX</code>. The icon is a .dds file located in the folder "Data\Textures\Menus\" or a subfolder thereof. Once <code>MessageEX</code> has been called the icon will be cleared.<br />
+<b>Note: </b>The full path must be entered starting with "Data".<br />
 <code class="s">(nothing) SetMessageIcon iconPath:string</code></p>
 
 <p><a id="DebugPrint" class="f" href="http://cs.elderscrolls.com/index.php?title=DebugPrint">DebugPrint</a> - prints a message to the console only if debug mode has been enabled for the mod from which the calling script originates. Use <code>SetDebugMode</code> to toggle debug messages on or off. <br />
