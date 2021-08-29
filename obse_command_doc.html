@@ -2997,15 +2997,15 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <h4>Functions:</h4>
 
 <p><a id="GetMagicEffectCode" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectCode">GetMagicEffectCode</a> - returns the magic effect code of the effect.<br />
-<b>Note: </b>The 'effect:chars' are actually the editor IDs of the magic effects. Thus, this command is really expecting an editor ID, just like most other commands. This means that it will also accept a ref var containing the magic effect.<br />
+<b>Note: </b>The 'magicEffect:ref' are actually the editor IDs of the magic effects. Thus, this command is really expecting an editor ID, just like most other commands. This means that it will also accept a ref var containing the magic effect.<br />
 <b>Note: </b>When used on Magic Effects without FormIDs the script will not compile correctly (although it does not produce any error messages). With Oblivion.esm loaded, the effects DISE, DUMY, and RSWD do not have FormIDs. Without Oblivion.esm loaded, no magic effects have FormIDs. Modifying the effect to give it a FormID will not fix the problem. To avoid this, use magic effect codes directly or use the <a href="#MagicEffectCodeFromChars"><code>MagicEffectCodeFromChars</code></a> function.<br />
-<code class="s">(magicEffectCode:int) GetMagicEffectCode effect:chars</code><br />
+<code class="s">(magicEffectCode:int) GetMagicEffectCode magicEffect:ref</code><br />
 
 <p><a id="GetMagicEffectChars" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectChars">GetMagicEffectChars</a> - returns the 4-character code for a magic effect<br />
 <code class="s">(chars:string) GetMagicEffectChars magicEffect:ref</code></p>
 
 <p><a id="GetMagicEffectCharsC" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectCharsC">GetMagicEffectCharsC</a> - returns the 4-character code for a magic effect<br />
-<code class="s">(chars:string) GetMagicEffectCharsC effectCode:integer</code></p>
+<code class="s">(chars:string) GetMagicEffectCharsC effectCode:int</code></p>
 
 <p><a id="MagicEffectFromCode" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectFromCode">MagicEffectFromCode</a> - given an effect code, returns the effect setting matching that code.<br />
 <code class="s">(magicEffect:ref) MagicEffectFromCode effectCode:int</code></p>
@@ -3018,172 +3018,172 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <code class="s">(effectCode:int) MECodeFromChars effectChars:String</code></p>
 
 <p><a id="GetMagicEffectBaseCost" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectBaseCost">GetMagicEffectBaseCost(C)</a> - returns the base cost of the magic effect<br />
-<code class="s">(baseCost:float) GetMagicEffectBaseCost effect:chars</code><br />
-<code class="s">(baseCost:float) GetMEBaseCost effect:chars</code><br />
-<code class="s">(baseCost:float) GetMagicEffectBaseCostC effect:int</code><br />
-<code class="s">(baseCost:float) GetMEBaseCostC effect:int</code></p>
+<code class="s">(baseCost:float) GetMagicEffectBaseCost magicEffect:ref</code><br />
+<code class="s">(baseCost:float) GetMEBaseCost magicEffect:ref</code><br />
+<code class="s">(baseCost:float) GetMagicEffectBaseCostC magicEffectCode:int</code><br />
+<code class="s">(baseCost:float) GetMEBaseCostC magicEffectCode:int</code></p>
 
 <p><a id="GetMagicEffectSchool" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectSchool">GetMagicEffectSchool(C)</a> - returns the controlling school of the magic effect<br />
-<code class="s">(<a href="#Magic_Schools">magicSchool</a>:int) GetMagicEffectSchool effect:chars</code><br />
-<code class="s">(<a href="#Magic_Schools">magicSchool</a>:int) GetMESchool effect:chars</code><br />
-<code class="s">(<a href="#Magic_Schools">magicSchool</a>:int) GetMagicEffectSchoolC effect:int</code><br />
-<code class="s">(<a href="#Magic_Schools">magicSchool</a>:int) GetMESchoolC effect:int</code></p>
+<code class="s">(<a href="#Magic_Schools">magicSchool</a>:int) GetMagicEffectSchool magicEffect:ref</code><br />
+<code class="s">(<a href="#Magic_Schools">magicSchool</a>:int) GetMESchool magicEffect:ref</code><br />
+<code class="s">(<a href="#Magic_Schools">magicSchool</a>:int) GetMagicEffectSchoolC magicEffectCode:int</code><br />
+<code class="s">(<a href="#Magic_Schools">magicSchool</a>:int) GetMESchoolC magicEffectCode:int</code></p>
 
 <p><a id="GetMagicEffectProjectileSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectProjectileSpeed">GetMagicEffectProjectileSpeed(C)</a> - returns the projectile speed of the magic effect<br />
-<code class="s">(projectileSpeed:float) GetMagicEffectProjectileSpeed effect:chars</code><br />
-<code class="s">(projectileSpeed:float) GetMEProjSpeed effect:chars</code><br />
-<code class="s">(projectileSpeed:float) GetMagicEffectProjectileSpeedC effect:int</code><br />
-<code class="s">(projectileSpeed:float) GetMEProjSpeedC effect:int</code></p>
+<code class="s">(projectileSpeed:float) GetMagicEffectProjectileSpeed magicEffect:ref</code><br />
+<code class="s">(projectileSpeed:float) GetMEProjSpeed magicEffect:ref</code><br />
+<code class="s">(projectileSpeed:float) GetMagicEffectProjectileSpeedC magicEffectCode:int</code><br />
+<code class="s">(projectileSpeed:float) GetMEProjSpeedC magicEffectCode:int</code></p>
 
 <p><a id="GetMagicEffectEnchantFactor" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectEnchantFactor">GetMagicEffectEnchantFactor(C)</a> - returns the constant effect enchantment factor of the magic effect<br />
-<code class="s">(enchantFactor:float) GetMagicEffectEnchantFactor effect:chars</code><br />
-<code class="s">(enchantFactor:float) GetMEEnchant effect:chars</code><br />
-<code class="s">(enchantFactor:float) GetMagicEffectEnchantFactorC effect:int</code><br />
-<code class="s">(enchantFactor:float) GetMEEnchantC effect:int</code></p>
+<code class="s">(enchantFactor:float) GetMagicEffectEnchantFactor magicEffect:ref</code><br />
+<code class="s">(enchantFactor:float) GetMEEnchant magicEffect:ref</code><br />
+<code class="s">(enchantFactor:float) GetMagicEffectEnchantFactorC magicEffectCode:int</code><br />
+<code class="s">(enchantFactor:float) GetMEEnchantC magicEffectCode:int</code></p>
 
 <p><a id="GetMagicEffectBarterFactor" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectBarterFactor">GetMagicEffectBarterFactor(C)</a> - returns the constant effect barter factor of the magic effect<br />
-<code class="s">(enchantFactor:float) GetMagicEffectBarterFactor effect:chars</code><br />
-<code class="s">(enchantFactor:float) GetMEEBarter effect:chars</code><br />
-<code class="s">(enchantFactor:float) GetMagicEffectBarterFactorC effect:int</code><br />
-<code class="s">(enchantFactor:float) GetMEBarterC effect:int</code></p>
+<code class="s">(enchantFactor:float) GetMagicEffectBarterFactor magicEffect:ref</code><br />
+<code class="s">(enchantFactor:float) GetMEEBarter magicEffect:ref</code><br />
+<code class="s">(enchantFactor:float) GetMagicEffectBarterFactorC magicEffectCode:int</code><br />
+<code class="s">(enchantFactor:float) GetMEBarterC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectHostile" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectHostile">IsMagicEffectHostile(C)</a> - returns whether the magic effect is hostile<br />
-<code class="s">(isHostile:bool) IsMagicEffectHostile effect:chars</code><br />
-<code class="s">(isHostile:bool) IsMEHostile effect:chars</code><br />
-<code class="s">(isHostile:bool) IsMagicEffectHostileC effect:int</code><br />
-<code class="s">(isHostile:bool) IsMEHostileC effect:int</code></p>
+<code class="s">(isHostile:bool) IsMagicEffectHostile magicEffect:ref</code><br />
+<code class="s">(isHostile:bool) IsMEHostile magicEffect:ref</code><br />
+<code class="s">(isHostile:bool) IsMagicEffectHostileC magicEffectCode:int</code><br />
+<code class="s">(isHostile:bool) IsMEHostileC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectForSpellmaking" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectForSpellmaking">IsMagicEffectForSpellmaking(C)</a> - returns whether the magic effect can be used for spell making<br />
-<code class="s">(isForSpellMaking:bool) IsMagicEffectForSpellmaking effect:chars</code><br />
-<code class="s">(isForSpellMaking:bool) IsMEForSpellmaking effect:chars</code><br />
-<code class="s">(isForSpellMaking:bool) IsMagicEffectForSpellmakingC effect:int</code><br />
-<code class="s">(isForSpellMaking:bool) IsMEForSpellmakingC effect:int</code></p>
+<code class="s">(isForSpellMaking:bool) IsMagicEffectForSpellmaking magicEffect:ref</code><br />
+<code class="s">(isForSpellMaking:bool) IsMEForSpellmaking magicEffect:ref</code><br />
+<code class="s">(isForSpellMaking:bool) IsMagicEffectForSpellmakingC magicEffectCode:int</code><br />
+<code class="s">(isForSpellMaking:bool) IsMEForSpellmakingC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectForEnchanting" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectForEnchanting">IsMagicEffectForEnchanting(C)</a> - returns whether the magic effect can be used when enchanting<br />
-<code class="s">(isForEnchanting:bool) IsMagicEffectForEnchanting effect:chars</code><br />
-<code class="s">(isForEnchanting:bool) IsMEForEnchanting effect:chars</code><br />
-<code class="s">(isForEnchanting:bool) IsMagicEffectForEnchantingC effect:int</code><br />
-<code class="s">(isForEnchanting:bool) IsMEForEnchantingC effect:int</code></p>
+<code class="s">(isForEnchanting:bool) IsMagicEffectForEnchanting magicEffect:ref</code><br />
+<code class="s">(isForEnchanting:bool) IsMEForEnchanting magicEffect:ref</code><br />
+<code class="s">(isForEnchanting:bool) IsMagicEffectForEnchantingC magicEffectCode:int</code><br />
+<code class="s">(isForEnchanting:bool) IsMEForEnchantingC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectDetrimental" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectDetrimental">IsMagicEffectDetrimental(C)</a> - returns whether the magic effect harms the receipient<br />
-<code class="s">(isDetrimental:bool) IsMagicEffectDetrimental effect:chars</code><br />
-<code class="s">(isDetrimental:bool) IsMEDetrimental effect:chars</code><br />
-<code class="s">(isDetrimental:bool) IsMagicEffectDetrimentalC effect:int</code><br />
-<code class="s">(isDetrimental:bool) IsMEDetrimentalC effect:int</code></p>
+<code class="s">(isDetrimental:bool) IsMagicEffectDetrimental magicEffect:ref</code><br />
+<code class="s">(isDetrimental:bool) IsMEDetrimental magicEffect:ref</code><br />
+<code class="s">(isDetrimental:bool) IsMagicEffectDetrimentalC magicEffectCode:int</code><br />
+<code class="s">(isDetrimental:bool) IsMEDetrimentalC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectCanRecover" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectCanRecover">IsMagicEffectCanRecover(C)</a> - returns whether the target can recover from the effect<br />
-<code class="s">(isCanRecover:bool) IsMagicEffectCanRecover effect:chars</code><br />
-<code class="s">(isCanRecover:bool) IsMECanRecover effect:chars</code><br />
-<code class="s">(isCanRecover:bool) IsMagicEffectCanRecoverC effect:int</code><br />
-<code class="s">(isCanRecover:bool) IsMECanRecoverC effect:int</code></p>
+<code class="s">(isCanRecover:bool) IsMagicEffectCanRecover magicEffect:ref</code><br />
+<code class="s">(isCanRecover:bool) IsMECanRecover magicEffect:ref</code><br />
+<code class="s">(isCanRecover:bool) IsMagicEffectCanRecoverC magicEffectCode:int</code><br />
+<code class="s">(isCanRecover:bool) IsMECanRecoverC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectMagnitudePercent" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectMagnitudePercent">IsMagicEffectMagnitudePercent(C)</a> - returns whether the magic effect's magnitude is a percentage<br />
-<code class="s">(isMagPercent:bool) IsMagicEffectMagnitudePercent effect:chars</code><br />
-<code class="s">(isMagPercent:bool) IsMEMagnitudePercent effect:chars</code><br />
-<code class="s">(isMagPercent:bool) IsMagicEffectMagnitudePercentC effect:int</code><br />
-<code class="s">(isMagPercent:bool) IsMEMagnitudePercentC effect:int</code></p>
+<code class="s">(isMagPercent:bool) IsMagicEffectMagnitudePercent magicEffect:ref</code><br />
+<code class="s">(isMagPercent:bool) IsMEMagnitudePercent magicEffect:ref</code><br />
+<code class="s">(isMagPercent:bool) IsMagicEffectMagnitudePercentC magicEffectCode:int</code><br />
+<code class="s">(isMagPercent:bool) IsMEMagnitudePercentC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectFXPersists" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectFXPersists">MagicEffectFXPersists(C)</a> - returns whether the magic effect's graphics effects persist<br />
-<code class="s">(FXPersists:bool) MagicEffectFXPersists effect:chars</code><br />
-<code class="s">(FXPersists:bool) MEFXPersists effect:chars</code><br />
-<code class="s">(FXPersists:bool) MagicEffectFXPersistsC effect:int</code><br />
-<code class="s">(FXPersists:bool) MEFXPersistsC effect:int</code></p>
+<code class="s">(FXPersists:bool) MagicEffectFXPersists magicEffect:ref</code><br />
+<code class="s">(FXPersists:bool) MEFXPersists magicEffect:ref</code><br />
+<code class="s">(FXPersists:bool) MagicEffectFXPersistsC magicEffectCode:int</code><br />
+<code class="s">(FXPersists:bool) MEFXPersistsC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectOnSelfAllowed" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectOnSelfAllowed">IsMagicEffectOnSelfAllowed(C)</a> - returns whether the magic effect can be cast on self<br />
-<code class="s">(onSelfAllowed:bool) IsMagicEffectOnSelfAllowed effect:chars</code><br />
-<code class="s">(onSelfAllowed:bool) IsMEOnSelfAllowed effect:chars</code><br />
-<code class="s">(onSelfAllowed:bool) IsMagicEffectOnSelfAllowedC effect:int</code><br />
-<code class="s">(onSelfAllowed:bool) IsMEOnSelfAllowedC effect:int</code></p>
+<code class="s">(onSelfAllowed:bool) IsMagicEffectOnSelfAllowed magicEffect:ref</code><br />
+<code class="s">(onSelfAllowed:bool) IsMEOnSelfAllowed magicEffect:ref</code><br />
+<code class="s">(onSelfAllowed:bool) IsMagicEffectOnSelfAllowedC magicEffectCode:int</code><br />
+<code class="s">(onSelfAllowed:bool) IsMEOnSelfAllowedC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectOnTouchAllowed" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectOnTouchAllowed">IsMagicEffectOnTouchAllowed(C)</a> - returns whether the magic effect can be cast on touch<br />
-<code class="s">(onTouchAllowed:bool) IsMagicEffectOnTouchAllowed effect:chars</code><br />
-<code class="s">(onTouchAllowed:bool) IsMEOnTouchAllowed effect:chars</code><br />
-<code class="s">(onTouchAllowed:bool) IsMagicEffectOnTouchAllowedC effect:int</code><br />
-<code class="s">(onTouchAllowed:bool) IsMEOnTouchAllowedC effect:int</code></p>
+<code class="s">(onTouchAllowed:bool) IsMagicEffectOnTouchAllowed magicEffect:ref</code><br />
+<code class="s">(onTouchAllowed:bool) IsMEOnTouchAllowed magicEffect:ref</code><br />
+<code class="s">(onTouchAllowed:bool) IsMagicEffectOnTouchAllowedC magicEffectCode:int</code><br />
+<code class="s">(onTouchAllowed:bool) IsMEOnTouchAllowedC magicEffectCode:int</code></p>
 
 <p><a id="IsMagicEffectOnTargetAllowed" class="f" href="http://cs.elderscrolls.com/index.php?title=IsMagicEffectOnTargetAllowed">IsMagicEffectOnTargetAllowed(C)</a> - returns whether the magic effect can be cast on target<br />
-<code class="s">(onTargetAllowed:bool) IsMagicEffectOnTargetAllowed effect:chars</code><br />
-<code class="s">(onTargetAllowed:bool) IsMEOnTargetAllowed effect:chars</code><br />
-<code class="s">(onTargetAllowed:bool) IsMagicEffectOnTargetAllowedC effect:int</code><br />
-<code class="s">(onTargetAllowed:bool) IsMEOnTargetAllowedC effect:int</code></p>
+<code class="s">(onTargetAllowed:bool) IsMagicEffectOnTargetAllowed magicEffect:ref</code><br />
+<code class="s">(onTargetAllowed:bool) IsMEOnTargetAllowed magicEffect:ref</code><br />
+<code class="s">(onTargetAllowed:bool) IsMagicEffectOnTargetAllowedC magicEffectCode:int</code><br />
+<code class="s">(onTargetAllowed:bool) IsMEOnTargetAllowedC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectHasNoDuration" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectHasNoDuration">MagicEffectHasNoDuration(C)</a> - returns whether the magic effect doesn't use the duration value<br />
-<code class="s">(hasNoDuration:bool) MagicEffectHasNoDuration effect:chars</code><br />
-<code class="s">(hasNoDuration:bool) MEHasNoDuration effect:chars</code><br />
-<code class="s">(hasNoDuration:bool) MagicEffectHasNoDurationC effect:int</code><br />
-<code class="s">(hasNoDuration:bool) MEHasNoDurationC effect:int</code></p>
+<code class="s">(hasNoDuration:bool) MagicEffectHasNoDuration magicEffect:ref</code><br />
+<code class="s">(hasNoDuration:bool) MEHasNoDuration magicEffect:ref</code><br />
+<code class="s">(hasNoDuration:bool) MagicEffectHasNoDurationC magicEffectCode:int</code><br />
+<code class="s">(hasNoDuration:bool) MEHasNoDurationC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectHasNoMagnitude" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectHasNoMagnitude">MagicEffectHasNoMagnitude(C)</a> - returns whether the magic effect doesn't use the magnitude value<br />
-<code class="s">(hasNoMag:bool) MagicEffectHasNoMagnitude effect:chars</code><br />
-<code class="s">(hasNoMag:bool) MEHasNoMagnitude effect:chars</code><br />
-<code class="s">(hasNoMag:bool) MagicEffectHasNoMagnitudeC effect:int</code><br />
-<code class="s">(hasNoMag:bool) MEHasNoMagnitudeC effect:int</code></p>
+<code class="s">(hasNoMag:bool) MagicEffectHasNoMagnitude magicEffect:ref</code><br />
+<code class="s">(hasNoMag:bool) MEHasNoMagnitude magicEffect:ref</code><br />
+<code class="s">(hasNoMag:bool) MagicEffectHasNoMagnitudeC magicEffectCode:int</code><br />
+<code class="s">(hasNoMag:bool) MEHasNoMagnitudeC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectHasNoArea" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectHasNoArea">MagicEffectHasNoArea(C)</a> - returns whether the magic effect doesn't use the area value<br />
-<code class="s">(hasNoArea:bool) MagicEffectHasNoArea effect:chars</code><br />
-<code class="s">(hasNoArea:bool) MEHasNoArea effect:chars</code><br />
-<code class="s">(hasNoArea:bool) MagicEffectHasNoAreaC effect:int</code><br />
-<code class="s">(hasNoArea:bool) MEHasNoAreaC effect:int</code></p>
+<code class="s">(hasNoArea:bool) MagicEffectHasNoArea magicEffect:ref</code><br />
+<code class="s">(hasNoArea:bool) MEHasNoArea magicEffect:ref</code><br />
+<code class="s">(hasNoArea:bool) MagicEffectHasNoAreaC magicEffectCode:int</code><br />
+<code class="s">(hasNoArea:bool) MEHasNoAreaC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectHasNoIngredient" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectHasNoIngredient">MagicEffectHasNoIngredient(C)</a> - returns whether the magic effect has no ingredient<br />
-<code class="s">(hasNoIngredient:bool) MagicEffectHasNoIngredient effect:chars</code><br />
-<code class="s">(hasNoIngredient:bool) MEHasNoIngredient effect:chars</code><br />
-<code class="s">(hasNoIngredient:bool) MagicEffectHasNoIngredientC effect:int</code><br />
-<code class="s">(hasNoIngredient:bool) MEHasNoIngredientC effect:int</code></p>
+<code class="s">(hasNoIngredient:bool) MagicEffectHasNoIngredient magicEffect:ref</code><br />
+<code class="s">(hasNoIngredient:bool) MEHasNoIngredient magicEffect:ref</code><br />
+<code class="s">(hasNoIngredient:bool) MagicEffectHasNoIngredientC magicEffectCode:int</code><br />
+<code class="s">(hasNoIngredient:bool) MEHasNoIngredientC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectHasNoHitEffect" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectHasNoHitEffect">MagicEffectHasNoHitEffect(C)</a> - returns whether the magic effect has a graphic effect when it hits<br />
-<code class="s">(hasNoHitEffect:bool) MagicEffectHasNoHitEffect effect:chars</code><br />
-<code class="s">(hasNoHitEffect:bool) MEHasNoHitEffect effect:chars</code><br />
-<code class="s">(hasNoHitEffect:bool) MagicEffectHasNoHitEffectC effect:int</code><br />
-<code class="s">(hasNoHitEffect:bool) MEHasNoHitEffectC effect:int</code></p>
+<code class="s">(hasNoHitEffect:bool) MagicEffectHasNoHitEffect magicEffect:ref</code><br />
+<code class="s">(hasNoHitEffect:bool) MEHasNoHitEffect magicEffect:ref</code><br />
+<code class="s">(hasNoHitEffect:bool) MagicEffectHasNoHitEffectC magicEffectCode:int</code><br />
+<code class="s">(hasNoHitEffect:bool) MEHasNoHitEffectC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectUsesWeapon" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectUsesWeapon">MagicEffectUsesWeapon(C)</a> - returns whether the magic effect summons a weapon<br />
-<code class="s">(usesWeapon:bool) MagicEffectUsesWeapon effect:chars</code><br />
-<code class="s">(usesWeapon:bool) MEUsesWeapon effect:chars</code><br />
-<code class="s">(usesWeapon:bool) MagicEffectUsesWeaponC effect:int</code><br />
-<code class="s">(usesWeapon:bool) MEUsesWeaponC effect:int</code></p>
+<code class="s">(usesWeapon:bool) MagicEffectUsesWeapon magicEffect:ref</code><br />
+<code class="s">(usesWeapon:bool) MEUsesWeapon magicEffect:ref</code><br />
+<code class="s">(usesWeapon:bool) MagicEffectUsesWeaponC magicEffectCode:int</code><br />
+<code class="s">(usesWeapon:bool) MEUsesWeaponC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectUsesArmor" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectUsesArmor">MagicEffectUsesArmor(C)</a> - returns whether the magic effect summons armor<br />
-<code class="s">(usesArmor:bool) MagicEffectUsesArmor effect:chars</code><br />
-<code class="s">(usesArmor:bool) MEUsesArmor effect:chars</code><br />
-<code class="s">(usesArmor:bool) MagicEffectUsesArmorC effect:int</code><br />
-<code class="s">(usesArmor:bool) MEUsesArmorC effect:int</code></p>
+<code class="s">(usesArmor:bool) MagicEffectUsesArmor magicEffect:ref</code><br />
+<code class="s">(usesArmor:bool) MEUsesArmor magicEffect:ref</code><br />
+<code class="s">(usesArmor:bool) MagicEffectUsesArmorC magicEffectCode:int</code><br />
+<code class="s">(usesArmor:bool) MEUsesArmorC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectUsesCreature" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectUsesCreature">MagicEffectUsesCreature(C)</a> - returns whether the magic effect summons a creature<br />
-<code class="s">(usesCreature:bool) MagicEffectUsesCreature effect:chars</code><br />
-<code class="s">(usesCreature:bool) MEUsesCreature effect:chars</code><br />
-<code class="s">(usesCreature:bool) MagicEffectUsesCreatureC effect:int</code><br />
-<code class="s">(usesCreature:bool) MEUsesCreatureC effect:int</code></p>
+<code class="s">(usesCreature:bool) MagicEffectUsesCreature magicEffect:ref</code><br />
+<code class="s">(usesCreature:bool) MEUsesCreature magicEffect:ref</code><br />
+<code class="s">(usesCreature:bool) MagicEffectUsesCreatureC magicEffectCode:int</code><br />
+<code class="s">(usesCreature:bool) MEUsesCreatureC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectUsesSkill" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectUsesSkill">MagicEffectUsesSkill(C)</a> - returns whether the magic effect affects a skill<br />
-<code class="s">(usesSkill:bool) MagicEffectUsesSkill effect:chars</code><br />
-<code class="s">(usesSkill:bool) MEUsesSkill effect:chars</code><br />
-<code class="s">(usesSkill:bool) MagicEffectUsesSkillC effect:int</code><br />
-<code class="s">(usesSkill:bool) MEUsesSkillC effect:int</code></p>
+<code class="s">(usesSkill:bool) MagicEffectUsesSkill magicEffect:ref</code><br />
+<code class="s">(usesSkill:bool) MEUsesSkill magicEffect:ref</code><br />
+<code class="s">(usesSkill:bool) MagicEffectUsesSkillC magicEffectCode:int</code><br />
+<code class="s">(usesSkill:bool) MEUsesSkillC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectUsesAttribute" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectUsesAttribute">MagicEffectUsesAttribute(C)</a> - returns whether the magic effect affects an attribute<br />
-<code class="s">(usesAttribute:bool) MagicEffectUsesAttribute effect:chars</code><br />
-<code class="s">(usesAttribute:bool) MEUsesAttribute effect:chars</code><br />
-<code class="s">(usesAttribute:bool) MagicEffectUsesAttributeC effect:int</code><br />
-<code class="s">(usesAttribute:bool) MEUsesAttributeC effect:int</code></p>
+<code class="s">(usesAttribute:bool) MagicEffectUsesAttribute magicEffect:ref</code><br />
+<code class="s">(usesAttribute:bool) MEUsesAttribute magicEffect:ref</code><br />
+<code class="s">(usesAttribute:bool) MagicEffectUsesAttributeC magicEffectCode:int</code><br />
+<code class="s">(usesAttribute:bool) MEUsesAttributeC magicEffectCode:int</code></p>
 
 <p><a id="MagicEffectUsesOtherActorValue" class="f" href="http://cs.elderscrolls.com/index.php?title=MagicEffectUsesOtherActorValue">MagicEffectUsesOtherActorValue(C)</a> - returns whether the magic effect affects an actor value that is not a skill or an attribute<br />
-<code class="s">(usesOtherActorVal:bool) MagicEffectUsesOtherActorValue effect:chars</code><br />
-<code class="s">(usesOtherActorVal:bool) MEUsesOtherActorValue effect:chars</code><br />
-<code class="s">(usesOtherActorVal:bool) MagicEffectUsesOtherActorValueC effect:int</code><br />
-<code class="s">(usesOtherActorVal:bool) MEUsesOtherActorValueC effect:int</code></p>
+<code class="s">(usesOtherActorVal:bool) MagicEffectUsesOtherActorValue magicEffect:ref</code><br />
+<code class="s">(usesOtherActorVal:bool) MEUsesOtherActorValue magicEffect:ref</code><br />
+<code class="s">(usesOtherActorVal:bool) MagicEffectUsesOtherActorValueC magicEffectCode:int</code><br />
+<code class="s">(usesOtherActorVal:bool) MEUsesOtherActorValueC magicEffectCode:int</code></p>
 
 <p><a id="GetMagicEffectOtherActorValue" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectOtherActorValue">GetMagicEffectOtherActorValue(C)</a> - returns the actor value (skill, attribute or other) affected by the magic effect<br />
-<code class="s">(<a href="#Actor_Value_Codes">actorValue</a>:int) GetMagicEffectOtherActorValue effect:chars</code><br />
-<code class="s">(<a href="#Actor_Value_Codes">actorValue</a>:int) GetMEOtherActorValue effect:chars</code><br />
-<code class="s">(<a href="#Actor_Value_Codes">actorValue</a>:int) GetMagicEffectOtherActorValueC effect:int</code><br />
-<code class="s">(<a href="#Actor_Value_Codes">actorValue</a>:int) GetMEOtherActorValueC effect:int</code></p>
+<code class="s">(<a href="#Actor_Value_Codes">actorValue</a>:int) GetMagicEffectOtherActorValue magicEffect:ref</code><br />
+<code class="s">(<a href="#Actor_Value_Codes">actorValue</a>:int) GetMEOtherActorValue magicEffect:ref</code><br />
+<code class="s">(<a href="#Actor_Value_Codes">actorValue</a>:int) GetMagicEffectOtherActorValueC magicEffectCode:int</code><br />
+<code class="s">(<a href="#Actor_Value_Codes">actorValue</a>:int) GetMEOtherActorValueC magicEffectCode:int</code></p>
 
 <p><a id="GetMagicEffectUsedObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicEffectUsedObject">GetMagicEffectUsedObject(C)</a> - returns the weapon, armor or creature summoned by the magic effect<br />
-<code class="s">(objectID:ref) GetMagicEffectUsedObject effect:chars</code><br />
-<code class="s">(objectID:ref) GetMEUsedObject effect:chars</code><br />
-<code class="s">(objectID:ref) GetMagicEffectUsedObjectC effect:int</code><br />
-<code class="s">(objectID:ref) GetMEUsedObjectC effect:int</code></p>
+<code class="s">(objectID:ref) GetMagicEffectUsedObject magicEffect:ref</code><br />
+<code class="s">(objectID:ref) GetMEUsedObject magicEffect:ref</code><br />
+<code class="s">(objectID:ref) GetMagicEffectUsedObjectC magicEffectCode:int</code><br />
+<code class="s">(objectID:ref) GetMEUsedObjectC magicEffectCode:int</code></p>
 
 <p><a id="RemoveNthMagicEffectCounter" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveNthMagicEffectCounter">RemoveNthMagicEffectCounter(C)</a> - removes the <span class="op">n</span>th counter-effect for the magic effect.<br />
 <code class="s">(nothing) RemoveNthMagicEffectCounter whichCounter:int magicEffect:ref</code><br />
@@ -3219,8 +3219,8 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h5>Syntax:</h5>
 
-<p><code class="s">(string) GetMagicEffectXXX effect:refOrCode</code><br />
-<code class="s">(nothing) SetMagicEffectXXX newValue:string effect:refOrCode</code></p><ul>
+<p><code class="s">(string) GetMagicEffectXXX effect:ref_or_code</code><br />
+<code class="s">(nothing) SetMagicEffectXXX newValue:string effect:ref_or_code</code></p><ul>
 	<li>GetMagicEffectName</li>
 	<li>GetMagicEffectNameC</li>
 	<li>GetMagicEffectIcon</li>
@@ -3241,8 +3241,8 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h5>Syntax:</h5>
 
-<p><code class="s">(object:ref) GetMagicEffectXXX effect:refOrCode</code><br />
-<code class="s">(nothing) SetMagicEffectXXX newValue:ref effect:refOrCode</code></p><ul>
+<p><code class="s">(object:ref) GetMagicEffectXXX effect:ref_or_code</code><br />
+<code class="s">(nothing) SetMagicEffectXXX newValue:ref effect:ref_or_code</code></p><ul>
 	<li>GetMagicEffectHitShader</li>
 	<li>GetMagicEffectHitShaderC</li>
 	<li>GetMagicEffectEnchantShader</li>
@@ -3281,8 +3281,8 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h5>Syntax:</h5>
 
-<p><code class="s">(value:numeric) GetMagicEffectXXX effect:refOrCode</code><br />
-<code class="s">(nothing) SetMagicEffectXXX newValue:numeric effect:refOrCode</code></p><ul>
+<p><code class="s">(value:numeric) GetMagicEffectXXX effect:ref_or_code</code><br />
+<code class="s">(nothing) SetMagicEffectXXX newValue:numeric effect:ref_or_code</code></p><ul>
 	<li>GetMagicEffectNumCounters - returns the number of counter-effects for the magic effect</li>
 	<li>GetMagicEffectNumCountersC</li>
 	<li>GetMagicEffectResistValue - returns an actor value</li>
@@ -3370,9 +3370,11 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <code class="s">(nothing) reference.SetCanTravelToMapMarker canTravel:bool</code></p>
 
 <p><a id="GetMapMarkerType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMapMarkerType">GetMapMarkerType</a> - returns the type of icon used to represent the location on the map.<br />
+<b>Note: </b>Users of the Map Marker Overhaul mod will have more types available.<br />
 <code class="s">(<a href="#Map_Marker_Types">markerType</a>:int) reference.GetMapMarkerType</code></p>
 
 <p><a id="SetMapMarkerType" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMapMarkerType">SetMapMarkerType</a> - sets the type of icon used to represent the location on the map.<br />
+<b>Note: </b>Users of the Map Marker Overhaul mod will have more types available.<br />
 <code class="s">(nothing) reference.SetMapMarkerType <a href="#Map_Marker_Types">markerType</a>:int</code></p>
 
 <p><a id="GetMapMarkers" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMapMarkers">GetMapMarkers</a> - returns an Array containing all map marker references. The filter argument can be used to filter out markers based on their visibility and accessibility: pass 0 to include only visible markers which can be fast-traveled to, 1 to include all visible markers, and 2 to include all markers, including those which are not visible. The default filter value is 1. Pass a <a href="#Map_Marker_Types">markerType</a> parameter to include only markers of the specified type; omit it or pass zero to include all types.<br />
@@ -3412,22 +3414,25 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <p><a id="GetMerchantContainer" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMerchantContainer">GetMerchantContainer</a> - returns the reference to the NPC's merchant container<br />
 <code class="s">(containerReference:ref) npc.GetMerchantContainer</code></p>
 
-<p><a id="SetMerchantContainer" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMerchantContainer">SetMerchantContainer</a> - replaces the specified mechant's container and returns the old container. If the specified NPC does not have a merchant container, or if the passed reference is not a container the function does nothing and will return 0.<br />
+<p><a id="SetMerchantContainer" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMerchantContainer">SetMerchantContainer</a> - replaces the specified mechant's container and returns the old container. <br />
+<b>Note: </b>If the specified NPC does not have a merchant container, or if the passed reference is not a container the function does nothing and will return 0.<br />
 <code class="s">(oldContainerRef:ref) npc.SetMerchantContainer nuContainer:ref</code></p>
 
-<p><a id="GetHorse" class="f" href="http://cs.elderscrolls.com/index.php?title=GetHorse">GetHorse</a> - returns the horse currently ridden by the calling NPC. Note that this function returns a reference while the NPC is in the process of walking toward a horse with the intention of mounting it.<br />
+<p><a id="GetHorse" class="f" href="http://cs.elderscrolls.com/index.php?title=GetHorse">GetHorse</a> - returns the horse currently ridden by the calling NPC.<br />
+<b>Note: </b>This function returns a reference while the NPC is in the process of walking toward a horse with the intention of mounting it.<br />
 <code class="s">(horse:ref) <span class="op">reference.</span>GetHorse</code></p>
 
 <p><a id="GetTravelHorse" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTravelHorse">GetTravelHorse</a> - returns a reference to the travel horse used by the calling reference.<br />
 <code class="s">(horse:ref) reference.GetTravelHorse</code></p>
 
-<p><a id="IsFemale" class="f" href="http://cs.elderscrolls.com/index.php?title=IsFemale">IsFemale</a> - returns 1 if the NPC is female.<br />
-<code class="s">(isFemale:bool) <span class="op">reference.</span>IsFemale <span class="op">npc:ref</span></code></p>
-
 <p><a id="SetTravelHorse" class="f" href="http://cs.elderscrolls.com/index.php?title=SetTravelHorse">SetTravelHorse</a> - Sets the travel horse used by the calling reference to the horse reference specified. Changes are not saved in the savegame.<br />
 <code class="s">(nothing) reference.SetTravelHorse horse:ref</code></p>
 
-<p><a id="CopyHair" class="f" href="http://cs.elderscrolls.com/index.php?title=CopyHair">CopyHair</a> - Copies the hair style, length, and color from one NPC to another. Changes alter the base actor and are not saved in the savegame unless called on the player. Changes will not be visible until the actor is reloaded; calling <em>disable</em> followed by <em>enable</em> a frame later will force the NPC to reload, updating the hair. Changes do appear to be saved for the player, but may not be visible until the game is reloaded.<br />
+<p><a id="IsFemale" class="f" href="http://cs.elderscrolls.com/index.php?title=IsFemale">IsFemale</a> - returns 1 if the NPC is female.<br />
+<code class="s">(isFemale:bool) <span class="op">reference.</span>IsFemale <span class="op">npc:ref</span></code></p>
+
+<p><a id="CopyHair" class="f" href="http://cs.elderscrolls.com/index.php?title=CopyHair">CopyHair</a> - Copies the hair style, length, and color from one NPC to another. Changes alter the base actor and are not saved in the savegame unless called on the player.<br/>
+<b>Note: </b>Changes will not be visible until the actor is reloaded or <a href="#Update3D"><code>Update3D</code></a> is used on it.<br />
 <code class="s">(nothing) <span class="op">reference.</span>CopyHair copyFrom:ref <span class="op">copyTo:ref</span></code></p>
 
 <p><a id="CopyEyes" class="f" href="http://cs.elderscrolls.com/index.php?title=CopyEyes">CopyEyes</a> - Copies the eyes used by one npc onto another, with the same caveats as CopyHair.<br />
@@ -3442,28 +3447,28 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <p><a id="GetRace" class="f" href="http://cs.elderscrolls.com/index.php?title=GetRace">GetRace</a> - returns the race of an NPC.<br />
 <code class="s">(race:ref) <span class="op">reference.</span>GetRace <span class="op">npc:ref</span></code></p>
 
-<p><a id="CopyRace" class="f" href="http://cs.elderscrolls.com/index.php?title=CopyRace">CopyRace</a> - modifies the calling NPC reference to be the same race as the passed base NPC. The calling NPC gets the same skeleton, textures, and other race attributes of the specified base NPC. Its facial parameters, hear, and eyes do not change. This command affects the base object of the calling NPC, and should only be used on references which are unique (no other references share the same base form). Note that if the NPC's new race uses a different voice than its old voice, it may not audibly speak any race-specific dialog which has not been recorded for the new voice.<br />
+<p><a id="CopyRace" class="f" href="http://cs.elderscrolls.com/index.php?title=CopyRace">CopyRace</a> - modifies the calling NPC reference to be the same race as the passed base NPC. The calling NPC gets the same skeleton, textures, and other race attributes of the specified base NPC. Its facial parameters, hair, and eyes do not change. This command affects the base object of the calling NPC, and should only be used on references which are unique (no other references share the same base form). Note that if the NPC's new race uses a different voice than its old voice, it may not audibly speak any race-specific dialog which has not been recorded for the new voice.<br />
 <code class="s">(nothing) reference.CopyRace sourceNPC:ref</code></p>
 
-<p><a id="GetHair" class="f" href="http://cs.elderscrolls.com/index.php?title=GetHair">GetHair</a> - returns the NPC's hairstyle<br />
+<p><a id="GetHair" class="f" href="http://cs.elderscrolls.com/index.php?title=GetHair">GetHair</a> - returns the NPC's hairstyle.<br />
 <code class="s">(hair:ref) <span class="op">reference.</span>GetHair <span class="op">npc:ref</span></code></p>
 
-<p><a id="GetEyes" class="f" href="http://cs.elderscrolls.com/index.php?title=GetEyes">GetEyes</a> - returns the NPC's eyes<br />
+<p><a id="GetEyes" class="f" href="http://cs.elderscrolls.com/index.php?title=GetEyes">GetEyes</a> - returns the NPC's eyes.<br />
 <code class="s">(eyes:ref) <span class="op">reference.</span>GetEyes <span class="op">npc:ref</span></code></p>
 
-<p><a id="GetHairColor" class="f" href="http://cs.elderscrolls.com/index.php?title=GetHairColor">GetHairColor</a> - returns the RGB value of the NPC's hair color<br />
+<p><a id="GetHairColor" class="f" href="http://cs.elderscrolls.com/index.php?title=GetHairColor">GetHairColor</a> - returns the RGB value of the NPC's hair color.<br />
 <code class="s">(color:int) <span class="op">reference.</span>GetHairColor <a href="#RGB_Value">rgb</a>:int <span class="op">npc:ref</span></code></p>
 
-<p><a id="GetTrainerLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTrainerLevel">GetTrainerLevel</a> - returns the level at which the NPC offers training<br />
+<p><a id="GetTrainerLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTrainerLevel">GetTrainerLevel</a> - returns the level at which the NPC offers training.<br />
 <code class="s">(level:int) <span class="op">reference.</span>GetTrainerLevel <span class="op">npc:ref</span></code></p>
 
-<p><a id="GetTrainerSkill" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTrainerSkill">GetTrainerSkill</a> - returns the skill in which the NPC offers training as an <a href="#Actor_Value_Codes">actor value code</a><br />
+<p><a id="GetTrainerSkill" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTrainerSkill">GetTrainerSkill</a> - returns the skill in which the NPC offers training as an <a href="#Actor_Value_Codes">actor value code.</a><br />
 <code class="s">(<a href="#Actor_Value_Codes">skill</a>:int) <span class="op">reference.</span>GetTrainerSkill <span class="op">npc:ref</span></code></p>
 
-<p><a id="SetTrainerLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetTrainerLevel">SetTrainerLevel</a> - sets the level at which an NPC offers training<br />
+<p><a id="SetTrainerLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetTrainerLevel">SetTrainerLevel</a> - sets the level at which an NPC offers training.<br />
 <code class="s">(nothing) <span class="op">reference.</span>SetTrainerLevel newLevel:int <span class="op">npc:ref</span></code></p>
 
-<p><a id="SetTrainerSkill" class="f" href="http://cs.elderscrolls.com/index.php?title=SetTrainerSkill">SetTrainerSkill</a> - sets the skill in which an NPC offers training<br />
+<p><a id="SetTrainerSkill" class="f" href="http://cs.elderscrolls.com/index.php?title=SetTrainerSkill">SetTrainerSkill</a> - sets the skill in which an NPC offers training.<br />
 <code class="s">(nothing) <span class="op">reference.</span>SetTrainerSkill newSkill:actorValue <span class="op">npc:ref</span></code></p>
 
 <p><a id="GetServicesMask" class="f" href="http://cs.elderscrolls.com/index.php?title=GetServicesMask">GetServicesMask</a> - returns an integer code representing the services offered by an NPC. The code is obtained by ORing (adding) <a href="#Service_Flags">service flags</a><br />
@@ -3546,10 +3551,12 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetCrosshairRef" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCrosshairRef">GetCrosshairRef</a> - returns a reference to whatever is currently under the player's crosshair. Generally returns zero when called during menumode. Note that this function will return non-activatable references as well; use <a href="#IsActivatable">IsActivatable</a> to determine if the reference can be activated normally.<br />
+<p><a id="GetCrosshairRef" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCrosshairRef">GetCrosshairRef</a> - returns a reference to whatever is currently under the player's crosshair. Generally returns zero when called during MenuMode. Note that this function will return non-activatable references as well; use <a href="#IsActivatable">IsActivatable</a> to determine if the reference can be activated normally.<br />
+<b>Note: </b>The object must be within activate distance of the player, determined by the game setting <code>iActivatePickLength</code>. If a Telekinesis spell is selected, it will also return a more distant reference. (TODO: Verify)<br />
+<b>Note: </b>Returns 0 for 1-5 frames (maybe even longer) after player presses Activate. (TODO: Verify)<br />
 <code class="s">(crosshairRef:ref) GetCrosshairRef</code></p>
 
-<p><a id="GetPlayersLastRiddenHorse" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayersLastRiddenHorse">GetPlayersLastRiddenHorse</a> - returns a reference to the horse most recently ridden by the player<br />
+<p><a id="GetPlayersLastRiddenHorse" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayersLastRiddenHorse">GetPlayersLastRiddenHorse</a> - returns a reference to the horse most recently ridden by the player.<br />
 <code class="s">(horse:ref) GetPlayersLastRiddenHorse</code><br />
 <code class="s">(horse:ref) GetPCLastHorse</code></p>
 
@@ -3563,19 +3570,22 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <code class="s">(loadDoor:ref) GetPlayersLastActivatedLoadDoor</code><br />
 <code class="s">(loadDoor:ref) GetPCLastLoadDoor</code></p>
 
-<p><a id="GetGodMode" class="f" href="http://cs.elderscrolls.com/index.php?title=GetGodMode">GetGodMode</a> - returns 1 if the player has toggled god mode on<br />
+<p><a id="GetGodMode" class="f" href="http://cs.elderscrolls.com/index.php?title=GetGodMode">GetGodMode</a> - returns 1 if the player has toggled god mode on.<br />
 <code class="s">(godMode:bool) GetGodMode</code></p>
 
-<p><a id="SetPCAMurderer" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCAMurderer">SetPCAMurderer</a> - sets whether the PC is a murderer or not<br />
+<p><a id="SetPCAMurderer" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCAMurderer">SetPCAMurderer</a> - sets whether the PC is a murderer or not.<br />
 <code class="s">(nothing) SetPCAMurderer isMurderer:bool</code></p>
 
-<p><a id="GetPlayerSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSpell">GetPlayerSpell</a> - returns the objectID of the player's current spell<br />
+<p><a id="GetPlayerSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSpell">GetPlayerSpell</a> - returns the objectID of the player's current spell.<br />
+<b>Note: </b>If the active spell is removed from the player, this function might return 0. (TODO: Verify)<br />
 <code class="s">(spell:ref) GetPlayerSpell</code></p>
 
-<p><a id="GetPlayerSpellCount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSpellCount">GetPlayerSpellCount</a> - returns the player spell count<br />
+<p><a id="GetPlayerSpellCount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSpellCount">GetPlayerSpellCount</a> - returns the player spell count.<br />
+<code class="s">(count:int) GetPlayerSpellCount</code><br/>
 <code class="s">(count:int) GetSpellCount</code></p>
 
-<p><a id="GetNthPlayerSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthPlayerSpell">GetNthPlayerSpell</a> - returns the nth player spell. whichSpell is an index that starts at 0 for the first spell in the list. Note that the CS compiler doesn't expect spells to be returned as a ref. If you are calling this function multiple times to set the same ref variable you need to assign that variable to some other type (say a weapon) in between your calls to this function. Otherwise the ref will continue to keep the value from the first call.<br />
+<p><a id="GetNthPlayerSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthPlayerSpell">GetNthPlayerSpell</a> - returns the nth player spell. whichSpell is an index that starts at 0 for the first spell in the list.<br/>
+<b>Note: </b>The CS compiler doesn't expect spells to be returned as a ref. If you are calling this function multiple times to set the same ref variable you need to assign that variable to some other type (say a weapon) in between your calls to this function. Otherwise the ref will continue to keep the value from the first call. (TODO: Verify)<br />
 <code class="s">(spell:ref) GetNthPlayerSpell whichSpell:int</code><br />
 <code class="s">(spell:ref) GetNthSpell whichSpell:int</code></p>
 
@@ -3591,7 +3601,7 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <p><a id="SetPCAttributeBonus" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCAttributeBonus">SetPCAttributeBonus</a> - sets the number of skill advancements contributing to the specified attribute's bonus for the next level. Note that game setting multipliers applied to these values determine the actual bonus at level-up. Does not affect Luck bonus.<br />
 <code class="s">(bonus:int) GetPCAttributeBonus <a href="#Actor_Value_Codes">actorValue</a>:string bonus:int</code></p>
 
-<p><a id="GetTotalPCAttributeBonus" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTotalPCAttributeBonus">GetTotalPCAttributeBonus</a> - returns the sum of the player's attribute bonuses<br />
+<p><a id="GetTotalPCAttributeBonus" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTotalPCAttributeBonus">GetTotalPCAttributeBonus</a> - returns the sum of the player's attribute bonuses.<br />
 <code class="s">(bonus:int) GetTotalPCAttributeBonus</code></p>
 
 <p><a id="ModPCSpellEffectiveness" class="f" href="http://cs.elderscrolls.com/index.php?title=ModPCSpellEffectiveness">ModPCSpellEffectiveness</a> - alters the script modifier applied to the player's spell effectiveness. This works similarly to Oblivion's ModAV command. Positive values increases the modifier, negative values decrease it. Any game calculations involving player spell effectiveness will use the modified value (base effectiveness + modifier). By default, the effects of this command persist until the end of the current game session. Pass 1 for the second parameter to save the amount modified in the savegame; it will then be applied every time the savegame is reloaded, and removed when reloading a different savegame.<br />
@@ -3600,10 +3610,10 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <p><a id="GetPCSpellEffectivenessModifier" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCSpellEffectivenessModifier">GetPCSpellEffectivenessModifier</a> - returns the current value of the script modifier for player spell effectiveness. Subtract this value from the return value of Player.GetSpellEffectiveness to get the player's base spell effectiveness.<br />
 <code class="s">(modifier:float) GetPCSpellEffectivenessModifier</code></p>
 
-<p><a id="GetPCTrainingSessionsUsed" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCTrainingSessionsUsed">GetPCTrainingSessionsUsed</a> - returns the number of times the player has trained during his current level<br />
+<p><a id="GetPCTrainingSessionsUsed" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCTrainingSessionsUsed">GetPCTrainingSessionsUsed</a> - returns the number of times the player has trained during his current level.<br />
 <code class="s">(numSessions:int) GetPCTrainingSessionsUsed</code></p>
 
-<p><a id="SetPCTrainingSessionsUsed" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCTrainingSessionsUsed">SetPCTrainingSessionsUsed</a> - sets the number of times the player has trained during his current level<br />
+<p><a id="SetPCTrainingSessionsUsed" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCTrainingSessionsUsed">SetPCTrainingSessionsUsed</a> - sets the number of times the player has trained during his current level.<br />
 <code class="s">(nothing) SetPCTrainingSessionsUsed numSessions:int</code></p>
 
 <p><a id="ModPCMovementSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=ModPCMovementSpeed">ModPCMovementSpeed</a> - applies a positive or negative modifier to the player's speed attribute as used in calculating his movement speed while swimming, walking, or running. The actual attribute is not modified, but movement calculations use the attribute value plus the modifier. Positive modifiers well above the maximum value of the speed attribute are permitted and effective; minimum speed including the modifier is limited to zero. By default, the effects of this command persist until the end of the current game session. Pass 1 for the second parameter to save the amount modified in the savegame; it will then be applied every time the savegame is reloaded, and removed when reloading a different savegame.<br />
@@ -3612,43 +3622,47 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <p> <a id="GetPCMovementSpeedModifier" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCMovementSpeedModifier">GetPCMovementSpeedModifier</a> - returns the current modifier applied to the player's speed for use in movement speed calculations. Because multiple mods may change the modifier this command returns the sum of all calls to ModPCMovementSpeed.<br />
 <code class="s">(modifier:float) GetPCMovementSpeedModifier</code></p>
 
-<p><a id="GetPlayerBirthsign" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerBirthsign">GetPlayerBirthsign</a> - returns the birthsign chosen by the player<br />
+<p><a id="GetPlayerBirthsign" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerBirthsign">GetPlayerBirthsign</a> - returns the birthsign chosen by the player.<br />
 <code class="s">(birthsign:ref) GetPlayerBirthsign</code></p>
 
 <p><a id="SetPlayerBirthsign" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPlayerBirthsign">SetPlayerBirthsign</a> - changes the player's birthsign to the one specified. This removes all effects of the previous birthsign and applies the effects of the new one.<br />
 <code class="s">(nothing) SetPlayerBirthsign birthsign:ref</code></p>
 
-<p><a id="GetTelekinesisRef" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTelekinesisRef">GetTelekinesisRef</a> - returns a reference to the object being manipulated by the player through telekinesis, if any<br />
+<p><a id="GetTelekinesisRef" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTelekinesisRef">GetTelekinesisRef</a> - returns a reference to the object being manipulated by the player through telekinesis, if any.<br />
 <code class="s">(telekinesisRef:ref) GetTelekinesisRef</code></p>
 
 <p><a id="GetCurrentRegions" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentRegions">GetCurrentRegions</a> - returns an Array of all the regions in which the player is currently located, if any. In interior cells generally returns 0. Regions in exterior cells can overlap, therefore it's possible for the player to be in several regions simultaneously.<br />
 <code class="s">(regions:Array) GetCurrentRegions</code></p>
 
-<p><a id="GetPCLastDroppedItem" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCLastDroppedItem">GetPCLastDroppedItem</a> - returns the base object of the item most recently dropped by the player<br />
+<p><a id="GetPCLastDroppedItem" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCLastDroppedItem">GetPCLastDroppedItem</a> - returns the base object of the item most recently dropped by the player.<br />
 <code class="s">(item:ref) GetPCLastDroppedItem</code></p>
 
-<p><a id="GetPCLastDroppedItemRef" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCLastDroppedItemRef">GetPCLastDroppedItemRef</a> - returns the reference of the item most recently dropped by the player<br />
+<p><a id="GetPCLastDroppedItemRef" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCLastDroppedItemRef">GetPCLastDroppedItemRef</a> - returns the reference of the item most recently dropped by the player.<br />
 <code class="s">(item:ref) GetPCLastDroppedItemRef</code></p>
 
-<p><a id="GetPCAttributeBonusC" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCAttributeBonusC">GetPCAttributeBonusC</a> - returns the level-up bonus for the specified attribute<br />
-<code class="s">(short) GetPCAttributeBonusC actorValueCode:integer</code></p>
+<p><a id="GetPCAttributeBonusC" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPCAttributeBonusC">GetPCAttributeBonusC</a> - returns the level-up bonus for the specified attribute.<br />
+<code class="s">(short) GetPCAttributeBonusC <a href="#Actor_Value_Codes">actorValue</a>:int</code></p>
 
-<p><a id="SetPCAttributeBonusC" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCAttributeBonusC">SetPCAttributeBonusC</a> - sets the level-up bonus for the specified attribute<br />
-<code class="s">(nothing) SetPCAttributeBonusC actorValueCode:integer</code></p>
+<p><a id="SetPCAttributeBonusC" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPCAttributeBonusC">SetPCAttributeBonusC</a> - sets the level-up bonus for the specified attribute.<br />
+<code class="s">(nothing) SetPCAttributeBonusC <a href="#Actor_Value_Codes">actorValue</a>:int</code></p>
 
-<p><a id="GetLastUsedSigilStone" class="f" href="http://cs.elderscrolls.com/index.php?title=GetLastUsedSigilStone">GetLastUsedSigilStone (GetLastSS)</a> - returns the sigil stone most recently used to enchant an item during the current game session<br />
-<code class="s">(ref) GetLastUsedSigilStone</code></p>
+<p><a id="GetLastUsedSigilStone" class="f" href="http://cs.elderscrolls.com/index.php?title=GetLastUsedSigilStone">GetLastUsedSigilStone</a> - returns the sigil stone most recently used to enchant an item during the current game session.<br />
+<code class="s">(usedSigilStone:ref) GetLastUsedSigilStone</code><br/>
+<code class="s">(usedSigilStone:ref) GetLastSS</code></p>
 
-<p><a id="GetLastSigilStoneEnchantedItem" class="f" href="http://cs.elderscrolls.com/index.php?title=GetLastSigilStoneEnchantedItem">GetLastSigilStoneEnchantedItem (GetLastSSItem)</a> - returns the unenchanted item most recently enchanted with a sigil stone during the current game session<br />
-<code class="s">(ref) GetLastSigilStoneEnchantedItem</code></p>
+<p><a id="GetLastSigilStoneEnchantedItem" class="f" href="http://cs.elderscrolls.com/index.php?title=GetLastSigilStoneEnchantedItem">GetLastSigilStoneEnchantedItem</a> - returns the unenchanted item most recently enchanted with a sigil stone during the current game session.<br />
+<code class="s">(item:ref) GetLastSigilStoneEnchantedItem</code><br/>
+<code class="s">(item:ref) GetLastSSItem</code></p>
 
-<p><a id="GetLastSigilStoneCreatedItem" class="f" href="http://cs.elderscrolls.com/index.php?title=GetLastSigilStoneCreatedItem">GetLastSigilStoneCreatedItem (GetLastSSCreated)</a> - returns the enchanted item most recently created with a sigil stone during the current game session<br />
-<code class="s">(ref) GetLastSigilStoneCreatedItem</code></p>
+<p><a id="GetLastSigilStoneCreatedItem" class="f" href="http://cs.elderscrolls.com/index.php?title=GetLastSigilStoneCreatedItem">GetLastSigilStoneCreatedItem</a> - returns the enchanted item most recently created with a sigil stone during the current game session.<br />
+<code class="s">(item:ref) GetLastSigilStoneCreatedItem</code><br/>
+<code class="s">(item:ref) GetLastSSCreated</code></p>
 
 <p><a id="SetFlyCameraSpeedMult" class="f" href="http://cs.elderscrolls.com/index.php?title=SetFlyCameraSpeedMult">SetFlyCameraSpeedMult</a> - changes the speed multiplier for the player's camera when in fly camera mode.<br />
 <code class="s">(nothing) SetFlyCameraSpeedMult multiplier:float</code></p>
 
-<p><a id="SetPlayerSkeletonPath" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPlayerSkeletonPAth">SetPlayerSkeletonPath</a> - Set the specific path as the player's skeleton. WARNING: passing an invalid path or invalid nif can crash the game.<br />
+<p><a id="SetPlayerSkeletonPath" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPlayerSkeletonPAth">SetPlayerSkeletonPath</a> - Set the specific path as the player's skeleton.<br />
+<b>Note: </b>WARNING: passing an invalid path or invalid nif can crash the game.<br />
 <code class="s">(nothing) SetPlayerSkeletonPath path:string</code></p>
 
 
@@ -3658,29 +3672,29 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetProjectileType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileType">GetProjectileType</a> - returns the type of the projectile<br />
+<p><a id="GetProjectileType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileType">GetProjectileType</a> - returns the type of the projectile.<br />
 <code class="s">(<a href="#Projectile_Type">projectileType</a>:int) reference.GetProjectileType</code></p>
 
-<p><a id="GetProjectileSource" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileSource">GetProjectileSource</a> - returns the caster of a magic projectile or the archer who fired an arrow projectile<br />
+<p><a id="GetProjectileSource" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileSource">GetProjectileSource</a> - returns the caster of a magic projectile or the archer who fired an arrow projectile.<br />
 <code class="s">(source:ref) reference.GetProjectileSource</code></p>
 
-<p><a id="GetMagicProjectileSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicProjectileSpell">GetMagicProjectileSpell</a> - returns the spell attached to a magic projectile<br />
+<p><a id="GetMagicProjectileSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMagicProjectileSpell">GetMagicProjectileSpell</a> - returns the spell attached to a magic projectile.<br />
 <code class="s">(spell:ref) reference.GetMagicProjectileSpell</code><br />
 <code class="s">(spell:ref) reference.GetMPSpell</code></p>
 
-<p><a id="SetMagicProjectileSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMagicProjectileSpell">SetMagicProjectileSpell</a> - changes the spell attached to a magic projectile<br />
+<p><a id="SetMagicProjectileSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=SetMagicProjectileSpell">SetMagicProjectileSpell</a> - changes the spell attached to a magic projectile.<br />
 <code class="s">(nothing) reference.SetMagicProjectileSpell newSpell:ref</code><br />
 <code class="s">(nothing) reference.SetMPSpell newSpell:ref</code></p>
 
-<p><a id="GetArrowProjectileEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=GetArrowProjectileEnchantment">GetArrowProjectileEnchantment</a> - returns the enchantment on an arrow projectile<br />
+<p><a id="GetArrowProjectileEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=GetArrowProjectileEnchantment">GetArrowProjectileEnchantment</a> - returns the enchantment on an arrow projectile.<br />
 <code class="s">(enchantment:ref) reference.GetArrowProjectileEnchantment</code><br />
 <code class="s">(enchantment:ref) reference.GetAPEnch</code></p>
 
-<p><a id="GetArrowProjectileBowEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=GetArrowProjectileBowEnchantment">GetArrowProjectileBowEnchantment</a> - returns the enchantment on an arrow derived from the bow from which it was fired<br />
+<p><a id="GetArrowProjectileBowEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=GetArrowProjectileBowEnchantment">GetArrowProjectileBowEnchantment</a> - returns the enchantment on an arrow derived from the bow from which it was fired.<br />
 <code class="s">(enchantment:ref) reference.GetArrowProjectileBowEnchantment</code><br />
 <code class="s">(enchantment:ref) reference.GetAPBowEnch</code></p>
 
-<p><a id="GetArrowProjectilePoison" class="f" href="http://cs.elderscrolls.com/index.php?title=GetArrowProjectilePoison">GetArrowProjectilePoison</a> - returns the poison on an arrow projectile<br />
+<p><a id="GetArrowProjectilePoison" class="f" href="http://cs.elderscrolls.com/index.php?title=GetArrowProjectilePoison">GetArrowProjectilePoison</a> - returns the poison on an arrow projectile.<br />
 <code class="s">(poison:ref) reference.GetArrowProjectilePoison</code><br />
 <code class="s">(poison:ref) reference.GetAPPoison</code></p>
 
@@ -3690,22 +3704,22 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <p><a id="SetProjectileSource" class="f" href="http://cs.elderscrolls.com/index.php?title=SetProjectileSource">SetProjectileSource</a> - sets the source of a projectile. If an actor other than the player is set as the source, the target of the projectile will not necessarily respond to the attack.<br />
 <code class="s">(nothing) reference.SetProjectileSource actor:ref</code></p>
 
-<p><a id="SetArrowProjectileEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=SetArrowProjectileEnchantment">SetArrowProjectileEnchantment</a> - sets the arrow enchantment associated with the calling projectile<br />
+<p><a id="SetArrowProjectileEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=SetArrowProjectileEnchantment">SetArrowProjectileEnchantment</a> - sets the arrow enchantment associated with the calling projectile.<br />
 <code class="s">(nothing) reference.SetArrowProjectileEnchantment enchantment:ref</code></p>
 
-<p><a id="SetArrowProjectileBowEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=SetArrowProjectileBowEnchantment">SetArrowProjectileBowEnchantment</a> - sets the bow enchantment associated with the calling projectile<br />
+<p><a id="SetArrowProjectileBowEnchantment" class="f" href="http://cs.elderscrolls.com/index.php?title=SetArrowProjectileBowEnchantment">SetArrowProjectileBowEnchantment</a> - sets the bow enchantment associated with the calling projectile.<br />
 <code class="s">(nothing) reference.SetArrowProjectileBowEnchantment enchantment:ref</code></p>
 
-<p><a id="SetArrowProjectilePoison" class="f" href="http://cs.elderscrolls.com/index.php?title=SetArrowProjectilePoison">SetArrowProjectilePoison</a> - sets the poison on the calling projectile<br />
+<p><a id="SetArrowProjectilePoison" class="f" href="http://cs.elderscrolls.com/index.php?title=SetArrowProjectilePoison">SetArrowProjectilePoison</a> - sets the poison on the calling projectile.<br />
 <code class="s">(nothing) reference.SetArrowProjectilePoison poison:ref</code></p>
 
-<p><a id="GetProjectileSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileSpeed">GetProjectileSpeed</a> - returns the speed of the projectile<br />
+<p><a id="GetProjectileSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileSpeed">GetProjectileSpeed</a> - returns the speed of the projectile.<br />
 <code class="s">(speed:float) reference.GetProjectileSpeed</code></p>
 
 <p><a id="GetProjectileDistanceTraveled" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileDistanceTraveled">GetProjectileDistanceTraveled</a> - returns the total distance traveled by the calling projectile. Currently does not work for arrow projectiles.<br />
 <code class="s">(distance:float) reference.GetProjectileDistanceTraveled</code></p>
 
-<p><a id="GetProjectileLifetime" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileLifetime">GetProjectileLifetime</a> - returns the number of seconds for which the calling projectile has existed<br />
+<p><a id="GetProjectileLifetime" class="f" href="http://cs.elderscrolls.com/index.php?title=GetProjectileLifetime">GetProjectileLifetime</a> - returns the number of seconds for which the calling projectile has existed.<br />
 <code class="s">(lifetime:float) reference.GetProjectileLifetime</code></p>
 
 <p><a id="SetProjectileSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=SetProjectileSpeed">SetProjectileSpeed</a> - sets the speed of the projectile. Note that other factors affect the movement of a projectile so a speed of zero does not necessarily completely halt the projectile.<br />
@@ -3718,31 +3732,31 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions</h4>
 
-<p><a id="SetActiveQuest" class="f" href="http://cs.elderscrolls.com/index.php?title=SetActiveQuest">SetActiveQuest</a> - sets the players active quest<br />
+<p><a id="SetActiveQuest" class="f" href="http://cs.elderscrolls.com/index.php?title=SetActiveQuest">SetActiveQuest</a> - sets the players active quest.<br />
 <code class="s">(nothing) SetActiveQuest quest:ref</code></p>
 
-<p><a id="GetActiveQuest" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActiveQuest">GetActiveQuest</a> - returns the player's active quest, if any<br />
+<p><a id="GetActiveQuest" class="f" href="http://cs.elderscrolls.com/index.php?title=GetActiveQuest">GetActiveQuest</a> - returns the player's active quest, if any.<br />
 <code class="s">(ref) GetActiveQuest</code></p>
 
 <p><a id="ClearActiveQuest" class="f" href="http://cs.elderscrolls.com/index.php?title=ClearActiveQuest">ClearActiveQuest</a> - clears the player's active quest, if any.<br />
 <code class="s">(nothing) ClearActiveQuest</code></p>
 
-<p><a id="GetCurrentQuests" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentQuests">GetCurrentQuests</a> - returns a list of all currently active (uncompleted) quests. Note that this list includes quests which do not appear in the journal<br />
+<p><a id="GetCurrentQuests" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentQuests">GetCurrentQuests</a> - returns a list of all currently active (uncompleted) quests. Note that this list includes quests which do not appear in the journal.<br />
 <code class="s">(Array) GetCurrentQuests</code></p>
 
-<p><a id="GetCompletedQuests" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCompletedQuests">GetCompletedQuests</a> - returns a list of all completed quests<br />
+<p><a id="GetCompletedQuests" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCompletedQuests">GetCompletedQuests</a> - returns a list of all completed quests.<br />
 <code class="s">(Array) GetCompletedQuests</code></p>
 
 <p><a id="IsQuestComplete" class="f" href="http://cs.elderscrolls.com/index.php?title=IsQuestComplete">IsQuestComplete</a> - returns 1 if the specified quest is marked as 'completed'.<br />
 <code class="s">(completed:bool) IsQuestComplete quest:ref</code></p>
 
-<p><a id="UncompleteQuest" class="f" href="http://cs.elderscrolls.com/index.php?title=UncompleteQuest">UncompleteQuest</a> - removes the 'completed' flag from the specified quest<br />
+<p><a id="UncompleteQuest" class="f" href="http://cs.elderscrolls.com/index.php?title=UncompleteQuest">UncompleteQuest</a> - removes the 'completed' flag from the specified quest.<br />
 <code class="s">(nothing) UncompleteQuest quest:ref</code></p>
 
-<p><a id="QuestExists" class="f" href="http://cs.elderscrolls.com/index.php?title=QuestExists">QuestExists</a> - returns 1 if a quest exists with the specified editorID<br />
+<p><a id="QuestExists" class="f" href="http://cs.elderscrolls.com/index.php?title=QuestExists">QuestExists</a> - returns 1 if a quest exists with the specified editorID.<br />
 <code class="s">(questExists:bool) QuestExists questEditorID:string</code></p>
 
-<p><a id="GetStageIDs" class="f" href="http://cs.elderscrolls.com/index.php?title=GetStageIDs">GetStageIDs</a> - returns an Array containing the numeric index of each quest stage associated with the specified quest<br />
+<p><a id="GetStageIDs" class="f" href="http://cs.elderscrolls.com/index.php?title=GetStageIDs">GetStageIDs</a> - returns an Array containing the numeric index of each quest stage associated with the specified quest.<br />
 <code class="s">(stageIDs:array) GetStageIDs quest:ref</code></p>
 
 <p><a id="GetStageEntries" class="f" href="http://cs.elderscrolls.com/index.php?title=GetStageEntries">GetStageEntries</a> - returns an Array of all of the entries associated with the specified quest stage. Each element of the array is a Stringmap containing the following fields: "day" (1-31), "month" (1-12), and "year", representing the date at which the entry was added to the player's journal, and "text" containing the log text for the entry. If the entry has not been added to the player's journal, the date fields will all be zero.<br />
@@ -3767,27 +3781,30 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetParentCell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetParentCell">GetParentCell</a> - returns the objectID of the parent cell of the calling reference<br />
+<p><a id="GetParentCell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetParentCell">GetParentCell</a> - returns the objectID of the parent cell of the calling reference.<br />
+<b>Note: </b>If the reference has been moved to a different call with SetPos, this function returns the original cell of the reference. (TODO: Verify) Moving the reference to itself (e.g. MyRef.MoveTo MyRef) before GetParentCell forces an update.<br />
 <code class="s">(parentCell:ref) reference.GetParentCell</code></p>
 
 <p><a id="GetParentWorldspace" class="f" href="http://cs.elderscrolls.com/index.php?title=GetParentWorldspace">GetParentWorldspace</a> - returns the worldspace to which the calling reference's cell belongs, if any. In interior cells this generally returns 0.<br />
 <code class="s">(parentWorldspace:ref) reference.GetParentWorldspace</code></p>
 
-<p><a id="ParentCellHasWater" class="f" href="http://cs.elderscrolls.com/index.php?title=ParentCellHasWater">ParentCellHasWater</a> - returns 1 if the reference's parent cell can contain water<br />
+<p><a id="ParentCellHasWater" class="f" href="http://cs.elderscrolls.com/index.php?title=ParentCellHasWater">ParentCellHasWater</a> - returns 1 if the reference's parent cell can contain water.<br />
+<b>Note: </b>Exterior cells always have water.<br />
 <code class="s">(hasWater:bool) reference.ParentCellHasWater</code><br />
 <code class="s">(hasWater:bool) reference.HasWater</code></p>
 
-<p><a id="GetParentCellWaterHeight" class="f" href="http://cs.elderscrolls.com/index.php?title=GetParentCellWaterHeight">GetParentCellWaterHeight</a> - returns the water height of the references parent cell<br />
+<p><a id="GetParentCellWaterHeight" class="f" href="http://cs.elderscrolls.com/index.php?title=GetParentCellWaterHeight">GetParentCellWaterHeight</a> - returns the water height of the references parent cell.<br />
 <code class="s">(waterHeight:float) reference.GetParentCellWaterHeight</code><br />
 <code class="s">(waterHeight:float) reference.GetWaterHeight</code></p>
 
-<p><a id="IsActivatable" class="f" href="http://cs.elderscrolls.com/index.php?title=IsActivatable">IsActivatable</a> - returns 1 if the calling reference can be activated under normal circumstances<br />
+<p><a id="IsActivatable" class="f" href="http://cs.elderscrolls.com/index.php?title=IsActivatable">IsActivatable</a> - returns 1 if the calling reference can be activated under normal circumstances.<br />
+<b>Note: </b>Might return true for unexpected item types. (TODO: Verify)<br />
 <code class="s">(activatable:bool) reference.IsActivatable</code></p>
 
-<p><a id="IsUnderWater" class="f" href="http://cs.elderscrolls.com/index.php?title=IsUnderWater">IsUnderWater</a> - returns 1 if the calling reference's Z position is less than 120 units under its parent cell's water height<br />
+<p><a id="IsUnderWater" class="f" href="http://cs.elderscrolls.com/index.php?title=IsUnderWater">IsUnderWater</a> - returns 1 if the calling reference's Z position is less than 120 units under its parent cell's water height.<br />
 <code class="s">(isUnderWater:bool) reference.IsUnderWater</code></p>
 
-<p><a id="GetNumChildRefs" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNumChildRefs">GetNumChildRefs</a> - returns the number of reference for which the calling reference behaves as an enable-state parent<br />
+<p><a id="GetNumChildRefs" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNumChildRefs">GetNumChildRefs</a> - returns the number of reference for which the calling reference behaves as an enable-state parent.<br />
 <code class="s">(numChildren:int) reference.GetNumChildRefs</code></p>
 
 <p><a id="GetNthChildRef" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthChildRef">GetNthChildRef</a> - returns the nth child reference associated with the calling reference. Child references are stored in no particular order.<br />
@@ -3799,36 +3816,41 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <p><a id="GetNthFollower" class="f" href="http://cs.elderscrolls.com/index.php?title=GetNthFollower">GetNthFollower</a> - returns a reference to the nth actor currently following the calling actor. Does not include summoned creatures.<br />
 <code class="s">(follower:ref) reference.GetNthFollower whichFollower:int</code></p>
 
-<p><a id="GetFollowers" class="f" href="http://cs.elderscrolls.com/index.php?title=GetFollowers">GetFollowers</a> - returns an array containing all actors currently following the calling actor, including summoned creatures<br />
+<p><a id="GetFollowers" class="f" href="http://cs.elderscrolls.com/index.php?title=GetFollowers">GetFollowers</a> - returns an array containing all actors currently following the calling actor, including summoned creatures.<br />
 <code class="s">(followers:array) reference.GetFollowers</code></p>
 
-<p><a id="IsPersistent" class="f" href="http://cs.elderscrolls.com/index.php?title=IsPersistent">IsPersistent</a> - returns 1 if the calling reference is a persistent reference<br />
+<p><a id="IsPersistent" class="f" href="http://cs.elderscrolls.com/index.php?title=IsPersistent">IsPersistent</a> - returns 1 if the calling reference is a persistent reference.<br />
 <code class="s">(isPersistent:bool) reference.IsPersistent</code></p>
 
 <p><a id="SetScaleEX" class="f" href="http://cs.elderscrolls.com/index.php?title=SetScaleEX">SetScaleEX</a> - sets the scale of the calling reference. Unlike SetScale, the scale is not limited to a certain range. The reference should be disabled and then enabled after calling this function in order to update its scale and collision properties. The new scale is saved in the savegame.<br />
+<b>Note: </b>Using <a href="#Update3D"><code>Update3D</code></a> instead of disable/enable should work as well.<br />
 <code class="s">(nothing) reference.SetScaleEX scale:float</code></p>
 
 <p><a id="HasBeenPickedUp" class="f" href="http://cs.elderscrolls.com/index.php?title=HasBeenPickedUp">HasBeenPickedUp</a> - returns true if the calling reference is currently inactive due to having been picked up by an actor or otherwise transferred to an inventory<br />
+<b>Note: </b>It is no use trying to use this function on dynamic references because the moment the reference is picked up, its FormID becomes invalid.<br />
 <code class="s">(pickedUp:bool) reference.HasBeenPickedUp</code><br />
 <code class="s">(pickedUp:bool) reference.IsTaken</code></p>
 
-<p><a id="SetHasBeenPickedUp" class="f" href="http://cs.elderscrolls.com/index.php?title=SetHasBeenPickedUp">SetHasBeenPickedUp</a> - toggles the flag that marks a reference as having been picked up by an actor. When called on a reference which was previously picked up, causes the reference to "respawn". The reference must be disabled and then enabled for the change to become visible.<br />
+<p><a id="SetHasBeenPickedUp" class="f" href="http://cs.elderscrolls.com/index.php?title=SetHasBeenPickedUp">SetHasBeenPickedUp</a> - toggles the flag that marks a reference as having been picked up by an actor. When called on a reference which was previously picked up, causes the reference to "respawn". Use <a href="#Update3D"><code>Update3D</code></a> on the reference for the change to become visible.<br/>
 <code class="s">(nothing) reference.SetHasBeenPickedUp pickedUp:bool</code><br />
 <code class="s">(nothing) reference.SetTaken pickedUp:bool</code></p>
 
-<p><a id="GetRefCount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetRefCount">GetRefCount</a> - returns the number of items in a stack of items in the world<br />
+<p><a id="GetRefCount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetRefCount">GetRefCount</a> - returns the number of items in a stack of items in the world.<br />
 <code class="s">(refCount:int) reference.GetRefCount</code></p>
 
-<p><a id="SetRefCount" class="f" href="http://cs.elderscrolls.com/index.php?title=SetRefCount">SetRefCount</a> - sets the number of items in a stack of items in the world. Note that while this function will change the count of any type of reference, it may have unpredictable results when used on references like NPCs which are not logically stackable.<br />
+<p><a id="SetRefCount" class="f" href="http://cs.elderscrolls.com/index.php?title=SetRefCount">SetRefCount</a> - sets the number of items in a stack of items in the world.<br />
+<b>Note: </b>While this function will change the count of any type of reference, it may have unpredictable results when used on references like NPCs which are not logically stackable.<br />
 <code class="s">(nothing) reference.SetRefCount newCount:int</code></p>
 
-<p><a id="SetBaseForm" class="f" href="http://cs.elderscrolls.com/index.php?title=SetBaseForm">SetBaseForm</a> - changes the base object associated with a reference, with the limitation that the new base form must be of the same type as the old one (i.e. you can swap a weapon reference's base form only with another weapon). Does not work on actors or on items in containers. The reference must be disabled and then enabled in order for the change to be visible. This function is considered beta.<br />
+<p><a id="SetBaseForm" class="f" href="http://cs.elderscrolls.com/index.php?title=SetBaseForm">SetBaseForm</a> - changes the base object associated with a reference, with the limitation that the new base form must be of the same type as the old one (i.e. you can swap a weapon reference's base form only with another weapon). Does not work on actors or on items in containers. Use <a href="#Update3D"><code>Update3D</code></a> on the reference for the change to become visible.<br />
+<b>Note: </b>This function is considered beta.<br />
 <code class="s">(nothing) reference.SetBaseForm newBaseForm:ref</code></p>
 
 <p><a id="Activate2" class="f" href="http://cs.elderscrolls.com/index.php?title=Activate2">Activate2</a> - like the existing Activate command, causes a reference to be activated. The only difference is that this command circumvents the limit on recursive scripted activations of an object, allowing unlimited repeated processing of the target's OnActivate script block. Use with care as performance may degrade if a large number of calls to this command occur within a single frame.<br />
 <code class="s">(nothing) reference.Activate2 <span class="op">activator:ref runOnActivate:bool</span></code></p>
 
-<p><a id="IsRefDeleted" class="f" href="http://cs.elderscrolls.com/index.php?title=IsRefDeleted">IsRefDeleted</a> - returns 1 if the passed object reference has been marked as deleted by a mod or the game. Deleted references should not be used in scripts. Note that the reference is passed as a parameter - this function should not be called on a potentially deleted reference directly.<br />
+<p><a id="IsRefDeleted" class="f" href="http://cs.elderscrolls.com/index.php?title=IsRefDeleted">IsRefDeleted</a> - returns 1 if the passed object reference has been marked as deleted by a mod or the game. Deleted references should not be used in scripts.<br />
+<b>Note: </b>The reference is passed as a parameter - this function should not be called on a potentially deleted reference directly.<br />
 <code class="s">(isDeleted:bool) IsRefDeleted reference:ref</code></p>
 
 <p><a id="DeleteReference" class="f" href="http://cs.elderscrolls.com/index.php?title=DeleteReference">DeleteReference</a> - attempts to delete the calling object from the game and returns true if successful. In order for a reference to be deleted, it must:</p><ul>
@@ -3838,16 +3860,19 @@ In the case of leveled lists containing nested leveled lists, the function recur
 	<li>- be dynamic (i.e. generated via PlaceAtMe or dropped from an inventory, having a mod index of 0xFF)</li>
 </ul>
 
-<p>The primary aim of this function is to combat the savegame bloat resulting from generation of large numbers of dynamic references. In most cases, it is better to avoid creating such bloat in the first place. (Note: IsRefDeleted is not related to this command in any way).<br />
+<p>The primary aim of this function is to combat the savegame bloat resulting from generation of large numbers of dynamic references. In most cases, it is better to avoid creating such bloat in the first place.<br />
+<b>Note: </b>IsRefDeleted is not related to this command in any way.<br />
 <code class="s">(wasRefDeleted:bool) reference.DeleteReference</code></p>
 
-<p><a id="GetBoundingBox" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBoundingBox">GetBoundingBox</a> - returns a stringmap representing the calling objects axis-aligned bounding box. This command only works for mobile objects (projectiles and actors). The stringmap returned contains two stringmaps: "center" has keys "x", "y", and "z" representing the coordinates of the center of the bounding box, and "extent" has the same keys representing the extent of the box along each axis. For example, the height of the box is equal to GetBoundingBox->extent->z * 2. Similarly the bottom of the box is equal to GetBoundingBox->center->z - GetBoundingBox->extent->z<br />
+<p><a id="GetBoundingBox" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBoundingBox">GetBoundingBox</a> - returns a stringmap representing the calling objects axis-aligned bounding box. This command only works for mobile objects (projectiles and actors). The stringmap returned contains two stringmaps: "center" has keys "x", "y", and "z" representing the coordinates of the center of the bounding box, and "extent" has the same keys representing the extent of the box along each axis. For example, the height of the box is equal to GetBoundingBox-&gt;extent-&gt;z * 2. Similarly the bottom of the box is equal to GetBoundingBox-&gt;center-&gt;z - GetBoundingBox-&gt;extent-&gt;z<br />
+<b>Note: </b>This function does not return the correct bounding box in some instances. If the actor is scaled, multiplying by <code>GetScale</code> is necessary to scale the returned box appropriately. If the actor is sitting or lying down, the box returned is still the box of the standing actor, which will be completely off.<br />
 <code class="s">(StringMap) reference.GetBoundingBox</code></p>
 
 <p><a id="GetBoundingRadius" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBoundingRadius">GetBoundingRadius</a> - returns the radius of a sphere large enough to entirely contain the 3D geometry of the calling object.<br />
 <code class="s">(radius:float) reference.GetBoundingRadius</code></p>
 
-<p><a id="Update3D" class="f" href="http://cs.elderscrolls.com/index.php?title=Update3D">Update3D</a> - updates the visual representation of the calling actor or object reference. This can be called immediately after commands like SetModelPath and SetEyes to make the changes visible. <strong>This command does not currently work correctly on the player</strong><br />
+<p><a id="Update3D" class="f" href="http://cs.elderscrolls.com/index.php?title=Update3D">Update3D</a> - updates the visual representation of the calling actor or object reference. This can be called immediately after commands like SetModelPath and SetEyes to make the changes visible and should work in any instance where instructions tell you to <code>disable</code> and <code>enable</code> a reference to make changes visible.<br />
+<b>Note: </b>This function only works on the player in third person camera mode. Use <a href="#IsThirdPerson"><code>IsThirdPerson</code></a> to check and wait with calling this function until the player goes into third person mode or force it with <a href="#ToggleFirstPerson"><code>ToggleFirstPerson</code></a>.<br />
 <code class="s">(nothing) reference.Update3D</code></p>
 
 <p><a id="HasEffectShader" class="f" href="http://cs.elderscrolls.com/index.php?title=HasEffectShader">HasEffectShader</a> - checks if the specified effect shader is playing on the calling reference, and if so returns the number of instances of that shader playing on it. Otherwise returns zero. Note that this command may return true for a short period after calling StopMagicShaderVisuals because the shader is not fully removed until its ending sequence has played out.<br />
@@ -3860,13 +3885,13 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetSigilStoneUses" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSigilStoneUses">GetSigilStoneUses</a> - returns the number of uses for a sigil stone<br />
+<p><a id="GetSigilStoneUses" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSigilStoneUses">GetSigilStoneUses</a> - returns the number of uses for a sigil stone.<br />
 <code class="s">(short) <span class="op">reference.</span>GetSigilStoneUses<span class="op"> sigilStone:ref</span></code></p>
 
-<p><a id="SetSigilStoneUses" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSigilStoneUses">SetSigilStoneUses</a> - sets the number of uses for a sigil stone<br />
+<p><a id="SetSigilStoneUses" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSigilStoneUses">SetSigilStoneUses</a> - sets the number of uses for a sigil stone.<br />
 <code class="s">(nothing) <span class="op">reference.</span>SetSigilStoneUses uses:integer<span class="op"> sigilStone:ref</span></code></p>
 
-<p><a id="ModSigilStoneUses" class="f" href="http://cs.elderscrolls.com/index.php?title=ModSigilStoneUses">ModSigilStoneUses</a> - mods the number of uses for a sigil stone<br />
+<p><a id="ModSigilStoneUses" class="f" href="http://cs.elderscrolls.com/index.php?title=ModSigilStoneUses">ModSigilStoneUses</a> - mods the number of uses for a sigil stone.<br />
 <code class="s">(nothing) <span class="op">reference.</span>ModSigilStoneUses modBy:integer<span class="op"> sigilStone:ref</span></code></p>
 
 <h3><a id="Skill">Skill</a></h3>
