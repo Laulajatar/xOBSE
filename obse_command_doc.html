@@ -972,7 +972,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <p><a id="SetDescription" class="f" href="http://cs.elderscrolls.com/index.php?title=SetDescription">SetDescription</a> - modifies the text of a TESDescription (e.g. book, class, skill, skill level, etc). The modified description will be used for the remainder of the game session. To modify the text displayed when achieving a new level of mastery (Apprentice, Journeyman, etc) in a skill, pass the skill as the second argument and a skill level as the third, where skill level ranges from 0 (Apprentice) to 3 (Master)<br />
 <b>Note: </b>Calling <code>SetDescription</code> on a skill while omitting the optional skillLevel argument sets the general description of the skill as well as all 4 mastery levels. Currently there is no way to only set the general skill description.<br />
-<b>Note: </b>For books, setting a description longer than 65535 characters crashes the game when the book is opened in game. (TODO: Verify)<br />
+<b>Note: </b>For books and scrolls, setting a description longer than 65535 characters will cause the book/scroll to be empty ingame. For scrolls, too long (but shorter than 65535 characters) texts can cause display errors ingame.<br />
 <code class="s">(success:bool) <span class="op">reference.</span>SetDescription description:string<span class="op"> form:ref</span><span class="op"> skillLevel:int</span></code></p>
 
 <h3><a id="Edible">Edible</a></h3>
@@ -1075,7 +1075,6 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Values:</h4>
 
 <p class="boxhl"><strong>Object</strong> (<span class="op">long</span>) - the base object id of a reference<br />
-<strong>Weapon Type</strong> (<span class="op">short</span>) - the type of weapon<br />
 <strong>Weight</strong> (<span class="op">float</span>) - the weight of one object of this type<br />
 <strong>Gold Value</strong> (<span class="op">long</span>) - the gold value of one object of this type. This value may not match the value displayed in the interface as that could include additional value from an enchantment.<br />
 <strong>Is Quest Item</strong> (<span class="op">bool</span>) - whether the type is a quest item. Quest items cannot be activated and cannot be dropped.</p>
@@ -1083,7 +1082,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetBaseObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBaseObject">GetBaseObject</a> - returns the base object of the reference.<br />
-<b>Note: </b>If Ref is a base object already, then calling BaseObjectRef.GetBaseObject will halt the script (quest scripts will show as still running but won't execute any more). (TODO: Verify)<br />
+<b>Note: </b>If Ref is a base object already, then calling <code>GetBaseObject</code> on it will halt the script.<br />
 <code class="s">(objectID:ref) reference.GetBaseObject</code></p>
 
 <p><a id="GetObjectType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetObjectType">GetObjectType</a> - returns a type code for each type of object.<br />
@@ -1161,8 +1160,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <p><a id="SetQuestItem" class="f" href="http://cs.elderscrolls.com/index.php?title=SetQuestItem">SetQuestItem</a> - sets whether the type is a quest item.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetQuestItem isQuestItem:bool <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetCurrentSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetCurrentSoulLevel">SetCurrentSoulLevel</a> - sets the current soul level of the calling soulgem reference.<br />
-<code class="s">(nothing) reference.SetCurrentSoulLevel newLevel:int</code></p>
+
 
 <h3><a id="Lockable">Lockable</a></h3>
 
@@ -1715,7 +1713,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(script:refID) <span class="op">reference.</span>SetScript scriptID:ref <span class="op">targetObjectID:ref</span></code></p>
 
 <p><a id="IsFormValid" class="f" href="http://cs.elderscrolls.com/index.php?title=IsFormValid">IsFormValid</a> - returns 1 if the specified ref variable contains a valid object or reference.<br />
-<b>Note: </b>If you reload the game after picking up a non dynamic (= not mod index 0xFF) reference, <code>IsFormValid</code> will return false if the object was non-persistent and true if the object was persistent. (TODO: Verify)<br />
+<b>Note: </b>This function seems to be not very reliable when used on non-persistent references. It can sometimes return 1 for non-persistent objects originating from an esp, even if the have been picked up and the cell isn't loaded. For objects originating from an esm, it will only return 1 if the cell the object originated in is loaded, even if the object has since been picked up.<br />
 <b>Note: </b>If you want to check for a reference originating in an esm file that has been deleted by an esp, use <code>IsRefDeleted</code> instead, as <code>IsFormValid</code> will return true.<br />
 <code class="s">(valid:bool) IsFormValid refVar:var</code></p>
 
@@ -2279,7 +2277,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 
 <h4>Qualities:</h4>
 
-<p class="boxhl"><a href="#Inventory">Inventory</a>, <a href="#Description">Description</a>, <a href="#Enchantable">Enchantable</a>, <a href="#Named">Named</a>, <a href="#Simple">Simple</a></p>
+<p class="boxhl"><a href="#Inventory">Inventory</a>, <a href="#Description">Description</a>, <a href="#Enchantable">Enchantable</a>, <a href="#Named">Named</a>, <a href="#Scriptable">Scriptable</a>, <a href="#Simple">Simple</a></p>
 
 <h4>Values:</h4>
 
@@ -3378,6 +3376,7 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <code class="s">(nothing) reference.SetMapMarkerType <a href="#Map_Marker_Types">markerType</a>:int</code></p>
 
 <p><a id="GetMapMarkers" class="f" href="http://cs.elderscrolls.com/index.php?title=GetMapMarkers">GetMapMarkers</a> - returns an Array containing all map marker references. The filter argument can be used to filter out markers based on their visibility and accessibility: pass 0 to include only visible markers which can be fast-traveled to, 1 to include all visible markers, and 2 to include all markers, including those which are not visible. The default filter value is 1. Pass a <a href="#Map_Marker_Types">markerType</a> parameter to include only markers of the specified type; omit it or pass zero to include all types.<br />
+<b>Note: </b>This returns the map markers of the worldspace the player is currently in.<br />
 <code class="s">(markers:Array) GetMapMarkers <span class="op">filter:int</span> <span class="op">markerType:int</span></code></p>
 
 <h3><a id="NPC">NPC</a></h3>
@@ -3423,6 +3422,7 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <code class="s">(horse:ref) <span class="op">reference.</span>GetHorse</code></p>
 
 <p><a id="GetTravelHorse" class="f" href="http://cs.elderscrolls.com/index.php?title=GetTravelHorse">GetTravelHorse</a> - returns a reference to the travel horse used by the calling reference.<br />
+<b>Note: </b>In the CS, the travel horse is set in the properties of the placed NPC reference.<br />
 <code class="s">(horse:ref) reference.GetTravelHorse</code></p>
 
 <p><a id="SetTravelHorse" class="f" href="http://cs.elderscrolls.com/index.php?title=SetTravelHorse">SetTravelHorse</a> - Sets the travel horse used by the calling reference to the horse reference specified. Changes are not saved in the savegame.<br />
@@ -3577,7 +3577,6 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <code class="s">(nothing) SetPCAMurderer isMurderer:bool</code></p>
 
 <p><a id="GetPlayerSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSpell">GetPlayerSpell</a> - returns the objectID of the player's current spell.<br />
-<b>Note: </b>If the active spell is removed from the player, this function might return 0. (TODO: Verify)<br />
 <code class="s">(spell:ref) GetPlayerSpell</code></p>
 
 <p><a id="GetPlayerSpellCount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSpellCount">GetPlayerSpellCount</a> - returns the player spell count.<br />
@@ -3883,6 +3882,10 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h3><a id="Sigil_Stone">Sigil Stone</a></h3>
 
+<h4>Qualities:</h4>
+
+<p class="boxhl"><a href="#Inventory">Inventory</a>, <a href="#Named">Named</a>, <a href="#Scriptable">Scriptable</a>, <a href="#Simple">Simple</a></p>
+
 <h4>Functions:</h4>
 
 <p><a id="GetSigilStoneUses" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSigilStoneUses">GetSigilStoneUses</a> - returns the number of uses for a sigil stone.<br />
@@ -3910,77 +3913,64 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetPlayerSkillUse" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSkillUse">GetPlayerSkillUse</a> - returns the current experience towards the next level of the skill<br />
-<code class="s">(skillExperience:float) GetPlayerSkillUse <a href="#Actor_Value_Codes">skill</a>:actorValue</code></p>
+<p><a id="GetPlayerSkillUse" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSkillUse">GetPlayerSkillUse(C)</a> - returns the current experience towards the next level of the skill.<br />
+<code class="s">(skillExperience:float) GetPlayerSkillUse skill:actorValue</code><br/>
+<code class="s">(skillExperience:float) GetPlayerSkillUseC <a href="#Actor_Value_Codes">skillCode</a>:int</code></p>
 
-<p><a id="GetPlayerSkillUseC" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSkillUseC">GetPlayerSkillUseC</a> - alternatve version of GetPlayerSkillUse taking an actor value code for the skill<br />
-<code class="s">(skillExperience:float) GetPlayerSkillUseC skillCode:int</code></p>
+<p><a id="IncrementPlayerSkillUse" class="f" href="http://cs.elderscrolls.com/index.php?title=IncrementPlayerSkillUse">IncrementPlayerSkillUse(C)</a> - records some additional uses of one of the skill actions. If omitted, whichAction defaults to 0 and howManyTimes defaults to 1.<br />
+<code class="s">(nuSkillExperience:float) IncrementPlayerSkillUse skill:actorValue <span class="op">whichAction:int howManyTimes:float</span></code><br />
+<code class="s">(nuSkillExperience:float) IncrementPlayerSkillUseC <a href="#Actor_Value_Codes">skillCode</a>:int <span class="op">whichAction:int howManyTimes:float</span></code></p>
 
-<p><a id="IncrementPlayerSkillUse" class="f" href="http://cs.elderscrolls.com/index.php?title=IncrementPlayerSkillUse">IncrementPlayerSkillUse</a> - records some additional uses of one of the skill actions<br />
-<code class="s">(nuSkillExperience:float) IncrementPlayerSkillUse <a href="#Actor_Value_Codes">skill</a>:int <span class="op">whichAction:inthowManyTimes:float</span></code></p>
+<p><a id="GetSkillUseIncrement" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillUseIncrement">GetSkillUseIncrement(C)</a> - gets the experience point increase for one use of a skill action.<br />
+<code class="s">(useRate:float) GetSkillUseIncrement skill:actorValue <span class="op">whichAction:int</span></code><br />
+<code class="s">(useRate:float) GetSkillUseIncrementC <a href="#Actor_Value_Codes">skillCode</a>:int <span class="op">whichAction:int</span></code></p>
 
-<p><a id="GetSkillUseIncrement" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillUseIncrement">GetSkillUseIncrement</a> - gets the experience point increase for one use of a skill action<br />
-<code class="s">(useRate:float) GetSkillUseIncrement <a href="#Actor_Value_Codes">skill</a>:int <span class="op">whichAction:int</span></code></p>
+<p><a id="SetSkillUseIncrement" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillUseIncrement">SetSkillUseIncrement(C)</a> - sets the experience point increase for one use of a skill action.<br />
+<code class="s">(nothing) SetSkillUseIncrement nuRate:float skill:actorValue <span class="op">whichAction:int</span></code><br />
+<code class="s">(nothing) SetSkillUseIncrementC nuRate:float <a href="#Actor_Value_Codes">skillCode</a>:int <span class="op">whichAction:int</span></code></p>
 
-<p><a id="SetSkillUseIncrement" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillUseIncrement">SetSkillUseIncrement</a> - sets the experience point increase for one use of a skill action<br />
-<code class="s">(nothing) SetSkillUseIncrement nuRate:float <a href="#Actor_Value_Codes">skill</a>:int <span class="op">whichAction:int</span></code></p>
+<p><a id="TriggerPlayerSkillUse" class="f" href="http://cs.elderscrolls.com/index.php?title=TriggerPlayerSkillUse">TriggerPlayerSkillUse(C)</a> - records positive or negative uses of one of the specified skill actions. Enough skill uses will increment or decrement the skill itself, and adjust the log of the number of increases for that skill.<br />
+<b>Note: </b>If <span class="op">howManyTimes</span> is positive, calls the same function as <code>IncrementPlayerSkillUse</code>. Therfore, AttributeBonus is handled correctly at SkillUp. <br/> 
+If <span class="op">howManyTimes</span> is negative, calls the same function as <code>ModPlayerSkillExp</code>. Therfore, AttributeBonus has to be adjusted manually at SkillDown. <br />
+<code class="s">(nuSkillExperience:float) TriggerPlayerSkillUse skill:actorValue <span class="op">whichAction:int howManyTimes:float</span></code><br />
+<code class="s">(nuSkillExperience:float) TriggerPlayerSkillUseC <a href="#Actor_Value_Codes">skillCode</a>:int <span class="op">whichAction:int howManyTimes:float</span></code></p>
 
-<p><a id="IncrementPlayerSkillUseC" class="f" href="http://cs.elderscrolls.com/index.php?title=IncrementPlayerSkillUseC">IncrementPlayerSkillUseC</a> - records some additional uses of one of the skill actions<br />
-<code class="s">(nuSkillExperience:float) IncrementPlayerSkillUse skill:actorValueCode <span class="op">whichAction:int howManyTimes:float</span></code></p>
+<p><a id="ModPlayerSkillExp" class="f" href="http://cs.elderscrolls.com/index.php?title=ModPlayerSkillExp">ModPlayerSkillExp(C)</a> - directly adjusts the experience for a skill. A large enough adjustment will increment or decrement the skill itself, and adjust the log of the number of increase for that skill.<br />
+<b>Note: </b>During Skill increment/decrement SkillAdvances, MajorSkillUps &amp; SkillUse is handled correctly. AttributeBonus isn't affected, though. You have to adjust it manually using <code>GetPCAttributeBonus</code> &amp; <code>SetPCAttributeBonus</code>. <br />
+<code class="s">(nuSkillExperience:float) ModPlayerSkillExp skill:actorValue amount:float</code><br />
+<code class="s">(nuSkillExperience:float) ModPlayerSkillExpC <a href="#Actor_Value_Codes">skillCode</a>:int amount:float</code></p>
 
-<p><a id="TriggerPlayerSkillUse" class="f" href="http://cs.elderscrolls.com/index.php?title=TriggerPlayerSkillUse">TriggerPlayerSkillUse</a> - records positive or negative uses of one of the specified skill actions. Enough skill uses will increment or decrement the skill itself, and adjust the log of the number of increases for that skill.<br />
-<code class="s">(nuSkillExperience:float) TriggerPlayerSkillUse skill:actorValueCode <span class="op">whichAction:int howManyTimes:float</span></code><br />
-<code class="s">(nuSkillExperience:float) TriggerPlayerSkillUseC skill:int <span class="op">whichAction:int howManyTimes:float</span></code></p>
+<p><a id="GetSkillGoverningAttribute" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillGoverningAttribute">GetSkillGoverningAttribute(C)</a> - returns the governing attribute for the skill as an actor value code.<br />
+<code class="s">(skillCode:int) GetSkillGoverningAttribute skill:actorValue</code><br/>
+<code class="s">(skillCode:int) GetSkillGoverningAttributeC <a href="#Actor_Value_Codes">skillCode</a>:int</code></p>
 
-<p><a id="ModPlayerSkillExp" class="f" href="http://cs.elderscrolls.com/index.php?title=ModPlayerSkillExp">ModPlayerSkillExp</a> - directly adjusts the experience for a skill. A large enough adjustment will increment or decrement the skill itself, and adjust the log of the number of increase for that skill.<br />
-<code class="s">(nuSkillExperience:float) ModPlayerSkillExp skill:actorValueCode amount:float</code><br />
-<code class="s">(nuSkillExperience:float) ModPlayerSkillExpC skill:int amount:float</code></p>
+<p><a id="SetSkillGoverningAttribute" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillGoverningAttribute">SetSkillGoverningAttribute(C)</a> - sets the governing attribute for the skill<br />
+<code class="s">(nothing) SetSkillGoverningAttribute skill:actorValue attributeName:string</code><br />
+<code class="s">(nothing) SetSkillGoverningAttributeC <a href="#Actor_Value_Codes">skillCode</a>:int attributeName:string</code></p>
 
-<p><a id="GetSkillUseIncrementC" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillUseIncrementC">GetSkillUseIncrementC</a> - gets the experience point increase for one use of a skill action<br />
-<code class="s">(useRate:float) GetSkillUseIncrement skill:actorValueCode <span class="op">whichAction:int</span></code></p>
+<p><a id="GetPlayerSkillAdvances" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSkillAdvances">GetPlayerSkillAdvances(C)</a> - returns the number of times the skill level has advanced for that skill<br />
+<code class="s">(advances:int) GetPlayerSkillAdvances skill:actorValue</code><br />
+<code class="s">(advances:int) GetPlayerSkillAdvancesC <a href="#Actor_Value_Codes">skillCode</a>:int</code></p>
 
-<p><a id="SetSkillUseIncrementC" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillUseIncrementC">SetSkillUseIncrementC</a> - sets the experience point increase for one use of a skill action<br />
-<code class="s">(nothing) SetSkillUseIncrement nuRate:float skill:actorValueCode <span class="op">whichAction:int</span></code></p>
+<p><a id="SetPlayerSkillAdvances" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPlayerSkillAdvances">SetPlayerSkillAdvances(C)</a> - sets the number of times the skill has been advanced<br />
+<code class="s">(nothing) SetPlayerSkillAdvances skill:actorValue advances:int</code><br />
+<code class="s">(nothing) SetPlayerSkillAdvancesC <a href="#Actor_Value_Codes">skillCode</a>:int advances:int</code></p>
 
-<p><a id="GetSkillGoverningAttribute" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillGoverningAttribute">GetSkillGoverningAttribute</a> - returns the governing attribute for the skill as an actor value code<br />
-<code class="s">(skillCode:int) GetSkillGoverningAttribute skillName:string</code></p>
+<p><a id="GetRequiredSkillExp" class="f" href="http://cs.elderscrolls.com/index.php?title=GetRequiredSkillExp">GetRequiredSkillExp(C)</a> - returns the total skill use required for the player to advance the specified skill. <br/>
+<b>Note: </b>To get the <strong>remaining</strong> skill use required, subtract the value of <a href="#GetPlayerSkillUse">GetPlayerSkillUse</a> from this value.<br />
+<code class="s">(skillUse:float) GetRequiredSkillExp skill:actorValue</code><br />
+<code class="s">(skillUse:float) GetRequiredSkillExpC <a href="#Actor_Value_Codes">skillCode</a>:int</code></p>
 
-<p><a id="SetSkillGoverningAttribute" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillGoverningAttribute">SetSkillGoverningAttribute</a> - sets the governing attribute for the skill<br />
-<code class="s">(nothing) SetSkillGoverningAttribute skillName:string attributeName:string</code></p>
+<p><a id="GetSkillSpecialization" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillSpecialization">GetSkillSpecialization(C)</a> - returns the skill's specialization as an integer. 0: Combat, 1: Magic, or 2: Stealth. <br />
+<code class="s">(specialization:int) GetSkillSpecialization skill:actorValue</code><br />
+<code class="s">(specialization:int) GetSkillSpecializationC <a href="#Actor_Value_Codes">skillCode</a>:int</code></p>
 
-<p><a id="GetSkillGoverningAttributeC" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillGoverningAttributeC">GetSkillGoverningAttributeC</a> - alternate version of GetSkillGoverningAttribute taking an actor value code for the skill<br />
-<code class="s">(skillCode:int) GetSkillGoverningAttributeC skillCode:int</code></p>
-
-<p><a id="SetSkillGoverningAttributeC" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillGoverningAttributeC">SetSkillGoverningAttributeC</a> - alternate version of SetSkillGoverningAttribute taking actor value codes for the skill and attribute<br />
-<code class="s">(nothing) SetSkillGoverningAttributeC skillCode:int attributeCode:int</code></p>
-
-<p><a id="GetPlayerSkillAdvances" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSkillAdvances">GetPlayerSkillAdvances</a> - returns the number of times the skill level has advanced for that skill<br />
-<code class="s">(advances:int) GetPlayerSkillAdvances skillCode:int</code><br />
-<code class="s">(advances:int) GetPlayerSkillAdvancesC skillCode:int</code></p>
-
-<p><a id="SetPlayerSkillAdvances" class="f" href="http://cs.elderscrolls.com/index.php?title=SetPlayerSkillAdvances">SetPlayerSkillAdvances</a> - sets the number of times the skill has been advanced<br />
-<code class="s">(nothing) SetPlayerSkillAdvances skillCode:int advances:int</code><br />
-<code class="s">(nothing) SetPlayerSkillAdvancesC skillCode:int advances:int</code></p>
-
-<p><a id="GetRequiredSkillExp" class="f" href="http://cs.elderscrolls.com/index.php?title=GetRequiredSkillExp">GetRequiredSkillExp</a> - returns the total skill use required for the player to advance the specified skill. To get the <strong>remaining</strong> skill use required, subtract the value of <a href="#GetPlayerSkillUse">GetPlayerSkillUse</a> from this value.<br />
-<code class="s">(skillUse:float) GetRequiredSkillExp skill:actorValue</code></p>
-
-<p><a id="GetRequiredSkillExpC" class="f" href="http://cs.elderscrolls.com/index.php?title=GetRequiredSkillExpC">GetRequiredSkillExpC</a> - alternate version of GetRequiredSkillExp taking an actor value code for the skill.<br />
-<code class="s">(skillUse:float) GetRequiredSkillExpC skillCode:int</code></p>
-
-<p><a id="GetSkillSpecialization" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillSpecialization">GetSkillSpecialization</a> - returns the skill's specialization as an integer. 0: Combat, 1: Magic, or 2: Stealth. <br />
-<code class="s">(specialization:int) GetSkillSpecialization skill:actorValue</code></p>
-
-<p><a id="GetSkillSpecializationC" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSkillSpecializationC">GetSkillSpecializationC</a> - alternate version of GetSkillSpecialization taking an actor value code for the skill.<br />
-<code class="s">(specialization:int) GetSkillSpecializationC skillCode:int</code></p>
-
-<p><a id="SetSkillSpecialization" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillSpecialization">SetSkillSpecialization</a> - sets the skill's specialization as an integer. 0: Combat, 1: Magic, or 2: Stealth. <br />
-<code class="s">(nothing) SetSkillSpecialization skill:actorValue specialization:int</code></p>
-
-<p><a id="SetSkillSpecializationC" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillSpecializationC">SetSkillSpecializationC</a> - alternate version of SetSkillSpecialization taking an actor value code for the skill<br />
-<code class="s">(specialization:int) SetSkillSpecializationC skillCode:int specialization:int</code></p>
+<p><a id="SetSkillSpecialization" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSkillSpecialization">SetSkillSpecialization(C)</a> - sets the skill's specialization as an integer. 0: Combat, 1: Magic, or 2: Stealth. <br />
+<code class="s">(nothing) SetSkillSpecialization skill:actorValue specialization:int</code><br />
+<code class="s">(nothing) SetSkillSpecializationC <a href="#Actor_Value_Codes">skillCode</a>:int specialization:int</code></p>
 
 <p><a id="ToggleSkillPerk" class="f" href="http://cs.elderscrolls.com/index.php?title=ToggleSkillPerk">ToggleSkillPerk</a> - turns the perk associated with the specified skill at the specified mastery level on or off. Currently, this command only supports toggling the Journeyman Block perk. Support for additional perks and skills may be added in the future. The mastery level is an integer from 0 (Novice) to 4 (Master).<br />
+<b>Note: </b>This is the only skill function without a C version.<br />
 <code class="s">(perkToggled:bool) ToggleSkillPerk skill:actorValue masteryLevel:int bEnablePerk:bool</code></p>
 
 <h3><a id="Soul_Gem">Soul Gem</a></h3>
@@ -3996,29 +3986,34 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSoulLevel">GetSoulLevel</a> - returns the soul level currently in the soul gem<br />
+<p><a id="GetSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSoulLevel">GetSoulLevel</a> - returns the soul level currently in the soul gem.<br />
+<b>Note: </b>This function is used on a base object and cannot show the soul level of a player-filled soulgem. Use <code>GetCurrentSoulLevel</code> instead.<br />
 <code class="s">(<a href="#Soul_Level">soulLevel</a>:int) GetSoulLevel objectID:ref</code></p>
 
-<p><a id="GetSoulGemCapacity" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSoulGemCapacity">GetSoulGemCapacity</a> - returns the max soul level the soul gem can contain<br />
+<p><a id="GetSoulGemCapacity" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSoulGemCapacity">GetSoulGemCapacity</a> - returns the max soul level the soul gem can contain.<br />
 <code class="s">(<a href="#Soul_Level">soulLevel</a>:int) GetSoulGemCapacity objectID:ref</code></p>
 
-<p><a id="SetSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSoulLevel">SetSoulLevel</a> - set the soul level of the soul gem<br />
+<p><a id="SetSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSoulLevel">SetSoulLevel</a> - set the soul level of the soul gem.<br />
+<b>Note: </b>This function works on a base object, see <code>SetCurrentSoulLevel</code> for changing the soul level in a single soul gem reference.<br />
 <code class="s">(nothing) SetSoulLevel <a href="#Soul_Level">soulLevel</a>:int <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetSoulGemCapacity" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSoulGemCapacity">SetSoulGemCapacity</a> - set the capacity level of the soul gem<br />
+<p><a id="SetSoulGemCapacity" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSoulGemCapacity">SetSoulGemCapacity</a> - set the capacity level of the soul gem.<br />
  <code class="s">(nothing) SetSoulGemCapacity <a href="#Soul_Level">soulLevel</a>:int objectID:ref</code></p>
 
-<p><a id="GetCurrentSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentSoulLevel">GetCurrentSoulLevel</a> - returns the current soul level of the calling actor reference<br />
-<code class="s">(<a href="#Soul_Level">soulLevel</a>:int) GetCurrentSoulLevel</code></p>
+<p><a id="GetCurrentSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentSoulLevel">GetCurrentSoulLevel</a> - returns the current soul level of the calling soulgem reference.<br />
+<code class="s">(<a href="#Soul_Level">soulLevel</a>:int) reference.GetCurrentSoulLevel</code></p>
+
+<p><a id="SetCurrentSoulLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetCurrentSoulLevel">SetCurrentSoulLevel</a> - sets the current soul level of the calling soulgem reference.<br />
+<code class="s">(nothing) reference.SetCurrentSoulLevel newLevel:int</code></p>
 
 <h3><a id="Sound">Sound</a></h3>
 
 <h4>Functions:</h4>
 
-<p><a id="GetSoundAttenuation" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSoundAttenuation">GetSoundAttenuation</a> - returns the specified attenuation value for the specified sound, where the attenuation is "max", "min", or "static"<br />
+<p><a id="GetSoundAttenuation" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSoundAttenuation">GetSoundAttenuation</a> - returns the specified attenuation value for the specified sound, where the attenuation is "max", "min", or "static".<br />
 <code class="s">(attenuation:float) GetSoundAttenuation sound:ref whichAttenuation:string </code></p>
 
-<p><a id="SetSoundAttenuation" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSoundAttenuation">SetSoundAttenuation</a> - sets the specified attenuation value for the specified sound, where the attenuation is "max", "min", or "static"<br />
+<p><a id="SetSoundAttenuation" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSoundAttenuation">SetSoundAttenuation</a> - sets the specified attenuation value for the specified sound, where the attenuation is "max", "min", or "static".<br />
 <code class="s">(nothing) SetSoundAttenuation sound:ref whichAttenuation:string attenuation:float </code></p>
 
 <h3><a id="Spell">Spell</a></h3>
@@ -4035,70 +4030,75 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetSpellType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellType">GetSpellType</a> - returns the spell type<br />
+<p><a id="GetSpellType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellType">GetSpellType</a> - returns the spell type.<br />
+<b>Note: </b>The Poison type refers to spells set to Poison in the CS, not to poisoned weapons or arrows.<br />
 <code class="s">(<a href="#Spell_Type">spellType</a>:int) GetSpellType spell:ref</code></p>
 
-<p><a id="SetSpellType" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellType">SetSpellType</a> - sets the spell type<br />
+<p><a id="SetSpellType" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellType">SetSpellType</a> - sets the spell type.<br />
+<b>Note: </b>The Poison type causes the spell to use the graphics and sound effects of the POSN magic effect instead of the effects of the spell, and causes it to be affected by Resist Poison and Cure Poison.<br />
 <code class="s">(nothing) SetSpellType <a href="#Spell_Type">nuType</a>:int spell:ref</code></p>
 
 <p><a id="GetSpellMagickaCost" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellMagickaCost">GetSpellMagickaCost</a> - returns the magicka casting cost according to the Oblivion formula. If called on a reference it will use the reference's magic skill values to determine the actual magicka cost of the spell. Without a reference it will return the base cost of the spell as reported in the CS.<br />
 <code class="s">(magickaCost:int) <span class="op">reference.</span>GetSpellMagickaCost spell:ref</code></p>
 
-<p><a id="SetSpellMagickaCost" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellMagickaCost">SetSpellMagickaCost</a> - sets the magicka casting cost<br />
+<p><a id="SetSpellMagickaCost" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellMagickaCost">SetSpellMagickaCost</a> - sets the magicka casting cost.<br />
+<b>Note: </b>This value can be changed but has no effect if the spell is marked AutoCalc.<br />
 <code class="s">(nothing) SetSpellMagickaCost nuMagickaCost:int spell:ref</code></p>
 
-<p><a id="ModSpellMagickaCost" class="f" href="http://cs.elderscrolls.com/index.php?title=ModSpellMagickaCost">ModSpellMagickaCost</a> - modifies the magicka casting cost up or down<br />
+<p><a id="ModSpellMagickaCost" class="f" href="http://cs.elderscrolls.com/index.php?title=ModSpellMagickaCost">ModSpellMagickaCost</a> - modifies the magicka casting cost up or down.<br />
+<b>Note: </b>This value can be changed but has no effect if the spell is marked AutoCalc.<br />
 <code class="s">(nothing) ModSpellMagickaCost modifyBy:float spell:ref</code></p>
 
-<p><a id="GetSpellMasteryLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellMasteryLevel">GetSpellMasteryLevel</a> - returns the mastery level of the spell<br />
+<p><a id="GetSpellMasteryLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellMasteryLevel">GetSpellMasteryLevel</a> - returns the mastery level of the spell.<br />
 <code class="s">(<a href="#Spell_Mastery_Level">masteryLevel</a>:int) GetSpellMasteryLevel spell:ref</code></p>
 
-<p><a id="SetSpellMasteryLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellMasteryLevel">SetSpellMasteryLevel</a> - sets the mastery level of the spell<br />
+<p><a id="SetSpellMasteryLevel" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellMasteryLevel">SetSpellMasteryLevel</a> - sets the mastery level of the spell.<br />
+<b>Note: </b>This value can be changed but has no effect if the spell is marked AutoCalc.<br />
 <code class="s">(nothing) SetSpellMasteryLevel <a href="#Spell_Mastery_Level">masteryLevel</a>:int objectID:ref</code></p>
 
-<p><a id="GetSpellSchool" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellSchool">GetSpellSchool</a> - returns the school of the spell, determined by the most expensive effect item<br />
+<p><a id="GetSpellSchool" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellSchool">GetSpellSchool</a> - returns the school of the spell, determined by the most expensive effect item, or, on a script effect, the school that was set for the script effect.<br />
 <code class="s">(magicSchool:int) GetSpellSchool spell:ref</code></p>
 
-<p><a id="GetSpellExplodesWithNoTarget" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellExplodesWithNoTarget">GetSpellExplodesWithNoTarget</a> - returns whether the touch spell explodes without a target<br />
+<p><a id="GetSpellExplodesWithNoTarget" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellExplodesWithNoTarget">GetSpellExplodesWithNoTarget</a> - returns whether the touch spell explodes without a target.<br />
 <code class="s">(spellExplodesWithNoTarget:bool) GetSpellExplodesWithNoTarget spell:ref</code></p>
 
-<p><a id="SetSpellExplodesWithNoTarget" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellExplodesWithNoTarget">SetSpellExplodesWithNoTarget</a> - sets whether the touch spell will explode without a target<br />
+<p><a id="SetSpellExplodesWithNoTarget" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellExplodesWithNoTarget">SetSpellExplodesWithNoTarget</a> - sets whether the touch spell will explode without a target.<br />
 <code class="s">(nothing) SetSpellExplodesWithNoTarget doesSpellExpode:bool spell:ref</code></p>
 
-<p><a id="GetSpellHostile" class="f" href="http://cs.elderscrolls.com/index.php?title=IsSpellHostile">IsSpellHostile</a> - returns 1 if the spell is considered hostile<br />
+<p><a id="GetSpellHostile" class="f" href="http://cs.elderscrolls.com/index.php?title=IsSpellHostile">IsSpellHostile</a> - returns 1 if the spell is considered hostile.<br />
 <code class="s">(isHostile:bool) IsSpellHostile spell:ref</code></p>
 
-<p><a id="SetSpellHostile" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellHostile">SetSpellHostile</a> - toggles whether or not a spell is considered hostile<br />
+<p><a id="SetSpellHostile" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellHostile">SetSpellHostile</a> - toggles whether or not a spell is considered hostile.<br />
 <code class="s">(nothing) SetSpellHostile spell:ref isHostile:bool</code></p>
 
-<p><a id="GetSpellPCStart" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellPCStart">GetSpellPCStart</a> - returns true if the PC Start flag is set for the specified spell<br />
+<p><a id="GetSpellPCStart" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellPCStart">GetSpellPCStart</a> - returns true if the PC Start flag is set for the specified spell.<br />
 <code class="s">(bool) GetSpellPCStart spell:ref</code></p>
 
-<p><a id="GetSpellImmuneToSilence" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellImmuneToSilence">GetSpellImmuneToSilence</a> - returns true if the Immune to Silence flag is set for the specified spell<br />
+<p><a id="GetSpellImmuneToSilence" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellImmuneToSilence">GetSpellImmuneToSilence</a> - returns true if the Immune to Silence flag is set for the specified spell.<br />
 <code class="s">(bool) GetSpellImmuneToSilence spell:ref</code></p>
 
-<p><a id="GetSpellAreaEffectIgnoresLOS" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellAreaEffectIgnoresLOS">GetSpellAreaEffectIgnoresLOS</a> - returns true if the AE Ignores LOS flag is set for the specified spell<br />
+<p><a id="GetSpellAreaEffectIgnoresLOS" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellAreaEffectIgnoresLOS">GetSpellAreaEffectIgnoresLOS</a> - returns true if the AE Ignores LOS flag is set for the specified spell.<br />
 <code class="s">(bool) GetSpellAreaEffectIgnoresLOS spell:ref</code></p>
 
-<p><a id="GetSpellScriptEffectAlwaysApplies" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellScriptEffectAlwaysApplies">GetSpellScriptEffectAlwaysApplies</a> - returns true if the SEFF Always Applies flag is set for the specified spell<br />
+<p><a id="GetSpellScriptEffectAlwaysApplies" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellScriptEffectAlwaysApplies">GetSpellScriptEffectAlwaysApplies</a> - returns true if the SEFF Always Applies flag is set for the specified spell.<br />
 <code class="s">(bool) GetSpellScriptEffectAlwaysApplies spell:ref</code></p>
 
-<p><a id="GetSpellDisallowAbsorbReflect" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellDisallowAbsorbReflect">GetSpellDisallowAbsorbReflect</a> - returns true if the Disallow Absorb Reflect flag is set for the specified spell<br />
+<p><a id="GetSpellDisallowAbsorbReflect" class="f" href="http://cs.elderscrolls.com/index.php?title=GetSpellDisallowAbsorbReflect">GetSpellDisallowAbsorbReflect</a> - returns true if the Disallow Absorb Reflect flag is set for the specified spell.<br />
 <code class="s">(bool) GetSpellDisallowAbsorbReflect spell:ref</code></p>
 
-<p><a id="SetSpellPCStart" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellPCStart">SetSpellPCStart</a> - sets the PC Start flag for the specified spell<br />
+<p><a id="SetSpellPCStart" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellPCStart">SetSpellPCStart</a> - sets the PC Start flag for the specified spell.<br />
 <code class="s">(nothing) SetSpellPCStart value:integer spell:ref</code></p>
 
-<p><a id="SetSpellImmuneToSilence" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellImmuneToSilence">SetSpellImmuneToSilence</a> - sets the Immune to Silence flag for the specified spell<br />
+<p><a id="SetSpellImmuneToSilence" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellImmuneToSilence">SetSpellImmuneToSilence</a> - sets the Immune to Silence flag for the specified spell.<br />
 <code class="s">(nothing) SetSpellImmuneToSilence value:integer spell:ref</code></p>
 
-<p><a id="SetSpellAreaEffectIgnoresLOS" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellAreaEffectIgnoresLOS">SetSpellAreaEffectIgnoresLOS</a> - sets the AE Ignores LOS flag for the specified spell<br />
+<p><a id="SetSpellAreaEffectIgnoresLOS" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellAreaEffectIgnoresLOS">SetSpellAreaEffectIgnoresLOS</a> - sets the AE Ignores LOS flag for the specified spell.<br />
 <code class="s">(nothing) SetSpellAreaEffectIgnoresLOS value:integer spell:ref</code></p>
 
-<p><a id="SetSpellScriptEffectAlwaysApplies" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellScriptEffectAlwaysApplies">SetSpellScriptEffectAlwaysApplies</a> - sets the SEFF Always Applies flag for the specified spell<br />
+<p><a id="SetSpellScriptEffectAlwaysApplies" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellScriptEffectAlwaysApplies">SetSpellScriptEffectAlwaysApplies</a> - sets the SEFF Always Applies flag for the specified spell.<br />
 <code class="s">(nothing) SetSpellScriptEffectAlwaysApplies value:integer spell:ref</code></p>
 
-<p><a id="SetSpellDisallowAbsorbReflect" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellDisallowAbsorbReflect">SetSpellDisallowAbsorbReflect</a> - sets the Disallow Absorb Reflect flag for the specified spell<br />
+<p><a id="SetSpellDisallowAbsorbReflect" class="f" href="http://cs.elderscrolls.com/index.php?title=SetSpellDisallowAbsorbReflect">SetSpellDisallowAbsorbReflect</a> - sets the Disallow Absorb Reflect flag for the specified spell.<br />
 <code class="s">(nothing) SetSpellDisallowAbsorbReflect value:integer spell:ref</code></p>
 
 <h3><a id="Weapon">Weapon</a></h3>
@@ -4115,19 +4115,19 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetWeaponReach" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeaponReach">GetWeaponReach</a> - returns the reach of the weapon<br />
+<p><a id="GetWeaponReach" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeaponReach">GetWeaponReach</a> - returns the reach of the weapon.<br />
 <code class="s">(reach:float) <span class="op">reference</span>.GetWeaponReach <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetWeaponReach" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeaponReach">SetWeaponReach</a> - sets the reach of the weapon<br />
+<p><a id="SetWeaponReach" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeaponReach">SetWeaponReach</a> - sets the reach of the weapon.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetWeaponReach nuReach:float <span class="op">objectID:ref</span></code></p>
 
-<p><a id="ModWeaponReach" class="f" href="http://cs.elderscrolls.com/index.php?title=ModWeaponReach">ModWeaponReach</a> - modifies the reach of the weapon up or down<br />
+<p><a id="ModWeaponReach" class="f" href="http://cs.elderscrolls.com/index.php?title=ModWeaponReach">ModWeaponReach</a> - modifies the reach of the weapon up or down.<br />
 <code class="s">(nothing) <span class="op">reference</span>.ModWeaponReach modifyBy:float <span class="op">objectID:ref</span></code></p>
 
-<p><a id="GetWeaponType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeaponType">GetWeaponType</a> - retuns the weapon type<br />
+<p><a id="GetWeaponType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeaponType">GetWeaponType</a> - retuns the weapon type.<br />
 <code class="s">(<a href="#Weapon_Type">weaponType</a>:int) <span class="op">reference</span>.GetWeaponType <span class="op">objectID:ref</span></code></p>
 
-<p><a id="SetWeaponType" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeaponType">SetWeaponType</a> - sets the weapon type<br />
+<p><a id="SetWeaponType" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeaponType">SetWeaponType</a> - sets the weapon type.<br />
 <code class="s">(nothing) <span class="op">reference</span>.SetWeaponType <a href="#Weapon_Type">weaponType</a>:int <span class="op">objectID:ref</span></code></p>
 
 <p><a id="GetEquippedWeaponPoison" class="f" href="http://cs.elderscrolls.com/index.php?title=GetEquippedWeaponPoison">GetEquippedWeaponPoison</a> - returns the poison applied to the equipped weapon. Called on the weapon holder.<br />
@@ -4156,116 +4156,116 @@ In the case of leveled lists containing nested leveled lists, the function recur
 
 <h4>Functions:</h4>
 
-<p><a id="GetCurrentWeatherID" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentWeatherID">GetCurrentWeatherID</a> - returns the refID of the current weather<br />
+<p><a id="GetCurrentWeatherID" class="f" href="http://cs.elderscrolls.com/index.php?title=GetCurrentWeatherID">GetCurrentWeatherID</a> - returns the refID of the current weather.<br />
 <code class="s">(currentWeather:ref) GetCurrentWeatherID </code></p>
 
 <p><a id="GetWeatherOverride" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherOverride">GetWeatherOverride</a> - returns the weather which is overriding the current weather as a result of the ForceWeather or SetWeather command with a non-zero "override" argument (for example, in the scripts which control weather near Oblivion gates), or zero if the weather is not being overridden. <br />
 <code class="s">(override:ref) GetWeatherOverride </code></p>
 
-<p><a id="GetWeatherWindSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherWindSpeed">GetWeatherWindSpeed</a> - returns the wind speed of the specified weather<br />
+<p><a id="GetWeatherWindSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherWindSpeed">GetWeatherWindSpeed</a> - returns the wind speed of the specified weather.<br />
 <code class="s">(windSpeed:float) GetWeatherWindSpeed weather:ref</code><br />
 <code class="s">(windSpeed:float) GetWindSpeed weather:ref</code></p>
 
-<p><a id="SetWeatherWindSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherWindSpeed">SetWeatherWindSpeed</a> - sets the wind speed of the specified weather<br />
+<p><a id="SetWeatherWindSpeed" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherWindSpeed">SetWeatherWindSpeed</a> - sets the wind speed of the specified weather.<br />
 <code class="s">(nothing) SetWeatherWindSpeed speed:float weather:ref</code><br />
 <code class="s">(nothing) SetWindSpeed speed:float weather:ref</code></p>
 
-<p><a id="GetWeatherCloudSpeedLower" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherCloudSpeedLower">GetWeatherCloudSpeedLower</a> - returns the speed of the lower cloud layer<br />
+<p><a id="GetWeatherCloudSpeedLower" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherCloudSpeedLower">GetWeatherCloudSpeedLower</a> - returns the speed of the lower cloud layer.<br />
 <code class="s">(speed:float) GetWeatherCloudSpeedLower weather:ref</code><br />
 <code class="s">(speed:float) GetCloudSpeedLower weather:ref</code></p>
 
-<p><a id="SetWeatherCloudSpeedLower" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherCloudSpeedLower">SetWeatherCloudSpeedLower</a> - sets the speed of the lower cloud layer<br />
+<p><a id="SetWeatherCloudSpeedLower" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherCloudSpeedLower">SetWeatherCloudSpeedLower</a> - sets the speed of the lower cloud layer.<br />
 <code class="s">(nothing) SetWeatherCloudSpeedLower speed:float weather:ref</code><br />
 <code class="s">(nothing) SetCloudSpeedLower speed:float weather:ref</code></p>
 
-<p><a id="GetWeatherCloudSpeedUpper" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherCloudSpeedUpper">GetWeatherCloudSpeedUpper</a> - returns the speed of the upper cloud layer<br />
+<p><a id="GetWeatherCloudSpeedUpper" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherCloudSpeedUpper">GetWeatherCloudSpeedUpper</a> - returns the speed of the upper cloud layer.<br />
 <code class="s">(speed:float) GetWeatherCloudSpeedUpper weather:ref</code><br />
 <code class="s">(speed:float) GetCloudSpeedUpper weather:ref</code></p>
 
-<p><a id="SetWeatherCloudSpeedUpper" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherCloudSpeedUpper">SetWeatherCloudSpeedUpper</a> - sets the speed of the upper cloud layer<br />
+<p><a id="SetWeatherCloudSpeedUpper" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherCloudSpeedUpper">SetWeatherCloudSpeedUpper</a> - sets the speed of the upper cloud layer.<br />
 <code class="s">(nothing) SetWeatherCloudSpeedUpper speed:float weather:ref</code><br />
 <code class="s">(nothing) SetCloudSpeedUpper speed:float weather:ref</code></p>
 
-<p><a id="GetWeatherTransDelta" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherTransDelta">GetWeatherTransDelta</a> - returns the transition delta of the weather<br />
+<p><a id="GetWeatherTransDelta" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherTransDelta">GetWeatherTransDelta</a> - returns the transition delta of the weather.<br />
 <code class="s">(transDelta:float) GetWeatherTransDelta weather:ref</code><br />
 <code class="s">(transDelta:float) GetTransDelta weather:ref</code></p>
 
-<p><a id="SetWeatherTransDelta" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherTransDelta">SetWeatherTransDelta</a> - sets the transition delta of the weather<br />
+<p><a id="SetWeatherTransDelta" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherTransDelta">SetWeatherTransDelta</a> - sets the transition delta of the weather.<br />
 <code class="s">(nothing) SetWeatherTransDelta transDelta:float weather:ref</code><br />
 <code class="s">(nothing) SetTransDelta transDelta:float weather:ref</code></p>
 
-<p><a id="GetWeatherSunGlare" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherSunGlare">GetWeatherSunGlare</a> - returns the sun glare<br />
+<p><a id="GetWeatherSunGlare" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherSunGlare">GetWeatherSunGlare</a> - returns the sun glare.<br />
 <code class="s">(sunGlare:float) GetWeatherSunGlare weather:ref</code><br />
 <code class="s">(sunGlare:float) GetSunGlare weather:ref</code></p>
 
-<p><a id="SetWeatherSunGlare" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherSunGlare">SetWeatherSunGlare</a> - sets the sun glare<br />
+<p><a id="SetWeatherSunGlare" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherSunGlare">SetWeatherSunGlare</a> - sets the sun glare.<br />
 <code class="s">(nothing) SetWeatherSunGlare sunGlare:float weather:ref</code><br />
 <code class="s">(nothing) SetSunGlare sunGlare:float weather:ref</code></p>
 
-<p><a id="GetWeatherSunDamage" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherSunDamage">GetWeatherSunDamage</a> - returns the sun damage<br />
+<p><a id="GetWeatherSunDamage" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherSunDamage">GetWeatherSunDamage</a> - returns the sun damage.<br />
 <code class="s">(sunDamage:float) GetWeatherSunDamage weather:ref</code><br />
 <code class="s">(sunDamage:float) GetSunDamage weather:ref</code></p>
 
-<p><a id="SetWeatherSunDamage" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherSunDamage">SetWeatherSunDamage</a> - sets the sun damage<br />
+<p><a id="SetWeatherSunDamage" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherSunDamage">SetWeatherSunDamage</a> - sets the sun damage.<br />
 <code class="s">(nothing) SetWeatherSunDamage sunDamage:float weather:ref</code><br />
 <code class="s">(nothing) SetSunDamage sunDamage:float weather:ref</code></p>
 
-<p><a id="GetWeatherFogDayNear" class="f" href="http://cs.elderscrolls.com/index.php?title=">GetWeatherFogDayNear</a> - returns the daytime near fog distance<br />
+<p><a id="GetWeatherFogDayNear" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherFogDayNear">GetWeatherFogDayNear</a> - returns the daytime near fog distance.<br />
 <code class="s">(fogDistance:float) GetWeatherFogDayNear weather:ref</code><br />
 <code class="s">(fogDistance:float) GetFogDayNear weather:ref</code></p>
 
-<p><a id="SetWeatherFogDayNear" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherFogDayNear">SetWeatherFogDayNear</a> - sets the daytime near fog distance<br />
+<p><a id="SetWeatherFogDayNear" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherFogDayNear">SetWeatherFogDayNear</a> - sets the daytime near fog distance.<br />
 <code class="s">(nothing) SetWeatherFogDayNear fogDistance:float weather:ref</code><br />
 <code class="s">(nothing) SetFogDayNear fogDistance:float weather:ref</code></p>
 
-<p><a id="GetWeatherFogDayFar" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherFogDayFar">GetWeatherFogDayFar</a> - returns the daytime far fog distance<br />
+<p><a id="GetWeatherFogDayFar" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherFogDayFar">GetWeatherFogDayFar</a> - returns the daytime far fog distance.<br />
 <code class="s">(fogDistance:float) GetWeatherFogDayFar weather:ref</code><br />
 <code class="s">(fogDistance:float) GetFogDayFar weather:ref</code></p>
 
-<p><a id="SetWeatherFogDayFar" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherFogDayFar">SetWeatherFogDayFar</a>- sets the daytime far fog distance<br />
+<p><a id="SetWeatherFogDayFar" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherFogDayFar">SetWeatherFogDayFar</a>- sets the daytime far fog distance.<br />
 <code class="s">(nothing)SetWeatherFogDayFar fogDistance:float weather:ref</code><br />
 <code class="s">(nothing)SetFogDayFar fogDistance:float weather:ref</code></p>
 
-<p><a id="GetWeatherFogNightNear" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherFogNightNear">GetWeatherFogNightNear</a> - returns the nighttime near fog distance<br />
+<p><a id="GetWeatherFogNightNear" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherFogNightNear">GetWeatherFogNightNear</a> - returns the nighttime near fog distance.<br />
 <code class="s">(fogDistance:float)GetWeatherFogNightNear weather:ref</code><br />
 <code class="s">(fogDistance:float)GetFogNightNear weather:ref</code></p>
 
-<p><a id="SetWeatherFogNightNear" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherFogNightNear">SetWeatherFogNightNear</a> - sets the nighttime near fog distance<br />
+<p><a id="SetWeatherFogNightNear" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherFogNightNear">SetWeatherFogNightNear</a> - sets the nighttime near fog distance.<br />
 <code class="s">(nothing)SetWeatherFogNightNear fogDistance:float weather:ref</code><br />
 <code class="s">(nothing)SetFogNightNear fogDistance:float weather:ref</code></p>
 
-<p><a id="GetWeatherFogNightFar" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherFogNightFar">GetWeatherFogNightFar</a> - returns the nighttime far fog distance<br />
+<p><a id="GetWeatherFogNightFar" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherFogNightFar">GetWeatherFogNightFar</a> - returns the nighttime far fog distance.<br />
 <code class="s">(fogDistance:float)GetWeatherFogNightFar weather:ref</code><br />
 <code class="s">(fogDistance:float)GetFogNightFar weather:ref</code></p>
 
-<p><a id="SetWeatherFogNightFar" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherFogNightFar">SetWeatherFogNightFar</a> - sets the nighttime far fog distance<br />
+<p><a id="SetWeatherFogNightFar" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherFogNightFar">SetWeatherFogNightFar</a> - sets the nighttime far fog distance.<br />
 <code class="s">(nothing)SetWeatherFogNightFar fogDistance:float weather:ref</code><br />
 <code class="s">(nothing)SetFogNightFar fogDistance:float weather:ref</code></p>
 
-<p><a id="GetWeatherHDRValue" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherHDRValue">GetWeatherHDRValue</a> - returns the specified HDR value for the weather<br />
+<p><a id="GetWeatherHDRValue" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherHDRValue">GetWeatherHDRValue</a> - returns the specified HDR value for the weather.<br />
 <code class="s">(hdrValue:float) GetWeatherHDRValue <a href="#HDR_Value">whichHDRValue</a>:int weather:ref</code><br />
 <code class="s">(hdrValue:float) GetHDRValue <a href="#HDR_Value">whichHDRValue</a>:int weather:ref </code></p>
 
-<p><a id="SetWeatherHDRValue" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherHDRValue">SetWeatherHDRValue</a> - sets the specified HDR value for the weather<br />
+<p><a id="SetWeatherHDRValue" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherHDRValue">SetWeatherHDRValue</a> - sets the specified HDR value for the weather.<br />
 <code class="s">(oldHDRValue:float) SetWeatherHDRValue nuVal:float <a href="#HDR_Value">whichHDRValue</a>:int weather:int</code><br />
 <code class="s">(oldHDRValue:float) SetHDRValue nuVal:float <a href="#HDR_Value">whichHDRValue</a>:int weather:int</code></p>
 
-<p><a id="GetWeatherColor" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherColor">GetWeatherColor</a> - returns the red, green or blue value of the specified weather color at the specified weather time<br />
-<code class="s">(color:int) GetWeatherColor <a href="#RGB_Value">rgb</a>:int <a href="#Weather_Color">whichColor</a>:int weather:ref <ahref="#Weather_Time"><span class="op">whichTime:int</span></a></code></p>
+<p><a id="GetWeatherColor" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherColor">GetWeatherColor</a> - returns the red, green or blue value of the specified weather color at the specified weather time.<br />
+<code class="s">(color:int) GetWeatherColor <a href="#RGB_Value">rgb</a>:int <a href="#Weather_Color">whichColor</a>:int weather:ref <a href="#Weather_Time"><span class="op">whichTime:int</span></a></code></p>
 
-<p><a id="SetWeatherColor" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherColor">SetWeatherColor</a> - sets the red, green and blue values for the specified weather color at the specified weather time<br />
+<p><a id="SetWeatherColor" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherColor">SetWeatherColor</a> - sets the red, green and blue values for the specified weather color at the specified weather time.<br />
 <code class="s">(nothing) SetWeatherColor red:int green:int blue:int <a href="#Weather_Color">whichColor</a>:int weather:ref <a href="#Weather_Time"><span class="op">whichTime:int</span></a></code></p>
 
-<p><a id="GetWeatherLightningFrequency" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherLightningFrequency">GetWeatherLightningFrequency</a> - returns the frequency of the lightning<br />
+<p><a id="GetWeatherLightningFrequency" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherLightningFrequency">GetWeatherLightningFrequency</a> - returns the frequency of the lightning.<br />
 <code class="s">(frequency:int) GetWeatherLightningFrequency weather:ref</code><br />
 <code class="s">(frequency:int) GetLightningFrequency weather:ref</code></p>
 
-<p><a id="SetWeatherLightningFrequency" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherLightningFrequency">SetWeatherLightningFrequency</a> - sets the frequency of the lightning<br />
+<p><a id="SetWeatherLightningFrequency" class="f" href="http://cs.elderscrolls.com/index.php?title=SetWeatherLightningFrequency">SetWeatherLightningFrequency</a> - sets the frequency of the lightning.<br />
 <code class="s">(nothing) SetWeatherLightningFrequency frequency:int weather:ref</code><br />
 <code class="s">(nothing) SetLightningFrequency frequency:int weather:ref</code></p>
 
-<p><a id="GetWeatherClassification" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherClassification">GetWeatherClassification</a> - returns the precipitation <a href="#Weather_Classifications">classification</a> of the weather as defined in the editor<br />
-<code class="s">(classification:int) GetWeatherClassification weather:ref</code></p>
+<p><a id="GetWeatherClassification" class="f" href="http://cs.elderscrolls.com/index.php?title=GetWeatherClassification">GetWeatherClassification</a> - returns the precipitation <a href="#Weather_Classifications">classification</a> of the weather as defined in the editor.<br />
+<code class="s">(<a href="#Weather_Classifications">classification</a>:int) GetWeatherClassification weather:ref</code></p>
 
 <h2><a id="General_Functions">General Functions</a></h2>
 
