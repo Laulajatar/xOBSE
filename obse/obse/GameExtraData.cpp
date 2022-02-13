@@ -149,16 +149,15 @@ void ExtraContainerChanges::Cleanup()
 	if (data) {
 		for (tList<ExtraContainerChanges::EntryData>::Iterator cur = data->objList->Begin(); !cur.End(); ++cur) {
 			if (*cur) {
-//				DEBUG_PRINT("cur %0X", *cur);
-				cur->Cleanup();
-//				DEBUG_PRINT("After cleanup  %0X  %s" , cur->extendData, GetFullName(cur->type));
+				DEBUG_PRINT("cur %0X", *cur);
 				// make sure we don't have any NULL ExtraDataList's in extend data, game will choke when saving
 				tList<ExtraDataList>::_Node* prev = NULL;
 				if (cur->extendData == NULL  /*|| cur->extendData->IsEmpty()*/) continue;
 				for (tList<ExtraDataList>::Iterator xtendData = cur->extendData->Begin(); !xtendData.End();) {
-//					DEBUG_PRINT("xtend %0X", *xtendData);
+					DEBUG_PRINT("xtend %0X", *xtendData);
 					if (!(*xtendData)) {
 						//Node is null remove
+						DEBUG_PRINT("Removing ExtraDataList Node %0X", xtendData);
 						ExtraDataList* toDelete = xtendData.RemoveMe();
 						if(toDelete) FormHeap_Free(toDelete);
 //						++xtendData;
@@ -167,7 +166,8 @@ void ExtraContainerChanges::Cleanup()
 						++xtendData;
 					}
 				}
-//				DEBUG_PRINT("end 1loop");
+				cur->Cleanup();
+				DEBUG_PRINT("After cleanup  %0X  %s", cur->extendData, GetFullName(cur->type));
 			}
 		}
 	}
@@ -273,6 +273,8 @@ static const UInt32 s_ExtraOwnershipSize = 0x10;
 static const UInt32 s_ExtraOwnershipVtbl = 0x00A35818;
 static const UInt32 s_ExtraCannotWearVtbl = 0x00A358CC;
 static const UInt32 s_ExtraCannotWearSize = 0x0C;
+static const UInt32 s_ExtraRankVtbl = 0x00A35830;
+static const UInt32 s_ExtraRankSize = 0x10;
 
 
 // static
@@ -359,6 +361,14 @@ ExtraOwnership* ExtraOwnership::Create(TESForm* _owner)
 	xOwner->owner = _owner;
 	return xOwner;
 }
+
+ExtraRank* ExtraRank::Create(UInt32 rank)
+{
+	ExtraRank* xRank = (ExtraRank*)BSExtraData::Create(kExtraData_Rank, s_ExtraRankSize, s_ExtraRankVtbl);
+	xRank->rank = rank;
+	return xRank;
+}
+
 
 ExtraCount* ExtraCount::Create()
 {

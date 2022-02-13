@@ -136,8 +136,35 @@ inline void OSInputGlobalsEx::SendControlEvents() {
 	}
 }
 
-//TODO Speed(Ma davvero vogliamo sto' bordello?)
-//TODO wheel to button translation
+inline void OSInputGlobalsEx::SendWheelEvents() {
+	if (CurrentMouseState.lZ > 0  && PreviousMouseState.lZ > 0) {//264
+		EventManager::HandleEvent(EventCode[0], (void*)264, (void*)KeyEvent_Hold);
+	}
+	else if (CurrentMouseState.lZ > 0 && PreviousMouseState.lZ == 0) {
+		EventManager::HandleEvent(EventCode[0], (void*)264, (void*)KeyEvent_Down);
+	}
+	else if (CurrentMouseState.lZ > 0 && PreviousMouseState.lZ < 0) {
+		EventManager::HandleEvent(EventCode[0], (void*)265, (void*)KeyEvent_Up);
+		EventManager::HandleEvent(EventCode[0], (void*)264, (void*)KeyEvent_Down);
+
+	}
+	else if (CurrentMouseState.lZ < 0 && PreviousMouseState.lZ < 0) {//265
+		EventManager::HandleEvent(EventCode[0], (void*)265, (void*)KeyEvent_Hold);
+	}
+	else if (CurrentMouseState.lZ < 0 && PreviousMouseState.lZ == 0) {
+		EventManager::HandleEvent(EventCode[0], (void*)265, (void*)KeyEvent_Down);
+	}
+	else if (CurrentMouseState.lZ < 0 && PreviousMouseState.lZ > 0) {
+		EventManager::HandleEvent(EventCode[0], (void*)264, (void*)KeyEvent_Up);
+		EventManager::HandleEvent(EventCode[0], (void*)265, (void*)KeyEvent_Down);
+	}
+	else if (CurrentMouseState.lZ == 0 && PreviousMouseState.lZ < 0) {
+		EventManager::HandleEvent(EventCode[0], (void*)265, (void*)KeyEvent_Up);
+	}
+	else if (CurrentMouseState.lZ == 0 && PreviousMouseState.lZ > 0) {
+		EventManager::HandleEvent(EventCode[0], (void*)264, (void*)KeyEvent_Up);
+	}
+}
 /*
 *  The old DInput hook use this order: Hammer (depending on the frame), Hold (DI_data.FakeState) , Disabled, Tap 
 *  So a Disabled key win on hold and hamer but it lose on Tap. So Tap is seen as a proper input
@@ -149,10 +176,51 @@ void OSInputGlobalsEx::InputPollFakeHandle() {
 		CurrentMouseState.lX = 0;
 		CurrentMouseState.lY = 0;
 	}
+	DWORD time = GetTickCount();
+	lastFrameLength = (float)(time - lastFrameTime) / 1000.0f;
+	lastFrameTime = time;
+
 	CurrentMouseState.lX += MouseMaskState.lX;
 	CurrentMouseState.lY += MouseMaskState.lY;
 	MouseMaskState.lX = 0;
 	MouseMaskState.lY = 0;
+
+	if (MouseAxisMovementPerSecond[0]) {  //Move the mouse in X
+		float move = MouseAxisMovementPerSecond[0] * lastFrameLength;
+		CurrentMouseState.lX += move;
+		float rem = fmodf(move, 1.0f);
+		MouseAxisAccumulator[0] += rem;
+		if (rem > 0) {
+			if (MouseAxisAccumulator[0] > 1) {
+				CurrentMouseState.lX += 1;
+				MouseAxisAccumulator[0] -= 1;
+			}
+		}
+		else if(rem < 0) {
+			if (MouseAxisAccumulator[0] < -1) {
+				CurrentMouseState.lX -= 1;
+				MouseAxisAccumulator[0] += 1;
+			}
+		}
+	}
+	if (MouseAxisMovementPerSecond[1]) {  //Move the mouse in y
+		float move = MouseAxisMovementPerSecond[1] * lastFrameLength;
+		CurrentMouseState.lY += move;
+		float rem = fmodf(move, 1.0f);
+		MouseAxisAccumulator[1] += rem;
+		if (rem > 0) {
+			if (MouseAxisAccumulator[1] > 1) {
+				CurrentMouseState.lY += 1;
+				MouseAxisAccumulator[1] -= 1;
+			}
+		}
+		else if (rem < 0) {
+			if (MouseAxisAccumulator[1] < -1) {
+				CurrentMouseState.lY -= 1;
+				MouseAxisAccumulator[1] += 1;
+			}
+		}
+	}
 
 	for (UInt16 idx = 0; idx <= 255; idx++) {
 		if (idx < 8) {
@@ -195,6 +263,7 @@ void OSInputGlobalsEx::InputPollFakeHandle() {
 
 	}
 	SendControlEvents();
+	SendWheelEvents();
 	FrameIndex = (FrameIndex + 1) % 2;
 
 }
@@ -243,6 +312,11 @@ OSInputGlobalsEx* __thiscall OSInputGlobalsEx::InitializeEx(IDirectInputDevice8*
 	this->FrameIndex = 0;
 	EventCode[0] = EventManager::EventIDForString("OnKeyEvent");
 	EventCode[1] = EventManager::EventIDForString("OnControlEvent");
+	this->MouseAxisMovementPerSecond[0] = 0;
+	this->MouseAxisMovementPerSecond[1] = 0;
+	this->lastFrameTime = GetTickCount();  //TODO QueryPerformanceCounter? Internal GetTickCount 
+	this->MouseAxisAccumulator[0] = 0;
+	this->MouseAxisAccumulator[1] = 0;
 	g_inputGlobal = this;
 	return this;
 }

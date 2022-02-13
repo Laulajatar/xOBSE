@@ -128,7 +128,7 @@ struct OBSEStringVarInterface
 	void		(* SetString)(UInt32 stringID, const char* newValue);
 	UInt32		(* CreateString)(const char* value, void* owningScript);
 	void		(* Register)(OBSEStringVarInterface* intfc);			// DEPRECATED: use RegisterStringVarInterface() in GameAPI.h
-	bool		(* Assign)(ParamInfo * paramInfo, void * arg1, TESObjectREFR * thisObj, UInt32 arg3, Script * scriptObj, ScriptEventList * eventList, double * result, UInt32 * opcodeOffsetPtr, const char* newValue);
+	bool		(* Assign)(ParamInfo * paramInfo, void * arg1, TESObjectREFR * thisObj, TESObjectREFR* contObj, Script * scriptObj, ScriptEventList * eventList, double * result, UInt32 * opcodeOffsetPtr, const char* newValue);
 };
 
 // Added in v0016, Deprecated in xOBSE 22.2 use OBSEInputInterface
@@ -141,7 +141,7 @@ struct OBSEIOInterface
 	};
 
 	UInt32		version;
-	UInt8		(* IsKeyPressed)(UInt16 scancode);
+	bool		(* IsKeyPressed)(UInt32 scancode);
 };
 
 /**** Messaging API docs ********************************************************************
@@ -409,6 +409,7 @@ struct OBSECommandTableInterface
 	UInt32				(* GetReturnType)(const CommandInfo* cmd);		// return type enum defined in CommandTable.h
 	UInt32				(* GetRequiredOBSEVersion)(const CommandInfo* cmd);
 	const PluginInfo*	(* GetParentPlugin)(const CommandInfo* cmd);	// returns a pointer to the PluginInfo of the OBSE plugin that adds the command, if any. returns NULL otherwise
+	bool				(*Replace)(UInt32 opCode, CommandInfo* replaceWith); //Allow to replace command
 };
 
 /**** script API docs **********************************************************
@@ -623,7 +624,7 @@ struct PluginInfo
 {
 	enum
 	{
-		kInfoVersion = 2	// incremented 0020. No change to PluginInfo structure.
+		kInfoVersion = 3	// incremented 0022. New method to CommandListInterface
 	};
 
 	UInt32			infoVersion;

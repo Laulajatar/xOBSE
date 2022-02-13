@@ -12,6 +12,24 @@
 #include "GameProcess.h"
 #include "ArrayVar.h"
 
+static bool Cmd_IsMajor_Eval(COMMAND_ARGS_EVAL){
+    *result = 0;
+    UInt32 skill = *((UInt32*)arg1);
+    TESClass* theClass = (TESClass*)arg2;
+    if (!IsSkill(skill)) return true;
+    if (!theClass) {
+        if (!thisObj) return true;
+        TESNPC* npc = (TESNPC *)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESNPC, 0);
+        if (!npc || !npc->npcClass) return true;
+        theClass = npc->npcClass;
+    }
+
+    if (theClass->IsMajorSkill(skill)) {
+        *result = 1;
+    }
+    return true;
+}
+
 static bool Cmd_IsMajor_Execute(COMMAND_ARGS)
 {
 	*result = 0;
@@ -19,7 +37,7 @@ static bool Cmd_IsMajor_Execute(COMMAND_ARGS)
 	UInt32 skill = 0;
 	TESClass* theClass = NULL;
 
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &skill, &theClass);
+	ExtractArgs(PASS_EXTRACT_ARGS, &skill, &theClass);
 
 	if (!IsSkill(skill)) return true;
 	if (!theClass) {
@@ -35,6 +53,27 @@ static bool Cmd_IsMajor_Execute(COMMAND_ARGS)
 	return true;
 }
 
+static bool Cmd_IsMajorRef_Execute(COMMAND_ARGS) {
+	*result = 0;
+	UInt32 skill = 0;
+	if (!thisObj->IsActor()) return true;
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &skill)) return true;
+	if (!IsSkill(skill)) return true;
+	TESNPC* npc = OBLIVION_CAST(thisObj->baseForm, TESForm, TESNPC);
+	if (!npc || !npc->npcClass) return true;
+	*result = npc->npcClass->IsMajorSkill(skill);
+	return true;
+}
+
+static bool Cmd_IsMajorRef_Eval(COMMAND_ARGS_EVAL) {
+	*result = 0;
+	TESNPC* npc = OBLIVION_CAST(thisObj->baseForm, TESForm, TESNPC);
+	UInt32 skill = *(UInt32*)arg1;
+	if (!npc && !npc->npcClass && !IsSkill(skill)) return true;
+	*result = npc->npcClass->IsMajorSkill(skill);
+	return true;
+}
+
 static bool Cmd_IsClassAttribute_Execute(COMMAND_ARGS)
 {
 	*result = 0;
@@ -42,7 +81,7 @@ static bool Cmd_IsClassAttribute_Execute(COMMAND_ARGS)
 	UInt32 attribute = 0;
 	TESClass* theClass = NULL;
 
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &attribute, &theClass);
+	ExtractArgs(PASS_EXTRACT_ARGS, &attribute, &theClass);
 
 	if (attribute > kActorVal_Luck) return true;
 	if (!theClass) {
@@ -90,7 +129,7 @@ static bool Cmd_GetClassAttribute_Execute(COMMAND_ARGS)
 	UInt32 which = 0;
 	TESClass* theClass = NULL;
 
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &which, &theClass);
+	ExtractArgs(PASS_EXTRACT_ARGS, &which, &theClass);
 
 	if (which > 1) return true;
 	if (!theClass) {
@@ -142,7 +181,7 @@ static bool Cmd_GetClassSkill_Execute(COMMAND_ARGS)
 	UInt32 which = 0;
 	TESClass* theClass = NULL;
 
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &which, &theClass);
+	ExtractArgs(PASS_EXTRACT_ARGS, &which, &theClass);
 
 	if (which > 6) return true;
 	if (!theClass) {
@@ -249,7 +288,7 @@ static bool Cmd_GetClassSpecialization_Execute(COMMAND_ARGS)
 
 	TESClass* theClass = NULL;
 
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &theClass);
+	ExtractArgs(PASS_EXTRACT_ARGS, &theClass);
 
 	if (!theClass) {
 		if(!thisObj) return true;
@@ -343,6 +382,10 @@ CommandInfo kCommandInfo_GetClass =
 	0
 };
 
+static ParamInfo kParams_IsMajorRef[1] = {
+	{"skill" , kParamType_ActorValue, 0}
+};
+
 static ParamInfo kParams_IsMajor[2] =
 {
 	{	"skill", kParamType_ActorValue, 0 },
@@ -366,7 +409,22 @@ CommandInfo kCommandInfo_IsClassSkill =
 	kParams_IsMajor,
 	HANDLER(Cmd_IsMajor_Execute),
 	Cmd_Default_Parse,
-	NULL,
+	HANDLER_EVAL(Cmd_IsMajor_Eval),
+	0
+};
+
+CommandInfo kCommandInfo_IsMajorRef =
+{
+	"IsMajorRef",
+	"",
+	0,
+	"returns 1 if the skill is a major skill of the class of the reference npc",
+	1,
+	1,
+	kParams_IsMajorRef,
+	HANDLER(Cmd_IsMajorRef_Execute),
+	Cmd_Default_Parse,
+	HANDLER_EVAL(Cmd_IsMajorRef_Eval),
 	0
 };
 

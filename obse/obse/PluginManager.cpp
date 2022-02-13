@@ -45,10 +45,12 @@ static OBSEStringVarInterface g_OBSEStringVarInterface =
 	AssignToStringVar
 };
 
+bool IsKeyPressedOld(UInt32 key) { return PluginAPI::IsKeyPressedSimulated(key); }
+
 static OBSEIOInterface g_OBSEIOInterface =
 {
 	OBSEIOInterface::kVersion,
-	OSInputGlobals::Plugin_IsKeyPressed,
+	IsKeyPressedOld,
 };
 
 static OBSEArrayVarInterface g_OBSEArrayVarInterface =
@@ -119,7 +121,8 @@ static OBSECommandTableInterface g_OBSECommandTableInterface =
 	PluginAPI::GetCmdByName,
 	PluginAPI::GetCmdRetnType,
 	PluginAPI::GetReqVersion,
-	PluginAPI::GetCmdParentPlugin
+	PluginAPI::GetCmdParentPlugin,
+	PluginAPI::ReplaceCmd
 };
 
 static const OBSEInterface g_OBSEInterface =
@@ -378,6 +381,7 @@ void * PluginManager::QueryInterface(UInt32 id)
 			break;
 		case kInterface_IO:
 			result = &g_OBSEIOInterface;
+			//_MESSAGE("Requesting OBSEIOInterface, but was deprecated in favor of OBSEInputInterface");
 			break;
 		case kInterface_Script:
 			result = &g_OBSEScriptInterface;
@@ -846,7 +850,7 @@ bool Cmd_IsPluginInstalled_Execute(COMMAND_ARGS)
 
 	*result = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &pluginName)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &pluginName)) return true;
 
 	*result = (g_pluginManager.GetInfoByName(pluginName) != NULL) ? 1 : 0;
 	if (IsConsoleMode()) Console_Print("Plugin %s  is %s", pluginName, *result == 1 ? "Active" : "Not Active");
@@ -859,7 +863,7 @@ bool Cmd_GetPluginVersion_Execute(COMMAND_ARGS)
 
 	*result = -1;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &pluginName)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &pluginName)) return true;
 
 	PluginInfo	* info = g_pluginManager.GetInfoByName(pluginName);
 	

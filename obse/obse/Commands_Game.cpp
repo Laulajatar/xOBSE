@@ -17,7 +17,10 @@
 #include "obse/GameObjects.h"
 #include "obse_common/SafeWrite.h"
 #include "NiObjects.h"
-
+#include <obse/NiAPI.h>
+#include <mbstring.h>
+#include <obse/Hooks_Input.h>
+#include "ArrayVar.h"
 // first character in name mapped to type ID
 //	b	0
 //	c	1
@@ -38,7 +41,7 @@ static bool Cmd_SetNumericGameSetting_Execute(COMMAND_ARGS)
 	char	settingName[256] = { 0 };
 	float	settingData = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &settingName, &settingData))
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &settingName, &settingData))
 		return true;
 
 	SettingInfo	* setting = NULL;
@@ -93,7 +96,7 @@ static bool Cmd_SetNumericINISetting_Execute(COMMAND_ARGS)
 	char	settingName[256] = { 0 };
 	float	settingData = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &settingName, &settingData))
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &settingName, &settingData))
 		return true;
 
 	INISettingEntry* entry = GetIniSetting(settingName);
@@ -135,7 +138,7 @@ bool Cmd_GetNumericINISetting_Execute(COMMAND_ARGS)
 
 	char	settingName[256] = { 0 };
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &settingName))
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &settingName))
 		return true;
 
 	INISettingEntry* entry = GetIniSetting(settingName);
@@ -313,7 +316,7 @@ static bool Cmd_GetFPS_Execute(COMMAND_ARGS)
 //Undocumented and deprecated?
 static bool Cmd_GetCurrentFrameIndex_Execute(COMMAND_ARGS)
 {
-	*result = 30; //GetCurrentFrameIndex();
+	*result = g_inputGlobal->FrameIndex;
 	return true;
 }
 
@@ -341,7 +344,7 @@ static bool Cmd_SetDisableGlobalCollision_Execute(COMMAND_ARGS)
 
 	*result = currentState;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &disable))
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &disable))
 		return true;
 
 	if(disable != currentState)
@@ -393,13 +396,13 @@ static bool Cmd_MessageEX_Execute(COMMAND_ARGS)
 
 static bool Cmd_SetMessageIcon_Execute(COMMAND_ARGS)
 {
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &MessageIconPath);
+	ExtractArgs(PASS_EXTRACT_ARGS, &MessageIconPath);
 	return true;
 }
 
 static bool Cmd_SetMessageSound_Execute(COMMAND_ARGS)
 {
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &MessageSoundID);
+	ExtractArgs(PASS_EXTRACT_ARGS, &MessageSoundID);
 	return true;
 }
 
@@ -414,14 +417,24 @@ static bool Cmd_MessageBoxEX_Execute(COMMAND_ARGS)
 	//extract the buttons
 	const char* b[10] = {0};
 	UInt32 btnIdx = 0;
+	UInt32 mb_length = 0;
 
 	for (char* ch = buffer; *ch && btnIdx < 10; ch++)
 	{
+		if (mb_length > 0) {
+			mb_length--;
+			continue;		// bytes in multibyte characters are not considered as SeparatorChar
+		} else if (strlen(ch) > 1 && _mbsbtype((const unsigned char*)(ch), 1) == 2) {
+			mb_length = _mbclen((const unsigned char*)(ch)) - 1;		// get the length of a multibyte character from its first byte.
+			continue;
+		}
+
 		if (*ch == GetSeparatorChar(scriptObj))
 		{
 			*ch = '\0';
 			b[btnIdx++] = ch + 1;
 		}
+
 	}
 
 	if (!btnIdx)				//supply default OK button
@@ -459,7 +472,7 @@ static bool Cmd_IsModLoaded_Execute(COMMAND_ARGS)
 	char modName[512];
 	*result = 0;
 
-	if (!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &modName))
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &modName))
 		return true;
 
 	if (ModTable::Get().IsModLoaded (modName))
@@ -479,7 +492,7 @@ static bool Cmd_IsModLoaded_Execute(COMMAND_ARGS)
 static bool Cmd_GetModIndex_Execute(COMMAND_ARGS)
 {
 	char modName[512];
-	if (!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &modName))
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &modName))
 		return true;
 
 	UInt32 modIndex = ModTable::Get().GetModIndex (modName);
@@ -640,7 +653,7 @@ static bool Cmd_GetSoundPlaying_Execute(COMMAND_ARGS)
 	OSSoundGlobals	* soundGlobals = (*g_osGlobals)->sound;
 	if(!soundGlobals || !soundGlobals->gameSoundMap || !soundGlobals->niObjectMap) return true;
 
-	if(!ExtractArgs(EXTRACT_ARGS, &soundName, &radiusPickSize)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &soundName, &radiusPickSize)) return true;
 
 	UInt32	matchCount = 0;
 
@@ -987,7 +1000,7 @@ static bool Cmd_SetModAlias_Execute (COMMAND_ARGS)
 {
 	char name[0x100] = "", alias[0x100] = "";
 
-	if (ExtractArgs(EXTRACT_ARGS, name, alias) && *name && *alias)
+	if (ExtractArgs(PASS_EXTRACT_ARGS, name, alias) && *name && *alias)
 		*result = ModTable::Get().SetAlias (name, ModTable::Get().GetModIndex (alias)) ? 1.0 : 0.0;
 
 	DEBUG_PRINT ("SetModAlias >> %.0f", *result);
@@ -999,7 +1012,7 @@ static bool Cmd_GetModAlias_Execute (COMMAND_ARGS)
 	char name[0x100] = "";
 	std::string alias;
 
-	if (ExtractArgs(EXTRACT_ARGS, name) && *name)
+	if (ExtractArgs(PASS_EXTRACT_ARGS, name) && *name)
 		alias = ModTable::Get().GetAlias (name);
 
 	AssignToStringVar (PASS_COMMAND_ARGS, alias.c_str ());
@@ -1007,7 +1020,48 @@ static bool Cmd_GetModAlias_Execute (COMMAND_ARGS)
 	DEBUG_PRINT ("GetModAlias >> %s", alias.c_str ());
 	return true;
 }
+static bool Cmd_SetCameraFOV2_Execute(COMMAND_ARGS) {
+	SInt32 FOV = 0;
+	float FOVA = 0.0f;
+	if (ExtractArgs(PASS_EXTRACT_ARGS, &FOV)) {
+		if (FOV < 0) FOVA = (1.0f / (-FOV));
+		else FOVA = FOV;
+		(*g_worldSceneGraph)->SetCameraFOV(FOVA, 0.0f);
+		(*g_worldSceneGraph)->UpdateParticleFOV(FOV);
+	}
+	return true;
+}
 
+void GetLoadedType(UInt8 formType, int index, ArrayID arr){
+    if(formType <= kFormType_TOFT){
+        UInt32 idx = 0;
+        NiTPointerMap<TESForm>::Iterator iter(g_formTable);
+        for (NiTPointerMap<TESForm>::Entry* entry = iter.Current(); entry != NULL ; entry = iter.Next()) {
+			TESForm* form = entry->data;
+            if(form->typeID == formType && (index == -1 || (UInt8)index == (form->refID >> 24))){
+                g_ArrayMap.SetElementFormID(arr, idx, form->refID);
+                idx++;
+            }
+        }
+        if(idx  == 0) _MESSAGE("No form found. It's possible that this type isn't available with the Form map, and must be taken directly from the data handler. Open an issue on github");
+    }
+    else{
+        _MESSAGE("Invalid form type (If this is an error and the form is indeed valid, open an issue on github)");
+    }
+}
+
+bool Cmd_GetLoadedTypeArray_Execute(COMMAND_ARGS)
+{
+	*result = 0;
+	UInt32 formType;
+	int index = -1;
+	if (ExtractArgs(PASS_EXTRACT_ARGS, &formType, &index)){
+        ArrayID arr = g_ArrayMap.Create(kDataType_Numeric, true, scriptObj->GetModIndex());
+		GetLoadedType(formType, index, arr);
+        *result = arr;
+	}
+	return true;
+}
 #endif
 
 static ParamInfo kParams_SetNumericGameSetting[] =
@@ -1447,3 +1501,20 @@ DEFINE_COMMAND(ResolveModIndex,
 
 DEFINE_COMMAND (SetModAlias, sets the alias for a mod name, 0, 2, kParams_TwoStrings);
 DEFINE_COMMAND (GetModAlias, retrieves the alias for a mod name, 0, 1, kParams_OneString);
+
+CommandInfo kCommandInfo_SetCameraFOV2 =
+{
+	"SetCameraFOV2",
+	"SetFOV2",
+	0,
+	"Set the FOV for the camera. It's similar of con_etCameraFOV but it's unbounded",
+	0,
+	1,
+	kParams_OneInt,
+	HANDLER(Cmd_SetCameraFOV2_Execute),
+	Cmd_Default_Parse,
+	NULL,
+	0
+};
+
+DEFINE_CMD_ALT(GetLoadedTypeArray, GLTA, "Return an array with all Loaded form of type and optionally with specific mod index" , 0, kParams_OneInt_OneOptionalInt);

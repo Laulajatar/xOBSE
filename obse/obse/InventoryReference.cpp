@@ -60,7 +60,7 @@ TESObjectREFR* InventoryReference::CreateInventoryRefEntry(TESObjectREFR* contai
 
 InventoryReference::~InventoryReference(){
 	DEBUG_PRINT("Destroying IR");
-	if (m_data.type) Release();
+	if (m_tempRef) Release();
 	DEBUG_PRINT("Destroying IR1");
 	delete actions;
 	if (m_tempRef) m_tempRef->Destroy(true);
@@ -138,7 +138,7 @@ SInt32 InventoryReference::GetCount(){
     SInt32  count = xCount ? xCount->count : 1;
 	if (count < 0)
 	{
-		DEBUG_PRINT("Warning: InventoryReference::GetCount() found an object with a negative count (%d)", count);
+		_MESSAGE("Warning: InventoryReference::GetCount() found an object with a negative count (%d)", count);
 	}
 
 	return count;
@@ -240,12 +240,12 @@ bool InventoryReference::RemoveFromContainer(){
 */
 static void MoveToDestContainerXData(InventoryReference::Data& data, ExtraContainerChanges* from, ExtraContainerChanges* dest) {
 	ExtraContainerChanges::EntryData* destEntry = dest->GetByType(data.type);
-
+	//TODO from and dest can be the same?
 	ExtraCount* count = (ExtraCount*)data.xData->GetByType(kExtraData_Count);
 	data.entry->extendData->Remove(data.xData);
-	DEBUG_PRINT("%d      %d     %s", count != NULL ? count->count : 1, data.entry->countDelta, GetFullName(data.type));
+	DEBUG_PRINT("MoveToDestContainerXData %d      %d     %s", count != NULL ? count->count : 1, data.entry->countDelta, GetFullName(data.type));
 	data.entry->countDelta -= count != NULL ? count->count : 1;
-
+	//TODO can data.entry->countDelta be different then ExtraCount?
 	if (destEntry == nullptr) {
 		destEntry = ExtraContainerChanges::EntryData::Create(count != NULL ? count->count : 1, data.type);
 		dest->data->objList->AddAt(destEntry, 0);
@@ -261,6 +261,7 @@ static void MoveToDestContainerXData(InventoryReference::Data& data, ExtraContai
 		from->data->objList->Remove(data.entry);
 	}
 
+	dest->Cleanup();
 }
 
 /*
@@ -269,35 +270,38 @@ static void MoveToDestContainerXData(InventoryReference::Data& data, ExtraContai
 */
 
 static void MoveToDestContainerEntry(InventoryReference::Data& data, ExtraContainerChanges* from, ExtraContainerChanges* dest) {
-	ExtraContainerChanges::EntryData* destEntry = dest->GetByType(data.type);
-	if (data.count <= 0) return;
-	DEBUG_PRINT("Ma limorta2 %d", data.entry->countDelta);
+	if (data.count <= 0 || from == dest) return;
+	DEBUG_PRINT("MoveToDestContainerEntry  %d %d  %08X   %08X", data.entry->countDelta, data.count , from, dest);
 	//USe the countDelta
+	//TODO can we avoid reallocation?
 	data.entry->countDelta -= data.count;
-	
 	if (data.entry->countDelta <= 0) {
 		from->data->objList->Remove(data.entry);
 		FormHeap_Free(data.entry);
 	}
+	ExtraContainerChanges::EntryData* destEntry = dest->GetByType(data.type);
 	if (destEntry == nullptr) {
 		destEntry = ExtraContainerChanges::EntryData::Create(data.count, data.type);
 		dest->data->objList->AddAt(destEntry, 0);
 	}
 	else {
-		DEBUG_PRINT("Ma limorta5   %d", destEntry->countDelta);
 		destEntry->countDelta += data.count;
-		DEBUG_PRINT("Ma limorta5   %d", destEntry->countDelta);
-		if (destEntry->extendData != nullptr &&  data.xData && data.count > 1)
+		if (destEntry->extendData != nullptr && data.xData && data.count > 1) {
 			destEntry->extendData->AddAt(data.xData, 0);  //TODO maybe unnecessary to add an explicit extraData*
+			_MESSAGE("Ma ce s'arriva mai qua?");
+		}
 	}
+	dest->Cleanup();
+//	dest->DebugDump();
 }
 
 bool InventoryReference::MoveToContainer(TESObjectREFR* dest){
 	if (dest == nullptr || !dest->GetContainer()) return false; //Check if dest reference is a valid container
+//	if (dest == m_containerRef) return true;
 	ExtraContainerChanges* destCont =  ExtraContainerChanges::GetForRef(dest);
 	if (destCont == nullptr) return false;
 	ExtraContainerChanges* xChanges = ExtraContainerChanges::GetForRef(m_containerRef);
-	DEBUG_PRINT("Porcoddio %d  %0X   %0X   %0X", m_data.temporary, m_data.entry, m_data.xData , m_data.entry != NULL ? (SInt32)m_data.entry->extendData : -1);
+	DEBUG_PRINT("Porcoddio %d  %0X   %0X   %s", m_data.temporary, m_data.entry, m_data.xData , GetFullName(m_data.type));
 	if (m_containerRef && m_tempRef && Validate()) {
 		if (m_data.xData && m_data.xData->IsWorn()) {
 			ExtraCount* count = (ExtraCount*)m_data.xData->GetByType(kExtraData_Count);
@@ -305,11 +309,9 @@ bool InventoryReference::MoveToContainer(TESObjectREFR* dest){
 		}
 		else if (m_data.entry && m_data.entry->extendData && m_data.xData) {
 			MoveToDestContainerXData(m_data, xChanges, destCont);
-			destCont->Cleanup();
 		}
 		else if (m_data.entry) {
 			MoveToDestContainerEntry(m_data, xChanges, destCont);
-			destCont->Cleanup();
 		}
 		else if (m_data.count > 0) {   //If m_data.count is 0 or negative then there is nothing to remove
 			actions->push(new DeferredAction(Action_Remove, m_data, dest, m_data.count));
@@ -325,7 +327,9 @@ bool InventoryReference::CopyToContainer(TESObjectREFR* dest){
 	ExtraContainerChanges* destCont = ExtraContainerChanges::GetForRef(dest);
 	if (destCont == nullptr) return false;
 	ExtraContainerChanges::EntryData* destEntry = destCont->GetByType(m_data.type);
-	if (m_containerRef && m_tempRef && Validate()) {
+	//_MESSAGE("%0X  %0X  %0X", m_containerRef,m_tempRef, m_data.xData);
+	bool valid = m_containerRef != nullptr ? Validate() : true;
+	if (m_tempRef && valid) {
 		ExtraCount* xCount = nullptr;
 		SInt32 count = 0;
 		if (m_data.xData) {
@@ -335,28 +339,28 @@ bool InventoryReference::CopyToContainer(TESObjectREFR* dest){
 		else {
 			count = m_data.count;
 		}
+//		_MESSAGE("%d", count);
 		if (destEntry == nullptr) {
 			destEntry = ExtraContainerChanges::EntryData::Create(count , m_data.type);
+			destCont->data->objList->AddAt(destEntry,0);
 		}
 		else {
 			destEntry->countDelta += count;
+		
 		}
-		if (m_data.xData) {
+		ExtraDataList* newData = ExtraDataList::Create();
+		newData->Copy(&m_tempRef->baseExtraList);
+		if (destEntry->extendData == nullptr) destEntry->extendData = (tList<ExtraDataList>*) tList<ExtraDataList>::Create();
+		newData->RemoveByType(kExtraData_Worn);
+		newData->RemoveByType(kExtraData_WornLeft);
+		destEntry->extendData->AddAt(newData, 0);
+		if(count > 1 && !xCount){
 			ExtraDataList* newData = ExtraDataList::Create();
-			newData->Copy(m_data.xData);
-			if (destEntry->extendData == nullptr) destEntry->extendData = (tList<ExtraDataList>*) tList<ExtraDataList>::Create();
-			newData->RemoveByType(kExtraData_Worn);
-			newData->RemoveByType(kExtraData_WornLeft);
-			destEntry->extendData->AddAt(newData, 0);
+			xCount = ExtraCount::Create(count);
+			newData->Add(xCount);
+			destEntry->extendData->AddAt(newData, 0);			
 		}
-		else {
-			if (destEntry->extendData != nullptr && !destEntry->extendData->IsEmpty()) {
-				ExtraDataList* newData = ExtraDataList::Create();
-				xCount = ExtraCount::Create(count);
-				newData->Add(xCount);
-				destEntry->extendData->AddAt(newData, 0);
-			}
-		}
+		
 		destCont->Cleanup();
 		return true;
 	}
@@ -364,8 +368,9 @@ bool InventoryReference::CopyToContainer(TESObjectREFR* dest){
 }
 
 bool InventoryReference::SetEquipped(bool bEquipped){
-	if (m_data.xData && m_data.xData->IsWorn() == bEquipped) return false;
-	else if (bEquipped == false) return false;
+	DEBUG_PRINT("%s  %0X   %0X  %0X  %s", GetFullName(m_data.type), m_data.xData , m_data.xData ? m_data.xData->IsWorn() : false , bEquipped, GetFullName(m_containerRef));
+	if (m_data.xData == nullptr && bEquipped == false) return false; //No extra data items can't be already equipped. So bail off if bEquipped is false
+	if (m_data.xData && m_data.xData->IsWorn() == bEquipped) return false; //  If both IsWorn and bEquipped are equals the state is already what we want. Bail out.
 	SInt32 count = 1;
 	if (m_data.xData) {
 		ExtraCount* co = (ExtraCount*) m_data.xData->GetByType(kExtraData_Count);
@@ -380,6 +385,7 @@ bool InventoryReference::SetEquipped(bool bEquipped){
 
 bool InventoryReference::DeferredAction::Execute(InventoryReference* iref) {
 	TESObjectREFR* cont = iref->GetContainer();
+	DEBUG_PRINT("Deferred action for %s", GetFullName(data.type));
 	switch (type) {
 		case Action_Equip: {
 			if (!cont->IsActor())  return false;

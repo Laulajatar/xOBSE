@@ -236,6 +236,7 @@ static void HandleMainLoopHook(void)
 {
 	static bool s_recordedMainThreadID = false;
 	if (!s_recordedMainThreadID) {
+		Console_Print("xOBSE %d.%d.%d Loaded Succesfully", OBSE_VERSION_INTEGER, OBSE_VERSION_INTEGER_MINOR, OBSE_VERSION_INTEGER_HOTIFX);
 		s_recordedMainThreadID = true;
 		g_mainThreadID = GetCurrentThreadId();
 	}
@@ -347,7 +348,12 @@ void TESSaveLoadGame::LoadCreatedObjectsHook(UInt32 unk0)
 
 	// iterate the linked list, call DoPostFixup
 	CreatedObjectVisitor	visitor(&createdObjectList);
-
+	/*
+	* mov ecx, this
+	* or dword ptr [ecx +18h], 20000h
+	* TODO reimplement tis and decode TESSaveLoadGame structure
+	* 
+	*/
 	visitor.Visit(CallPostFixup());
 }
 
@@ -1209,12 +1215,20 @@ void Init_RefActivationPatch(void)
 	WriteRelJump(0x00507713, 0x0050771C);
 }
 
+const char* fixdata = "<Unknown Data>";
+
+BSStringT* __fastcall BSStringHook(BSStringT*  This, UInt32 edx, const char* string){
+	if (string == (char*)0x00A2F7EC) string = fixdata;
+	This->InitAndSet(string);
+	return This;
+}
+
 void Hook_Gameplay_Init(void)
 {
 	// game main loop
 	// this address was chosen because it is only run when oblivion is in the foreground
 	WriteRelJump(kMainLoopHookPatchAddr, (UInt32)&MainLoopHook);
-
+	if(PreventCrashOnMapMarkerLoadSave) WriteRelCall(0x005B96BB, (UInt32)BSStringHook);
 	// patch enchanted cloned item check
 	SafeWrite8(0x0045DEAD + 1, 0x20);	// more accurate to branch to 0045DED7
 	WriteRelJump(0x0045DFAF, 0x0045E03A);

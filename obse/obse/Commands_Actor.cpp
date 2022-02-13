@@ -15,6 +15,29 @@
 #include "Hooks_Gameplay.h"
 #include "EventManager.h"
 
+bool HasSpell(TESForm* spell, TESActorBase* actor){
+    TESSpellList& spellList = actor->spellList;
+    TESSpellList::Entry* curEntry = &spellList.spellList;
+    while (curEntry && curEntry->type != NULL) {
+        TESForm* spellForm = curEntry->type;
+        if (spell == spellForm) {
+            return true;
+        }
+        curEntry = curEntry->next;
+    }
+    return false;
+}
+
+static bool Cmd_HasSpell_Eval(COMMAND_ARGS_EVAL){
+    *result=0;
+    if(!thisObj) return true;
+    TESActorBase* actor = (TESActorBase*)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESActorBase, 0);
+    if(!actor) return true;
+    TESForm* spell = (TESForm*)arg1;
+    *result = HasSpell(spell, actor) ? 1:0;
+    return true;
+}
+
 static bool Cmd_HasSpell_Execute(COMMAND_ARGS){
 	*result = 0;
 
@@ -25,25 +48,48 @@ static bool Cmd_HasSpell_Execute(COMMAND_ARGS){
 
 	TESForm	* form = NULL;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &form)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &form)) return true;
 
 	if(form){
 		SpellItem* spell = (SpellItem*)Oblivion_DynamicCast(form, 0, RTTI_TESForm, RTTI_SpellItem, 0);
-		if (spell == nullptr) return true;
-		TESSpellList& spellList = npc->spellList;
-		TESSpellList::Entry* curEntry = &spellList.spellList;
-		while (curEntry && curEntry->type != NULL) {
-			TESForm* spellForm = curEntry->type;
-			if (form == spellForm) {
-				*result = 1;
-				return true;
-			}
-			curEntry = curEntry->next;
-		}
+        if(spell){
+            *result = HasSpell(form,npc) ? 1 : 0;
+        }
 	}
 
 	return true;
 }
+
+bool IsDiseased(TESObjectREFR* thisObj){
+    TESForm* form = (thisObj)->GetBaseForm();
+    if(!form) return false;
+
+    TESActorBase* actor = (TESActorBase*)Oblivion_DynamicCast(form, 0, RTTI_TESForm, RTTI_TESActorBase,0);
+    if(!actor) return false;
+
+    //Which is the best method for getting the SpellList of an Actor?
+//  TESSpellList* list1 = (TESSpellList*)Oblivion_DynamicCast(form, 0, RTTI_TESForm, RTTI_TESSpellList,0);
+    TESSpellList* list = &actor->spellList;
+    for (TESSpellList::Entry* entry = &list->spellList; entry && entry->type; entry = entry->next){
+        SpellItem* spell = (SpellItem*) Oblivion_DynamicCast(entry->type,0,RTTI_TESForm, RTTI_SpellItem, 0);
+        if(spell->spellType  == SpellItem::kType_Disease) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool Cmd_IsDiseased_Execute(COMMAND_ARGS){
+    *result = IsDiseased(thisObj) == true ? 1 : 0;
+    return true;
+}
+
+static bool Cmd_IsDiseased_Eval(COMMAND_ARGS_EVAL){
+    *result = IsDiseased(thisObj) == true ? 1 : 0;
+    return true;
+}
+
+
 
 static bool Cmd_GetSpellCount_Execute(COMMAND_ARGS)
 {
@@ -99,7 +145,7 @@ static bool Cmd_GetActorValueC_Execute(COMMAND_ARGS)
 {
 	UInt32	type = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &type)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &type)) return true;
 
 	if(thisObj && thisObj->IsActor())
 	{
@@ -118,7 +164,7 @@ static bool Cmd_GetBaseActorValueC_Execute(COMMAND_ARGS)
 {
 	UInt32	type = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &type)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &type)) return true;
 
 	if(thisObj && thisObj->IsActor())
 	{
@@ -134,7 +180,7 @@ static bool Cmd_SetActorValueC_Execute(COMMAND_ARGS)
 	UInt32	type = 0;
 	int		amount = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &type, &amount)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &type, &amount)) return true;
 
 	if(thisObj && thisObj->IsActor())
 	{
@@ -150,7 +196,7 @@ static bool Cmd_ModActorValue2_Execute(COMMAND_ARGS)
 	UInt32	type = 0;
 	int		amount = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &type, &amount)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &type, &amount)) return true;
 
 	if(thisObj && thisObj->IsActor())
 	{
@@ -182,7 +228,7 @@ static bool Cmd_SetRefEssential_Execute(COMMAND_ARGS)
 	*result = 0;
 
 	UInt32 setEssential;
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &setEssential)) return true;
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &setEssential)) return true;
 
 	TESActorBaseData* actorBaseData = (TESActorBaseData*)Oblivion_DynamicCast(thisObj->baseForm, 0, RTTI_TESForm, RTTI_TESActorBaseData, 0);
 	if (actorBaseData) {
@@ -193,22 +239,29 @@ static bool Cmd_SetRefEssential_Execute(COMMAND_ARGS)
 	return true;
 }
 
-static bool Cmd_GetActorLightAmount_Execute(COMMAND_ARGS)
-{
-	*result = 100.0f;
+float GetActorLightAmount(Actor* act){
+    return act->process->GetLightAmount(act, 0);
+}
 
-	if(!thisObj) return true;
-	if(!thisObj->IsActor()) return true;
+static bool Cmd_GetActorLightAmount_Eval(COMMAND_ARGS_EVAL){
+    *result = 100.0f;
+    if(!thisObj) return true;
+    if(!thisObj->IsActor()) return true;
 
-	Actor	* actor = (Actor *)thisObj;
+    Actor* actor = (Actor*)thisObj;
+    if(!actor->process) return true;
+    *result = GetActorLightAmount(actor);
+    return true;
+}
 
-	if(!actor->process) return true;
-
-	*result = actor->process->GetLightAmount(actor, 0);
-
-	//Console_Print("light amount = %f", (float)*result);
-
-	return true;
+static bool Cmd_GetActorLightAmount_Execute(COMMAND_ARGS){
+    *result = 100.0f;
+    if(!thisObj) return true;
+    if(!thisObj->IsActor()) return true;
+    Actor    * actor = (Actor*)thisObj;
+    if(!actor->process) return true;
+    *result = GetActorLightAmount(actor);
+    return true;
 }
 
 static bool Cmd_GetMerchantContainer_Execute(COMMAND_ARGS)
@@ -234,7 +287,7 @@ static bool Cmd_SetMerchantContainer_Execute(COMMAND_ARGS)
 
 	if (!thisObj) return true;
 	TESObjectREFR* objectRef = NULL;
-	if (!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &objectRef))
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &objectRef))
 		return true;
 	if (!thisObj) return true;
 
@@ -289,7 +342,7 @@ static bool Cmd_CopyEyes_Execute(COMMAND_ARGS)
 	TESNPC* copyTo = NULL;
 	*result = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &copyFrom, &copyTo))
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &copyFrom, &copyTo))
 		return true;
 
 	if (!copyFrom)
@@ -378,7 +431,7 @@ static bool Cmd_CopyHair_Execute(COMMAND_ARGS)
 	TESNPC* copyTo = NULL;
 	*result = 0;
 
-	if(!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &copyFrom, &copyTo))
+	if(!ExtractArgs(PASS_EXTRACT_ARGS, &copyFrom, &copyTo))
 		return true;
 
 	if (!copyFrom)
@@ -408,7 +461,7 @@ static TESActorBase* ExtractActorBase(COMMAND_ARGS)
 	TESActorBase* actorBase = NULL;
 	TESForm* actorForm = NULL;
 
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &actorForm);
+	ExtractArgs(PASS_EXTRACT_ARGS, &actorForm);
 	if (!actorForm)
 		if (thisObj)
 			actorForm = thisObj->baseForm;
@@ -543,7 +596,7 @@ static TESActorBase* ExtractSetActorBase(COMMAND_ARGS, UInt32* bMod)
 	TESForm* actorForm = NULL;
 	*bMod = 0;
 
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, bMod, &actorForm);
+	ExtractArgs(PASS_EXTRACT_ARGS, bMod, &actorForm);
 	if (!actorForm)
 		if (thisObj)
 			actorForm = thisObj->baseForm;
@@ -653,7 +706,7 @@ static bool Cmd_SetPCLevelOffset_Execute(COMMAND_ARGS)
 	TESActorBase* actorBase = NULL;
 	TESForm* actorForm = NULL;
 
-	ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &bMod, &minLevel, &maxLevel, &actorForm);
+	ExtractArgs(PASS_EXTRACT_ARGS, &bMod, &minLevel, &maxLevel, &actorForm);
 	if (!actorForm)
 		if (thisObj)
 			actorForm = thisObj->baseForm;
@@ -693,7 +746,7 @@ static bool Cmd_GetHair_Execute(COMMAND_ARGS)
 	UInt32* refResult = (UInt32*)result;
 	*refResult = 0;
 
-	if (!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &npc))
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &npc))
 		return true;
 
 	if (!npc)
@@ -716,7 +769,7 @@ static bool Cmd_GetEyes_Execute(COMMAND_ARGS)
 	UInt32* refResult = (UInt32*)result;
 	*refResult = 0;
 
-	if (!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &npc))
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &npc))
 		return true;
 
 	if (!npc)
@@ -737,7 +790,7 @@ static bool Cmd_GetHairColor_Execute(COMMAND_ARGS)
 	UInt32 whichColor = 0;
 	*result = 0;
 
-	if (!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &whichColor, &npc))
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &whichColor, &npc))
 		return true;
 
 	if (!npc)
@@ -758,7 +811,7 @@ static bool Cmd_GetRace_Execute(COMMAND_ARGS)
 	UInt32* refResult = (UInt32*)result;
 	*refResult = 0;
 
-	if (!ExtractArgs(paramInfo, arg1, opcodeOffsetPtr, thisObj, arg3, scriptObj, eventList, &npc))
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &npc))
 		return true;
 
 	if (!npc)
@@ -1100,7 +1153,7 @@ static bool Cmd_CanCastPower_Execute(COMMAND_ARGS)
 	SpellItem* power = NULL;
 
 	Actor* actor = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
-	if (ExtractArgs(EXTRACT_ARGS, &power) && actor)
+	if (ExtractArgs(PASS_EXTRACT_ARGS, &power) && actor)
 	{
 		if (actor->CanCastGreaterPower(power))
 			*result = 1;
@@ -1119,7 +1172,7 @@ static bool Cmd_SetCanCastPower_Execute(COMMAND_ARGS)
 	UInt32 bAllowUse = 1;
 
 	Actor* actor = OBLIVION_CAST(thisObj, TESObjectREFR, Actor);
-	if (actor && ExtractArgs(EXTRACT_ARGS, &power, &bAllowUse))
+	if (actor && ExtractArgs(PASS_EXTRACT_ARGS, &power, &bAllowUse))
 		actor->SetCanUseGreaterPower(power, bAllowUse ? true : false);
 
 	return true;
@@ -1168,7 +1221,7 @@ static bool Cmd_SetPowerTimer_Execute(COMMAND_ARGS)
 
 	SpellItem* power = NULL;
 	float timer = 0;
-	if (!ExtractArgs(EXTRACT_ARGS, &power, &timer) || !power)
+	if (!ExtractArgs(PASS_EXTRACT_ARGS, &power, &timer) || !power)
 		return true;
 
 	actor->SetCanUseGreaterPower(power, false, timer);
@@ -1496,11 +1549,24 @@ CommandInfo kCommandInfo_HasSpell =
 	"returns 1 if the actor has the spell",
 	1,
 	1,
-	kParams_OneSpellItem,
+	kParams_OneSpellItem,  //TODO force CS to handle this or change to OneMagicItem
 	HANDLER(Cmd_HasSpell_Execute),
 	Cmd_Default_Parse,
-	NULL,
+	HANDLER_EVAL(Cmd_HasSpell_Eval),
 	0
+};
+
+CommandInfo kCommandInfo_IsDiseased = {
+    "IsDiseased",
+    "",
+    0,
+    "Return 1 if given actor is diseased",
+    1,
+    0,
+    NULL,
+    HANDLER(Cmd_IsDiseased_Execute),
+    Cmd_Default_Parse,
+    HANDLER_EVAL(Cmd_IsDiseased_Eval)
 };
 
 CommandInfo kCommandInfo_GetMerchantContainer =
@@ -1643,7 +1709,7 @@ CommandInfo kCommandInfo_GetActorLightAmount =
 	NULL,
 	HANDLER(Cmd_GetActorLightAmount_Execute),
 	Cmd_Default_Parse,
-	NULL,
+	HANDLER_EVAL(Cmd_GetActorLightAmount_Eval),
 	0
 };
 

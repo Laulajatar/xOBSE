@@ -13,6 +13,7 @@
 #include "StringVar.h"
 #include "Hooks_Gameplay.h"
 #include "GameData.h"
+#include <mbstring.h>
 
 typedef void (* _CloseAllMenus)(void);
 
@@ -80,13 +81,13 @@ static bool GetActiveMenuElement(COMMAND_ARGS, eMenuValue whichValue, MenuInfo* 
 	//Extract arguments
 	if (whichValue < kMenu_Ingredient && whichValue >= kMenu_Selection)	//optional int param specifies menu type
 	{
-		ExtractArgs(EXTRACT_ARGS, &intArg);
+		ExtractArgs(PASS_EXTRACT_ARGS, &intArg);
 		if (intArg != -1)
 			activeMenu = GetMenuByType(intArg);
 	}
 	else if (whichValue >= kMenu_Ingredient)
 	{
-		ExtractArgs(EXTRACT_ARGS, &intArg);
+		ExtractArgs(PASS_EXTRACT_ARGS, &intArg);
 		if (intArg == -1)
 			return false;
 	}
@@ -553,8 +554,9 @@ static bool GetSetMenuValue_Execute(COMMAND_ARGS, UInt32 mode)
 			bExtracted = ExtractFormatStringArgs(0, stringArg, paramInfo, arg1, opcodeOffsetPtr, scriptObj, eventList, kCommandInfo_GetMenuFloatValue.numParams, &menuType);
 			// extract new value from format string
 			char* context = NULL;
-			componentPath = strtok_s(stringArg, separatorChar, &context);
-			newStringVal = strtok_s(NULL, separatorChar, &context);
+			componentPath = (char*)(_mbstok_s((unsigned char*)stringArg, (const unsigned char*)separatorChar, (unsigned char**)&context));
+			newStringVal = (char*)(_mbstok_s(NULL, (const unsigned char*)separatorChar, (unsigned char**)&context));
+
 			bExtracted = (bExtracted && componentPath && newStringVal);
 		}
 		break;

@@ -279,7 +279,7 @@
 
 <body>
 
-<h1>xOBSE v0022.4.1 Command Documentation</h1>
+<h1>xOBSE v0022.5.0 Command Documentation</h1>
 
 <p><a href="http://cs.elderscrolls.com/index.php?title=Category:Oblivion_Script_Extender">OBSE @ Oblivion Construction Set Wiki</a> - follow the links throughout this documentation to gain access to additional information on the official Oblivion Construction Set Wiki. Users are encouraged to add to the wiki.<br />
 <a href="https://github.com/llde/xOBSE">xOBSE @ GitHub</a> is is a community maintained up-to-date fork of Oblivion Script Extender (OBSE).
@@ -326,7 +326,7 @@
 <h2><a id="New_xOBSE_Features">New xOBSE Features</a></h2>
 <p>Besides fixing some long standing bugs and adding new game versions (like the GOG version) to the launcher, xOBSE adds a couple of new functions (and deprecates some others):</p>
 <ul>
-    <li><h3>xOBSE TBA</h3></li>
+    <li><h3>xOBSE v0022.5</h3></li>
 	<li><a href="#IsMiscItem">IsMiscItem</a></li>
     <li><h3>xOBSE v0022.4</h3></li>
 	<li><a href="#SetAltControl2">SetAltControl2</a></li>
@@ -651,7 +651,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(powers:Array) ref.GetUsedPowers</code></p>
 
 <p><a id="HasSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=HasSpell">HasSpell</a> - returns whether the actor has the specified spell<br />
-<b>Notes: </b>Return always 0 on Creatures. (TODO: Verify)<br />
+<b>Notes: </b>Before xOBSE 21.5 return always 0 on Creatures.<br />
 <code class="s">(hasSpell:bool) reference.HasSpell spell:ref</code></p>
 
 <p><a id="RemoveBaseSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=RemoveBaseSpell">RemoveBaseSpell</a> - the game's RemoveSpell removes a spell from a base actor but must be called on a reference. This command does the same thing as RemoveSpell but takes a base object as an argument, returning 1 if the spell was removed.<br />
@@ -1082,7 +1082,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <h4>Functions:</h4>
 
 <p><a id="GetBaseObject" class="f" href="http://cs.elderscrolls.com/index.php?title=GetBaseObject">GetBaseObject</a> - returns the base object of the reference.<br />
-<b>Note: </b>If Ref is a base object already, then calling <code>GetBaseObject</code> on it will halt the script.<br />
+<b>Note: </b>If Ref is a base object already, then calling BaseObjectRef.GetBaseObject will halt the script (quest scripts will show as still running but won't execute any more). (TODO: Verify)<br />
 <code class="s">(objectID:ref) reference.GetBaseObject</code></p>
 
 <p><a id="GetObjectType" class="f" href="http://cs.elderscrolls.com/index.php?title=GetObjectType">GetObjectType</a> - returns a type code for each type of object.<br />
@@ -1713,7 +1713,7 @@ OBSE v0021 introduces <a href="#Events">new event types</a>, support for <a href
 <code class="s">(script:refID) <span class="op">reference.</span>SetScript scriptID:ref <span class="op">targetObjectID:ref</span></code></p>
 
 <p><a id="IsFormValid" class="f" href="http://cs.elderscrolls.com/index.php?title=IsFormValid">IsFormValid</a> - returns 1 if the specified ref variable contains a valid object or reference.<br />
-<b>Note: </b>This function seems to be not very reliable when used on non-persistent references. It can sometimes return 1 for non-persistent objects originating from an esp, even if the have been picked up and the cell isn't loaded. For objects originating from an esm, it will only return 1 if the cell the object originated in is loaded, even if the object has since been picked up.<br />
+<b>Note: </b>If you reload the game after picking up a non dynamic (= not mod index 0xFF) reference, <code>IsFormValid</code> will return false if the object was non-persistent and true if the object was persistent. (TODO: Verify)<br />
 <b>Note: </b>If you want to check for a reference originating in an esm file that has been deleted by an esp, use <code>IsRefDeleted</code> instead, as <code>IsFormValid</code> will return true.<br />
 <code class="s">(valid:bool) IsFormValid refVar:var</code></p>
 
@@ -3577,6 +3577,7 @@ In the case of leveled lists containing nested leveled lists, the function recur
 <code class="s">(nothing) SetPCAMurderer isMurderer:bool</code></p>
 
 <p><a id="GetPlayerSpell" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSpell">GetPlayerSpell</a> - returns the objectID of the player's current spell.<br />
+<b>Note: </b>If the active spell is removed from the player, this function might return 0. (TODO: Verify)<br />
 <code class="s">(spell:ref) GetPlayerSpell</code></p>
 
 <p><a id="GetPlayerSpellCount" class="f" href="http://cs.elderscrolls.com/index.php?title=GetPlayerSpellCount">GetPlayerSpellCount</a> - returns the player spell count.<br />
